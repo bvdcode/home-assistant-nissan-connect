@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.1 (2026-08-02)
+
+### Bug Fixes
+
+- Recognize remote climate capability
+  ([`e06c417`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/e06c41732148e7bc1c33e05c912fddb61bf7c259))
+
+
 ## v0.3.0 (2026-08-02)
 
 ### Features
