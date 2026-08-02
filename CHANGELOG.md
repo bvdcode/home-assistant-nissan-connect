@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.0 (2026-08-02)
+
+### Features
+
+- Add climate control and vehicle tracking
+  ([`57b23b1`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/57b23b1b08d213dbdd3e9e4cce3c3e1f5b34deb1))
+
+
 ## v0.2.1 (2026-08-02)
 
 ### Bug Fixes
