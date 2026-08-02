@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfLength, UnitOfTemperature
@@ -15,6 +16,7 @@ from pynissan import (
     NissanError,
     TemperatureUnit,
     Vehicle,
+    VehicleLocation,
     VehicleStatus,
 )
 
@@ -22,7 +24,16 @@ from .const import DEFAULT_UPDATE_INTERVAL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-type NissanCoordinatorData = dict[str, VehicleStatus]
+
+@dataclass(frozen=True, slots=True)
+class NissanVehicleData:
+    """Cached status and location for one vehicle."""
+
+    status: VehicleStatus
+    location: VehicleLocation
+
+
+type NissanCoordinatorData = dict[str, NissanVehicleData]
 
 
 class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
@@ -62,18 +73,16 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
             case _:
                 raise ValueError("MyNISSAN supports only Celsius and Fahrenheit temperature units")
 
+    @property
+    def temperature_unit(self) -> TemperatureUnit:
+        """Return the Nissan temperature unit selected for Home Assistant."""
+        return self._temperature_unit
+
     async def _async_update_data(self) -> NissanCoordinatorData:
-        """Fetch the latest cached status without waking the vehicles."""
+        """Fetch the latest cached vehicle data without waking the vehicles."""
         try:
-            statuses = await asyncio.gather(
-                *(
-                    self._client.async_get_vehicle_status(
-                        vehicle.vin,
-                        distance_unit=self._distance_unit,
-                        temperature_unit=self._temperature_unit,
-                    )
-                    for vehicle in self._vehicles
-                )
+            vehicle_data = await asyncio.gather(
+                *(self._async_get_vehicle_data(vehicle) for vehicle in self._vehicles)
             )
         except AuthenticationError as error:
             raise ConfigEntryAuthFailed(
@@ -83,4 +92,15 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
         except NissanError as error:
             raise UpdateFailed("Unable to update MyNISSAN vehicle status") from error
 
-        return {status.vin: status for status in statuses}
+        return {data.status.vin: data for data in vehicle_data}
+
+    async def _async_get_vehicle_data(self, vehicle: Vehicle) -> NissanVehicleData:
+        status, location = await asyncio.gather(
+            self._client.async_get_vehicle_status(
+                vehicle.vin,
+                distance_unit=self._distance_unit,
+                temperature_unit=self._temperature_unit,
+            ),
+            self._client.async_get_vehicle_location(vehicle.vin),
+        )
+        return NissanVehicleData(status, location)

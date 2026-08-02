@@ -53,7 +53,7 @@ async def async_setup_entry(
     async_add_entities(
         NissanBinarySensor(coordinator, vehicle, description)
         for vehicle in entry.runtime_data.vehicles
-        if coordinator.data[vehicle.vin].battery is not None
+        if coordinator.data[vehicle.vin].status.battery is not None
         for description in BINARY_SENSOR_DESCRIPTIONS
     )
 

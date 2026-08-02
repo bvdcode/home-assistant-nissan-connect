@@ -53,20 +53,39 @@
     "cannot_connect": {
       "message": "Unable to connect to MyNISSAN."
     },
+    "climate_command_failed": {
+      "message": "Unable to send the climate command to the vehicle."
+    },
+    "climate_command_rejected": {
+      "message": "The vehicle did not complete the climate command (status: {status})."
+    },
     "invalid_auth": {
       "message": "MyNISSAN authentication has expired."
     },
     "no_vehicles": {
       "message": "No vehicles were found in this MyNISSAN account."
+    },
+    "unsupported_hvac_mode": {
+      "message": "The vehicle does not support HVAC mode {mode}."
     }
   },
   "entity": {
+    "climate": {
+      "climate_control": {
+        "name": "Climate control"
+      }
+    },
     "binary_sensor": {
       "charging": {
         "name": "Charging"
       },
       "plugged_in": {
         "name": "Plugged in"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Location"
       }
     },
     "sensor": {

@@ -103,7 +103,7 @@ async def async_setup_entry(
     entities: list[NissanSensor] = []
 
     for vehicle in entry.runtime_data.vehicles:
-        status = coordinator.data[vehicle.vin]
+        status = coordinator.data[vehicle.vin].status
         if status.battery is not None:
             entities.extend(
                 NissanSensor(coordinator, vehicle, description)

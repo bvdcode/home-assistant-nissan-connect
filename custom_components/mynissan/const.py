@@ -9,6 +9,7 @@ DOMAIN: Final = "mynissan"
 MANUFACTURER: Final = "Nissan"
 
 CONF_ACCESS_TOKEN: Final = "access_token"
+CONF_AUTH_PROFILE: Final = "auth_profile"
 CONF_COUNTRY: Final = "country"
 CONF_ID_TOKEN: Final = "id_token"
 CONF_OAUTH_DEVICE_ID: Final = "oauth_device_id"
@@ -17,6 +18,7 @@ CONF_TOKENS: Final = "tokens"
 
 DEFAULT_COUNTRY: Final = Country.US
 DEFAULT_UPDATE_INTERVAL: Final = timedelta(minutes=15)
+MOBILE_AUTH_PROFILE: Final = "mobile"
 
 
 def country_from_value(value: str) -> Country:

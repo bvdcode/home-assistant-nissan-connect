@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import TypedDict
 
 from homeassistant.config_entries import ConfigEntry
-from pynissan import NissanClient, Vehicle
+from pynissan import NissanClient, Vehicle, VehicleCapabilities
 
 from .coordinator import NissanDataUpdateCoordinator
 
@@ -20,6 +20,7 @@ class StoredTokens(TypedDict):
 class NissanConfigData(TypedDict):
     """Serializable MyNISSAN config entry data."""
 
+    auth_profile: str
     country: str
     email: str
     oauth_device_id: str
@@ -32,6 +33,7 @@ class NissanRuntimeData:
 
     client: NissanClient
     vehicles: tuple[Vehicle, ...]
+    capabilities: dict[str, VehicleCapabilities]
     coordinator: NissanDataUpdateCoordinator
 
 

@@ -1,5 +1,6 @@
 """MyNISSAN integration for Home Assistant."""
 
+import asyncio
 from collections.abc import Mapping
 from typing import cast
 
@@ -17,23 +18,35 @@ from pynissan import AuthenticationError, NetworkError, NissanError, Tokens, Veh
 
 from .api import create_client, tokens_from_data, tokens_to_data
 from .const import (
+    CONF_AUTH_PROFILE,
     CONF_COUNTRY,
     CONF_OAUTH_DEVICE_ID,
     CONF_TOKENS,
     DOMAIN,
     MANUFACTURER,
+    MOBILE_AUTH_PROFILE,
     country_from_value,
 )
 from .coordinator import NissanDataUpdateCoordinator
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
-PLATFORMS: tuple[Platform, ...] = (Platform.BINARY_SENSOR, Platform.SENSOR)
+PLATFORMS: tuple[Platform, ...] = (
+    Platform.BINARY_SENSOR,
+    Platform.CLIMATE,
+    Platform.DEVICE_TRACKER,
+    Platform.SENSOR,
+)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bool:
     """Set up a MyNISSAN account from a config entry."""
     data = cast(NissanConfigData, entry.data)
+    if data.get(CONF_AUTH_PROFILE) != MOBILE_AUTH_PROFILE:
+        raise ConfigEntryAuthFailed(
+            translation_domain=DOMAIN,
+            translation_key="invalid_auth",
+        )
 
     @callback
     def async_store_tokens(tokens: Tokens) -> None:
@@ -77,10 +90,37 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
         )
 
     coordinator = NissanDataUpdateCoordinator(hass, entry, client, vehicles)
+    try:
+        vehicle_capabilities = await asyncio.gather(
+            *(
+                client.async_get_vehicle_capabilities(
+                    vehicle.vin,
+                    coordinator.temperature_unit,
+                )
+                for vehicle in vehicles
+            )
+        )
+    except AuthenticationError as error:
+        raise ConfigEntryAuthFailed(
+            translation_domain=DOMAIN,
+            translation_key="invalid_auth",
+        ) from error
+    except NetworkError as error:
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN,
+            translation_key="cannot_connect",
+        ) from error
+    except NissanError as error:
+        raise ConfigEntryError(
+            translation_domain=DOMAIN,
+            translation_key="api_error",
+        ) from error
+
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = NissanRuntimeData(
         client=client,
         vehicles=vehicles,
+        capabilities={capabilities.vin: capabilities for capabilities in vehicle_capabilities},
         coordinator=coordinator,
     )
     _register_vehicles(hass, entry, vehicles)

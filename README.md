@@ -7,13 +7,15 @@
 MyNISSAN connects supported Nissan vehicles to Home Assistant through the
 MyNISSAN cloud service.
 
-The initial release provides:
+The integration provides:
 
 - configuration through the Home Assistant user interface;
 - account authentication and automatic token refresh;
 - discovery of every vehicle attached to the account;
 - one Home Assistant device per vehicle;
-- battery level, charging, plugged-in state, range, and climate sensors.
+- battery level, charging, plugged-in state, range, and climate sensors;
+- last reported vehicle location on the Home Assistant map;
+- remote climate start, stop, and target-temperature control.
 
 Additional vehicle data and remote commands will be added in subsequent releases.
 

@@ -25,26 +25,35 @@ from homeassistant.exceptions import (
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from pynissan import (
+    AccessoryCapability,
     AuthenticationError,
     BatteryStatus,
     ClimateStatus,
     DistanceReading,
+    HvacTemperatureCapabilities,
     NetworkError,
     NissanError,
+    ServiceCapability,
     TemperatureReading,
     Tokens,
     Vehicle,
+    VehicleAccessoriesDetails,
+    VehicleCapabilities,
+    VehicleLocation,
     VehicleStatus,
 )
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.mynissan import async_setup_entry
 from custom_components.mynissan.const import (
+    CONF_AUTH_PROFILE,
     CONF_COUNTRY,
     CONF_OAUTH_DEVICE_ID,
     CONF_TOKENS,
     DOMAIN,
+    MOBILE_AUTH_PROFILE,
 )
+from custom_components.mynissan.coordinator import NissanVehicleData
 from custom_components.mynissan.sensor import (
     _climate_temperature,
     _climate_temperature_unit,
@@ -67,6 +76,27 @@ VEHICLE_STATUS = VehicleStatus(
     mileage=None,
     tire_pressure=None,
     maintenance_indicators=(),
+)
+VEHICLE_LOCATION = VehicleLocation(VEHICLE.vin, 32.7157, -117.1611, None)
+VEHICLE_CAPABILITIES = VehicleCapabilities(
+    vin=VEHICLE.vin,
+    telematics_program="NISSAN_CONNECT",
+    enrollment_status="ENROLLED",
+    services=(ServiceCapability("CLIMATE_CONTROL", True, True),),
+    accessories_details=VehicleAccessoriesDetails(
+        seat_heater=None,
+        steering_heat=AccessoryCapability(True),
+        sun_roof=None,
+        window_status=None,
+        way_point=None,
+        hvac_temperatures=HvacTemperatureCapabilities(
+            unit="CELSIUS",
+            default=22.0,
+            minimum=16.0,
+            maximum=30.0,
+            resolution=0.5,
+        ),
+    ),
 )
 
 
@@ -96,7 +126,9 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     entry.add_to_hass(hass)
     client = MagicMock()
     client.async_get_vehicles = AsyncMock(return_value=(VEHICLE,))
+    client.async_get_vehicle_capabilities = AsyncMock(return_value=VEHICLE_CAPABILITIES)
     client.async_get_vehicle_status = AsyncMock(return_value=VEHICLE_STATUS)
+    client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
     token_listener: Callable[[Tokens], None] | None = None
 
     def create_client(_hass: HomeAssistant, **kwargs: object) -> MagicMock:
@@ -114,7 +146,9 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert entry.state is ConfigEntryState.LOADED
     assert entry.runtime_data.client is client
     assert entry.runtime_data.vehicles == (VEHICLE,)
-    assert entry.runtime_data.coordinator.data == {VEHICLE.vin: VEHICLE_STATUS}
+    assert entry.runtime_data.coordinator.data == {
+        VEHICLE.vin: NissanVehicleData(VEHICLE_STATUS, VEHICLE_LOCATION)
+    }
 
     device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, VEHICLE.vin)})
     assert device is not None
@@ -136,6 +170,14 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
 
     climate_temperature = _entity_state(hass, Platform.SENSOR, "climate_temperature")
     assert climate_temperature.state == STATE_UNAVAILABLE
+
+    climate_control = _entity_state(hass, Platform.CLIMATE, "climate_control")
+    assert climate_control.state == "off"
+    assert climate_control.attributes["temperature"] == 22.0
+
+    location = _entity_state(hass, Platform.DEVICE_TRACKER, "location")
+    assert location.attributes["latitude"] == 32.7157
+    assert location.attributes["longitude"] == -117.1611
 
     charging = _entity_state(hass, Platform.BINARY_SENSOR, "charging")
     assert charging.state == STATE_OFF
@@ -202,6 +244,7 @@ def _entry() -> MockConfigEntry:
         unique_id="US:driver@example.com",
         title="driver@example.com",
         data={
+            CONF_AUTH_PROFILE: MOBILE_AUTH_PROFILE,
             CONF_COUNTRY: "US",
             CONF_EMAIL: "driver@example.com",
             CONF_OAUTH_DEVICE_ID: "oauth-device-id",

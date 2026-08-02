@@ -59,13 +59,13 @@ def create_client(
     oauth_device_id: str,
     token_listener: TokenListener,
 ) -> NissanClient:
-    """Create a read-only client using Home Assistant's HTTP session."""
+    """Create a client using Home Assistant's HTTP session."""
     return NissanClient(
         async_get_clientsession(hass),
         country=country,
         tokens=tokens,
         token_listener=token_listener,
-        read_only=True,
+        read_only=False,
         oauth_device_id=oauth_device_id,
     )
 

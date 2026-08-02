@@ -19,6 +19,7 @@ from .const import (
     CONF_OAUTH_DEVICE_ID,
     DEFAULT_COUNTRY,
     DOMAIN,
+    MOBILE_AUTH_PROFILE,
     country_from_value,
 )
 from .models import NissanConfigData
@@ -105,6 +106,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title=email,
                     data=NissanConfigData(
+                        auth_profile=MOBILE_AUTH_PROFILE,
                         country=country.value,
                         email=email,
                         oauth_device_id=account.oauth_device_id,
@@ -149,6 +151,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             )
             if account is not None:
                 updated_data = NissanConfigData(
+                    auth_profile=MOBILE_AUTH_PROFILE,
                     country=data[CONF_COUNTRY],
                     email=data[CONF_EMAIL],
                     oauth_device_id=account.oauth_device_id,

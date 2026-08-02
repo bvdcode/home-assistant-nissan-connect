@@ -53,20 +53,39 @@
     "cannot_connect": {
       "message": "Не удалось подключиться к MyNISSAN."
     },
+    "climate_command_failed": {
+      "message": "Не удалось отправить климатическую команду автомобилю."
+    },
+    "climate_command_rejected": {
+      "message": "Автомобиль не выполнил климатическую команду (статус: {status})."
+    },
     "invalid_auth": {
       "message": "Срок действия авторизации MyNISSAN истёк."
     },
     "no_vehicles": {
       "message": "В этой учётной записи MyNISSAN не найдено автомобилей."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Автомобиль не поддерживает режим климата {mode}."
     }
   },
   "entity": {
+    "climate": {
+      "climate_control": {
+        "name": "Климат-контроль"
+      }
+    },
     "binary_sensor": {
       "charging": {
         "name": "Зарядка"
       },
       "plugged_in": {
         "name": "Кабель подключён"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Местоположение"
       }
     },
     "sensor": {

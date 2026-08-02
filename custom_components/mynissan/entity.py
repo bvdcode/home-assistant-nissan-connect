@@ -3,7 +3,7 @@
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from pynissan import Vehicle, VehicleStatus
+from pynissan import Vehicle, VehicleLocation, VehicleStatus
 
 from .const import DOMAIN
 from .coordinator import NissanDataUpdateCoordinator
@@ -33,4 +33,9 @@ class NissanEntity(CoordinatorEntity[NissanDataUpdateCoordinator]):
     @property
     def vehicle_status(self) -> VehicleStatus:
         """Return this vehicle's latest coordinator data."""
-        return self.coordinator.data[self._vehicle.vin]
+        return self.coordinator.data[self._vehicle.vin].status
+
+    @property
+    def vehicle_location(self) -> VehicleLocation:
+        """Return this vehicle's latest cached location."""
+        return self.coordinator.data[self._vehicle.vin].location

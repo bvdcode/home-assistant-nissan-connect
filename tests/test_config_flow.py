@@ -10,10 +10,12 @@ from pynissan import AuthenticationError, Country, NetworkError, NissanError, To
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.mynissan.const import (
+    CONF_AUTH_PROFILE,
     CONF_COUNTRY,
     CONF_OAUTH_DEVICE_ID,
     CONF_TOKENS,
     DOMAIN,
+    MOBILE_AUTH_PROFILE,
 )
 
 EMAIL = "driver@example.com"
@@ -48,6 +50,7 @@ async def test_user_flow_creates_entry(
     assert result["type"] is data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == EMAIL
     assert result["data"] == {
+        CONF_AUTH_PROFILE: MOBILE_AUTH_PROFILE,
         CONF_COUNTRY: "US",
         CONF_EMAIL: EMAIL,
         CONF_OAUTH_DEVICE_ID: "oauth-device-id",
@@ -176,6 +179,7 @@ async def test_reauthentication_updates_tokens(
         "refresh_token": "refresh",
         "id_token": "id",
     }
+    assert entry.data[CONF_AUTH_PROFILE] == MOBILE_AUTH_PROFILE
     assert CONF_PASSWORD not in entry.data
 
 
@@ -200,6 +204,7 @@ async def _submit_user_flow(
 
 def _entry_data() -> dict[str, object]:
     return {
+        CONF_AUTH_PROFILE: MOBILE_AUTH_PROFILE,
         CONF_COUNTRY: "US",
         CONF_EMAIL: EMAIL,
         CONF_OAUTH_DEVICE_ID: "old-device-id",
