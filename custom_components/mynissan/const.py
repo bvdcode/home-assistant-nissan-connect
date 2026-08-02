@@ -19,6 +19,7 @@ CONF_TOKENS: Final = "tokens"
 DEFAULT_COUNTRY: Final = Country.US
 DEFAULT_UPDATE_INTERVAL: Final = timedelta(minutes=15)
 MOBILE_AUTH_PROFILE: Final = "mobile"
+REMOTE_CLIMATE_CONTROL_SERVICE: Final = "REMOTE_CLIMATE_CONTROL"
 
 
 def country_from_value(value: str) -> Country:

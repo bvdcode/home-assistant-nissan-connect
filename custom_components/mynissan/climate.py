@@ -23,7 +23,7 @@ from pynissan import (
     VehicleCapabilities,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, REMOTE_CLIMATE_CONTROL_SERVICE
 from .coordinator import NissanDataUpdateCoordinator
 from .entity import NissanEntity
 from .models import NissanConfigEntry
@@ -193,7 +193,9 @@ def _climate_temperatures(
 ) -> HvacTemperatureCapabilities | None:
     """Return HVAC temperatures when remote climate is enabled and subscribed."""
     climate_enabled = any(
-        service.type == "CLIMATE_CONTROL" and service.enabled and service.subscribed is True
+        service.type == REMOTE_CLIMATE_CONTROL_SERVICE
+        and service.enabled
+        and service.subscribed is True
         for service in capabilities.services
     )
     if not climate_enabled or capabilities.accessories_details is None:
