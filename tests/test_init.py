@@ -11,7 +11,6 @@ from homeassistant.const import (
     PERCENTAGE,
     STATE_OFF,
     STATE_ON,
-    STATE_UNAVAILABLE,
     Platform,
     UnitOfLength,
     UnitOfTemperature,
@@ -100,8 +99,8 @@ VEHICLE_CAPABILITIES = VehicleCapabilities(
 )
 
 
-def test_active_climate_temperature_is_available() -> None:
-    """An active climate target is exposed with its native unit."""
+def test_reported_cabin_temperature_is_available() -> None:
+    """A reported cabin temperature is exposed with its native unit."""
     status = VehicleStatus(
         vin=VEHICLE.vin,
         vehicle_type="ElectricAVK2Vehicle",
@@ -169,11 +168,13 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert climate_status.state == "OFF"
 
     climate_temperature = _entity_state(hass, Platform.SENSOR, "climate_temperature")
-    assert climate_temperature.state == STATE_UNAVAILABLE
+    assert climate_temperature.state == "55.0"
+    assert climate_temperature.attributes["unit_of_measurement"] == UnitOfTemperature.CELSIUS
 
     climate_control = _entity_state(hass, Platform.CLIMATE, "climate_control")
     assert climate_control.state == "off"
     assert climate_control.attributes["temperature"] == 22.0
+    assert climate_control.attributes["current_temperature"] == 55.0
 
     location = _entity_state(hass, Platform.DEVICE_TRACKER, "location")
     assert location.attributes["latitude"] == 32.7157

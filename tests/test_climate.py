@@ -88,8 +88,8 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
     client.async_get_vehicle_status = AsyncMock(
         side_effect=(
             _status("OFF", 55.0),
-            _status("ON", 24.0),
-            _status("ON", 23.0),
+            _status("ON", 47.0),
+            _status("ON", 46.0),
             _status("OFF", 55.0),
         )
     )
@@ -119,6 +119,7 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
         f"{VEHICLE.vin}_climate_control",
     )
     assert entity_id is not None
+    _assert_temperatures(hass, entity_id, target=22.0, current=55.0)
 
     await hass.services.async_call(
         "climate",
@@ -127,6 +128,7 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
         blocking=True,
     )
     client.async_start_climate.assert_not_called()
+    _assert_temperatures(hass, entity_id, target=24.0, current=55.0)
 
     await hass.services.async_call(
         "climate",
@@ -138,6 +140,7 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
         VEHICLE.vin,
         ClimateSettings(24.0, TemperatureUnit.CELSIUS),
     )
+    _assert_temperatures(hass, entity_id, target=24.0, current=47.0)
 
     await hass.services.async_call(
         "climate",
@@ -157,6 +160,19 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
         blocking=True,
     )
     client.async_stop_climate.assert_awaited_once_with(VEHICLE.vin)
+
+
+def _assert_temperatures(
+    hass: HomeAssistant,
+    entity_id: str,
+    *,
+    target: float,
+    current: float,
+) -> None:
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.attributes["temperature"] == target
+    assert state.attributes["current_temperature"] == current
 
 
 def _status(state: str, temperature: float) -> VehicleStatus:

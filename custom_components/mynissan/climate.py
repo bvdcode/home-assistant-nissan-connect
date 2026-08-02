@@ -108,11 +108,16 @@ class NissanClimate(NissanEntity, ClimateEntity):
 
     @property
     def target_temperature(self) -> float:
-        """Return the active or most recently selected target temperature."""
-        climate = self.vehicle_status.climate
-        if climate is not None and climate.state == "ON" and climate.temperature is not None:
-            return climate.temperature.value
+        """Return the most recently selected target temperature."""
         return self._target_temperature
+
+    @property
+    def current_temperature(self) -> float | None:
+        """Return the reported cabin temperature."""
+        climate = self.vehicle_status.climate
+        if climate is None or climate.temperature is None:
+            return None
+        return climate.temperature.value
 
     async def async_turn_on(self) -> None:
         """Start remote climate control."""

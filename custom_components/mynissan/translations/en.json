@@ -96,7 +96,7 @@
         "name": "Climate status"
       },
       "climate_temperature": {
-        "name": "Climate temperature"
+        "name": "Cabin temperature"
       },
       "range": {
         "name": "Range"

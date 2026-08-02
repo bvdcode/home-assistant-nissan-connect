@@ -31,19 +31,15 @@ class NissanSensorEntityDescription(SensorEntityDescription):
 
 
 def _climate_temperature(status: VehicleStatus) -> float | None:
-    """Return the configured temperature while remote climate is active."""
-    if status.climate is None or status.climate.state == "OFF":
-        return None
-    if status.climate.temperature is None:
+    """Return the reported cabin temperature."""
+    if status.climate is None or status.climate.temperature is None:
         return None
     return status.climate.temperature.value
 
 
 def _climate_temperature_unit(status: VehicleStatus) -> NissanUnit:
-    """Return the configured temperature unit while remote climate is active."""
-    if status.climate is None or status.climate.state == "OFF":
-        return None
-    if status.climate.temperature is None:
+    """Return the reported cabin temperature unit."""
+    if status.climate is None or status.climate.temperature is None:
         return None
     return _temperature_unit(status.climate.temperature.unit)
 
