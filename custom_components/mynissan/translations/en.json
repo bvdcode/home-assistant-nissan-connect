@@ -48,5 +48,29 @@
     "no_vehicles": {
       "message": "No vehicles were found in this MyNISSAN account."
     }
+  },
+  "entity": {
+    "binary_sensor": {
+      "charging": {
+        "name": "Charging"
+      },
+      "plugged_in": {
+        "name": "Plugged in"
+      }
+    },
+    "sensor": {
+      "battery_level": {
+        "name": "Battery level"
+      },
+      "climate_status": {
+        "name": "Climate status"
+      },
+      "climate_temperature": {
+        "name": "Climate temperature"
+      },
+      "range": {
+        "name": "Range"
+      }
+    }
   }
 }

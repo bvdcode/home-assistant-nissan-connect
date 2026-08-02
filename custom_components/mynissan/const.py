@@ -1,5 +1,6 @@
 """Constants for the MyNISSAN integration."""
 
+from datetime import timedelta
 from typing import Final
 
 from pynissan import Country
@@ -15,3 +16,4 @@ CONF_REFRESH_TOKEN: Final = "refresh_token"
 CONF_TOKENS: Final = "tokens"
 
 DEFAULT_COUNTRY: Final = Country.US
+DEFAULT_UPDATE_INTERVAL: Final = timedelta(minutes=15)

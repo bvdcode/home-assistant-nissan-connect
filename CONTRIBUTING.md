@@ -15,7 +15,7 @@ Before opening a pull request, run:
 ```bash
 ruff check .
 ruff format --check .
-mypy custom_components/mynissan
+mypy custom_components/mynissan tests
 pytest
 ```
 

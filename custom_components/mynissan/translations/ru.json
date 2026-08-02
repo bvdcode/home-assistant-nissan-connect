@@ -48,5 +48,29 @@
     "no_vehicles": {
       "message": "В этой учётной записи MyNISSAN не найдено автомобилей."
     }
+  },
+  "entity": {
+    "binary_sensor": {
+      "charging": {
+        "name": "Зарядка"
+      },
+      "plugged_in": {
+        "name": "Кабель подключён"
+      }
+    },
+    "sensor": {
+      "battery_level": {
+        "name": "Уровень заряда"
+      },
+      "climate_status": {
+        "name": "Состояние климата"
+      },
+      "climate_temperature": {
+        "name": "Температура климата"
+      },
+      "range": {
+        "name": "Запас хода"
+      }
+    }
   }
 }

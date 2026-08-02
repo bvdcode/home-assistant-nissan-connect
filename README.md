@@ -11,9 +11,10 @@ The initial release provides:
 - configuration through the Home Assistant user interface;
 - account authentication and automatic token refresh;
 - discovery of every vehicle attached to the account;
-- one Home Assistant device per vehicle.
+- one Home Assistant device per vehicle;
+- battery level, charging, plugged-in state, range, and climate sensors.
 
-Vehicle entities and remote commands will be added in subsequent releases.
+Additional vehicle data and remote commands will be added in subsequent releases.
 
 ## Requirements
 
@@ -49,7 +50,7 @@ communication with MyNISSAN services.
 python -m pip install -r requirements_test.txt
 ruff check .
 ruff format --check .
-mypy custom_components/mynissan
+mypy custom_components/mynissan tests
 pytest
 ```
 

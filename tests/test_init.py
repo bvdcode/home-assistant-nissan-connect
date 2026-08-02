@@ -1,19 +1,40 @@
 """Tests for MyNISSAN config entry setup."""
 
 from collections.abc import Callable
+from typing import cast
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.const import CONF_EMAIL
-from homeassistant.core import HomeAssistant
+from homeassistant.const import (
+    CONF_EMAIL,
+    PERCENTAGE,
+    STATE_OFF,
+    STATE_ON,
+    Platform,
+    UnitOfLength,
+    UnitOfTemperature,
+)
+from homeassistant.core import HomeAssistant, State
 from homeassistant.exceptions import (
     ConfigEntryAuthFailed,
     ConfigEntryError,
     ConfigEntryNotReady,
 )
 from homeassistant.helpers import device_registry as dr
-from pynissan import AuthenticationError, NetworkError, NissanError, Tokens, Vehicle
+from homeassistant.helpers import entity_registry as er
+from pynissan import (
+    AuthenticationError,
+    BatteryStatus,
+    ClimateStatus,
+    DistanceReading,
+    NetworkError,
+    NissanError,
+    TemperatureReading,
+    Tokens,
+    Vehicle,
+    VehicleStatus,
+)
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.mynissan import async_setup_entry
@@ -25,6 +46,23 @@ from custom_components.mynissan.const import (
 )
 
 VEHICLE = Vehicle("JN1TESTVIN0000001", "2025", "ARIYA", None, "Family Ariya", None, None, None)
+VEHICLE_STATUS = VehicleStatus(
+    vin=VEHICLE.vin,
+    vehicle_type="ElectricAVK2Vehicle",
+    battery=BatteryStatus(
+        level=73,
+        is_plugged_in=True,
+        is_charging=False,
+        remaining_charge_time=42,
+        remaining_mileage=DistanceReading(181, "KILOMETER"),
+    ),
+    climate=ClimateStatus("OFF", TemperatureReading(22.0, "CELSIUS")),
+    doors=None,
+    fuel_range=None,
+    mileage=None,
+    tire_pressure=None,
+    maintenance_indicators=(),
+)
 
 
 async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
@@ -35,6 +73,7 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     entry.add_to_hass(hass)
     client = MagicMock()
     client.async_get_vehicles = AsyncMock(return_value=(VEHICLE,))
+    client.async_get_vehicle_status = AsyncMock(return_value=VEHICLE_STATUS)
     token_listener: Callable[[Tokens], None] | None = None
 
     def create_client(_hass: HomeAssistant, **kwargs: object) -> MagicMock:
@@ -52,6 +91,7 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert entry.state is ConfigEntryState.LOADED
     assert entry.runtime_data.client is client
     assert entry.runtime_data.vehicles == (VEHICLE,)
+    assert entry.runtime_data.coordinator.data == {VEHICLE.vin: VEHICLE_STATUS}
 
     device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, VEHICLE.vin)})
     assert device is not None
@@ -60,6 +100,27 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert device.model == "ARIYA"
     assert device.serial_number == VEHICLE.vin
 
+    battery_level = _entity_state(hass, Platform.SENSOR, "battery_level")
+    assert battery_level.state == "73"
+    assert battery_level.attributes["unit_of_measurement"] == PERCENTAGE
+
+    vehicle_range = _entity_state(hass, Platform.SENSOR, "range")
+    assert vehicle_range.state == "181"
+    assert vehicle_range.attributes["unit_of_measurement"] == UnitOfLength.KILOMETERS
+
+    climate_status = _entity_state(hass, Platform.SENSOR, "climate_status")
+    assert climate_status.state == "OFF"
+
+    climate_temperature = _entity_state(hass, Platform.SENSOR, "climate_temperature")
+    assert climate_temperature.state == "22.0"
+    assert climate_temperature.attributes["unit_of_measurement"] == UnitOfTemperature.CELSIUS
+
+    charging = _entity_state(hass, Platform.BINARY_SENSOR, "charging")
+    assert charging.state == STATE_OFF
+
+    plugged_in = _entity_state(hass, Platform.BINARY_SENSOR, "plugged_in")
+    assert plugged_in.state == STATE_ON
+
     assert token_listener is not None
     token_listener(Tokens("new-access", "new-refresh", "new-id"))
     assert entry.data[CONF_TOKENS] == {
@@ -67,6 +128,10 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
         "refresh_token": "new-refresh",
         "id_token": "new-id",
     }
+
+    assert await hass.config_entries.async_unload(entry.entry_id)
+    await hass.async_block_till_done()
+    assert _entry_state(entry) is ConfigEntryState.NOT_LOADED
 
 
 @pytest.mark.parametrize(
@@ -92,7 +157,7 @@ async def test_setup_translates_client_errors(
         patch("custom_components.mynissan.create_client", return_value=client),
         pytest.raises(expected_exception),
     ):
-        await async_setup_entry(hass, entry)  # type: ignore[arg-type]
+        await async_setup_entry(hass, entry)
 
 
 async def test_setup_rejects_account_without_vehicles(hass: HomeAssistant) -> None:
@@ -106,7 +171,7 @@ async def test_setup_rejects_account_without_vehicles(hass: HomeAssistant) -> No
         patch("custom_components.mynissan.create_client", return_value=client),
         pytest.raises(ConfigEntryError),
     ):
-        await async_setup_entry(hass, entry)  # type: ignore[arg-type]
+        await async_setup_entry(hass, entry)
 
 
 def _entry() -> MockConfigEntry:
@@ -125,3 +190,19 @@ def _entry() -> MockConfigEntry:
             },
         },
     )
+
+
+def _entry_state(entry: MockConfigEntry) -> ConfigEntryState:
+    return cast(ConfigEntryState, entry.state)
+
+
+def _entity_state(hass: HomeAssistant, platform: Platform, key: str) -> State:
+    entity_id = er.async_get(hass).async_get_entity_id(
+        platform,
+        DOMAIN,
+        f"{VEHICLE.vin}_{key}",
+    )
+    assert entity_id is not None
+    state = hass.states.get(entity_id)
+    assert state is not None
+    return state

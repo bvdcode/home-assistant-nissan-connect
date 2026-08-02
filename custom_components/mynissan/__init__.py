@@ -23,10 +23,11 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
 )
+from .coordinator import NissanDataUpdateCoordinator
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
-PLATFORMS: tuple[Platform, ...] = ()
+PLATFORMS: tuple[Platform, ...] = (Platform.BINARY_SENSOR, Platform.SENSOR)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bool:
@@ -74,15 +75,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
             translation_key="no_vehicles",
         )
 
-    entry.runtime_data = NissanRuntimeData(client=client, vehicles=vehicles)
+    coordinator = NissanDataUpdateCoordinator(hass, entry, client, vehicles)
+    await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = NissanRuntimeData(
+        client=client,
+        vehicles=vehicles,
+        coordinator=coordinator,
+    )
     _register_vehicles(hass, entry, vehicles)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a MyNISSAN config entry."""
-    del hass, entry
-    return True
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
 def _country_from_value(value: str) -> Country:

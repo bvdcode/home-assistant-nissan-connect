@@ -10,6 +10,11 @@ target-version = "py314"
 select = ["ASYNC", "B", "E", "F", "I", "RUF", "SIM", "UP"]
 
 [tool.mypy]
+explicit_package_bases = true
 python_version = "3.14"
 strict = true
 warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "pytest_homeassistant_custom_component.*"
+ignore_missing_imports = true

@@ -32,7 +32,7 @@ jobs:
         run: ruff format --check .
 
       - name: Type check
-        run: mypy custom_components/mynissan
+        run: mypy custom_components/mynissan tests
 
       - name: Test
         run: pytest

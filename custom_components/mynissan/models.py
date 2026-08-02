@@ -6,6 +6,8 @@ from typing import TypedDict
 from homeassistant.config_entries import ConfigEntry
 from pynissan import NissanClient, Vehicle
 
+from .coordinator import NissanDataUpdateCoordinator
+
 
 class StoredTokens(TypedDict):
     """Serializable OAuth token data stored by Home Assistant."""
@@ -30,6 +32,7 @@ class NissanRuntimeData:
 
     client: NissanClient
     vehicles: tuple[Vehicle, ...]
+    coordinator: NissanDataUpdateCoordinator
 
 
 type NissanConfigEntry = ConfigEntry[NissanRuntimeData]
