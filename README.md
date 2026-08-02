@@ -19,7 +19,8 @@ Additional vehicle data and remote commands will be added in subsequent releases
 ## Requirements
 
 - Home Assistant 2026.7.4 or newer;
-- a US MyNISSAN account with at least one connected vehicle.
+- a MyNISSAN account from the United States or Canada, or a MiNissan account
+  from Mexico, with at least one connected vehicle.
 
 ## Installation
 
@@ -35,7 +36,8 @@ Additional vehicle data and remote commands will be added in subsequent releases
 1. Open **Settings → Devices & services**.
 2. Select **Add integration**.
 3. Search for **MyNISSAN**.
-4. Enter the email address and password used by the MyNISSAN app.
+4. Select the account country and enter the email address and password used by
+   the MyNISSAN or MiNissan app.
 
 The password is used only while authenticating and is not stored. Home Assistant
 stores the issued OAuth tokens and device identifier in the config entry so the

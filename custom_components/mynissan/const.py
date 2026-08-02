@@ -17,3 +17,16 @@ CONF_TOKENS: Final = "tokens"
 
 DEFAULT_COUNTRY: Final = Country.US
 DEFAULT_UPDATE_INTERVAL: Final = timedelta(minutes=15)
+
+
+def country_from_value(value: str) -> Country:
+    """Return the SDK country matching stored config entry data."""
+    match value:
+        case Country.US.value:
+            return Country.US
+        case Country.CA.value:
+            return Country.CA
+        case Country.MX.value:
+            return Country.MX
+        case _:
+            raise ValueError(f"Unsupported country: {value}")

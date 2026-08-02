@@ -2,10 +2,11 @@
 
 from unittest.mock import MagicMock
 
+import pytest
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
-from pynissan import AuthenticationError, NetworkError, NissanError, Tokens, Vehicle
+from pynissan import AuthenticationError, Country, NetworkError, NissanError, Tokens, Vehicle
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.mynissan.const import (
@@ -37,7 +38,11 @@ async def test_user_flow_creates_entry(
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_EMAIL: " Driver@Example.com ", CONF_PASSWORD: PASSWORD},
+        {
+            CONF_COUNTRY: Country.US.value,
+            CONF_EMAIL: " Driver@Example.com ",
+            CONF_PASSWORD: PASSWORD,
+        },
     )
 
     assert result["type"] is data_entry_flow.FlowResultType.CREATE_ENTRY
@@ -54,6 +59,23 @@ async def test_user_flow_creates_entry(
     }
     assert CONF_PASSWORD not in result["data"]
     assert result["result"].unique_id == f"US:{EMAIL}"
+
+
+@pytest.mark.parametrize("country", (Country.CA, Country.MX))
+async def test_user_flow_supports_account_country(
+    hass: HomeAssistant,
+    mock_nissan_client: MagicMock,
+    country: Country,
+) -> None:
+    """The selected account country is stored in the config entry identity."""
+    mock_nissan_client.async_authenticate.return_value = TOKENS
+    mock_nissan_client.async_get_vehicles.return_value = (VEHICLE,)
+
+    result = await _submit_user_flow(hass, country=country)
+
+    assert result["type"] is data_entry_flow.FlowResultType.CREATE_ENTRY
+    assert result["data"][CONF_COUNTRY] == country.value
+    assert result["result"].unique_id == f"{country.value}:{EMAIL}"
 
 
 async def test_user_flow_rejects_invalid_authentication(
@@ -157,14 +179,22 @@ async def test_reauthentication_updates_tokens(
     assert CONF_PASSWORD not in entry.data
 
 
-async def _submit_user_flow(hass: HomeAssistant) -> config_entries.ConfigFlowResult:
+async def _submit_user_flow(
+    hass: HomeAssistant,
+    *,
+    country: Country = Country.US,
+) -> config_entries.ConfigFlowResult:
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": config_entries.SOURCE_USER},
     )
     return await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        {CONF_EMAIL: EMAIL, CONF_PASSWORD: PASSWORD},
+        {
+            CONF_COUNTRY: country.value,
+            CONF_EMAIL: EMAIL,
+            CONF_PASSWORD: PASSWORD,
+        },
     )
 
 

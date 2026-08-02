@@ -1,5 +1,5 @@
 {
   "name": "MyNISSAN",
-  "country": "US",
+  "country": ["CA", "MX", "US"],
   "homeassistant": "2026.7.4"
 }

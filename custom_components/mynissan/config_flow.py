@@ -11,7 +11,7 @@ from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers import selector
-from pynissan import AuthenticationError, NetworkError, NissanError
+from pynissan import AuthenticationError, Country, NetworkError, NissanError
 
 from .api import ValidatedAccount, async_validate_credentials, tokens_to_data
 from .const import (
@@ -19,6 +19,7 @@ from .const import (
     CONF_OAUTH_DEVICE_ID,
     DEFAULT_COUNTRY,
     DOMAIN,
+    country_from_value,
 )
 from .models import NissanConfigData
 
@@ -28,6 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 class CredentialsInput(TypedDict):
     """Credentials submitted through a config flow form."""
 
+    country: str
     email: str
     password: str
 
@@ -50,9 +52,16 @@ PASSWORD_SELECTOR = selector.TextSelector(
         autocomplete="current-password",
     )
 )
+COUNTRY_SELECTOR = selector.SelectSelector(
+    selector.SelectSelectorConfig(
+        options=[country.value for country in Country],
+        translation_key="country",
+    )
+)
 
 USER_SCHEMA = vol.Schema(
     {
+        vol.Required(CONF_COUNTRY, default=DEFAULT_COUNTRY.value): COUNTRY_SELECTOR,
         vol.Required(CONF_EMAIL): EMAIL_SELECTOR,
         vol.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
     }
@@ -74,10 +83,11 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             credentials = cast(CredentialsInput, user_input)
+            country = country_from_value(credentials[CONF_COUNTRY])
             email = credentials[CONF_EMAIL].strip().casefold()
             self._async_abort_entries_match(
                 {
-                    CONF_COUNTRY: DEFAULT_COUNTRY.value,
+                    CONF_COUNTRY: country.value,
                     CONF_EMAIL: email,
                 }
             )
@@ -85,16 +95,17 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             account, error = await self._async_validate_account(
                 email=email,
                 password=credentials[CONF_PASSWORD],
+                country=country,
             )
             if account is not None:
                 await self.async_set_unique_id(
-                    f"{DEFAULT_COUNTRY.value}:{email}",
+                    f"{country.value}:{email}",
                 )
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title=email,
                     data=NissanConfigData(
-                        country=DEFAULT_COUNTRY.value,
+                        country=country.value,
                         email=email,
                         oauth_device_id=account.oauth_device_id,
                         tokens=tokens_to_data(account.tokens),
@@ -133,6 +144,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             account, error = await self._async_validate_account(
                 email=data[CONF_EMAIL],
                 password=password_input[CONF_PASSWORD],
+                country=country_from_value(data[CONF_COUNTRY]),
                 oauth_device_id=data[CONF_OAUTH_DEVICE_ID],
             )
             if account is not None:
@@ -161,6 +173,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         *,
         email: str,
         password: str,
+        country: Country,
         oauth_device_id: str | None = None,
     ) -> tuple[ValidatedAccount | None, str | None]:
         """Validate credentials and translate client failures for the form."""
@@ -169,7 +182,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 self.hass,
                 email=email,
                 password=password,
-                country=DEFAULT_COUNTRY,
+                country=country,
                 oauth_device_id=oauth_device_id,
             )
         except AuthenticationError:

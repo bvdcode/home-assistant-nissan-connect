@@ -13,7 +13,7 @@ from homeassistant.exceptions import (
 )
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
-from pynissan import AuthenticationError, Country, NetworkError, NissanError, Tokens, Vehicle
+from pynissan import AuthenticationError, NetworkError, NissanError, Tokens, Vehicle
 
 from .api import create_client, tokens_from_data, tokens_to_data
 from .const import (
@@ -22,6 +22,7 @@ from .const import (
     CONF_TOKENS,
     DOMAIN,
     MANUFACTURER,
+    country_from_value,
 )
 from .coordinator import NissanDataUpdateCoordinator
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
@@ -43,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
         )
 
     try:
-        country = _country_from_value(data[CONF_COUNTRY])
+        country = country_from_value(data[CONF_COUNTRY])
         tokens_data = cast(Mapping[str, object], data[CONF_TOKENS])
         client = create_client(
             hass,
@@ -90,15 +91,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a MyNISSAN config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-
-def _country_from_value(value: str) -> Country:
-    """Return the SDK country matching stored config entry data."""
-    match value:
-        case Country.US.value:
-            return Country.US
-        case _:
-            raise ValueError(f"Unsupported country: {value}")
 
 
 @callback

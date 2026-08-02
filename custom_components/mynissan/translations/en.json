@@ -5,10 +5,12 @@
         "title": "Connect to MyNISSAN",
         "description": "Enter the credentials used by the MyNISSAN app.",
         "data": {
+          "country": "Account country",
           "email": "Email",
           "password": "Password"
         },
         "data_description": {
+          "country": "Country where the Nissan account is registered.",
           "email": "Email address for the MyNISSAN account.",
           "password": "Used to authenticate and never stored by Home Assistant."
         }
@@ -33,6 +35,15 @@
     "abort": {
       "already_configured": "This MyNISSAN account is already configured.",
       "reauth_successful": "MyNISSAN authentication was renewed successfully."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "CA": "Canada",
+        "MX": "Mexico",
+        "US": "United States"
+      }
     }
   },
   "exceptions": {
