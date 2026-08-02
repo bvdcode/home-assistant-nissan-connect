@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.2 (2026-08-02)
+
+### Bug Fixes
+
+- Distinguish cabin and target temperatures
+  ([`4c2d00e`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/4c2d00eaa3356890d8079e404ffe7a7535b11e87))
+
+
 ## v0.3.1 (2026-08-02)
 
 ### Bug Fixes
