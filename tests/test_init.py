@@ -11,6 +11,7 @@ from homeassistant.const import (
     PERCENTAGE,
     STATE_OFF,
     STATE_ON,
+    STATE_UNAVAILABLE,
     Platform,
     UnitOfLength,
     UnitOfTemperature,
@@ -44,6 +45,10 @@ from custom_components.mynissan.const import (
     CONF_TOKENS,
     DOMAIN,
 )
+from custom_components.mynissan.sensor import (
+    _climate_temperature,
+    _climate_temperature_unit,
+)
 
 VEHICLE = Vehicle("JN1TESTVIN0000001", "2025", "ARIYA", None, "Family Ariya", None, None, None)
 VEHICLE_STATUS = VehicleStatus(
@@ -56,13 +61,31 @@ VEHICLE_STATUS = VehicleStatus(
         remaining_charge_time=42,
         remaining_mileage=DistanceReading(181, "KILOMETER"),
     ),
-    climate=ClimateStatus("OFF", TemperatureReading(22.0, "CELSIUS")),
+    climate=ClimateStatus("OFF", TemperatureReading(55.0, "CELSIUS")),
     doors=None,
     fuel_range=None,
     mileage=None,
     tire_pressure=None,
     maintenance_indicators=(),
 )
+
+
+def test_active_climate_temperature_is_available() -> None:
+    """An active climate target is exposed with its native unit."""
+    status = VehicleStatus(
+        vin=VEHICLE.vin,
+        vehicle_type="ElectricAVK2Vehicle",
+        battery=None,
+        climate=ClimateStatus("ON", TemperatureReading(22.0, "CELSIUS")),
+        doors=None,
+        fuel_range=None,
+        mileage=None,
+        tire_pressure=None,
+        maintenance_indicators=(),
+    )
+
+    assert _climate_temperature(status) == 22.0
+    assert _climate_temperature_unit(status) == UnitOfTemperature.CELSIUS
 
 
 async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
@@ -112,8 +135,7 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert climate_status.state == "OFF"
 
     climate_temperature = _entity_state(hass, Platform.SENSOR, "climate_temperature")
-    assert climate_temperature.state == "22.0"
-    assert climate_temperature.attributes["unit_of_measurement"] == UnitOfTemperature.CELSIUS
+    assert climate_temperature.state == STATE_UNAVAILABLE
 
     charging = _entity_state(hass, Platform.BINARY_SENSOR, "charging")
     assert charging.state == STATE_OFF

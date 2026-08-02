@@ -30,6 +30,24 @@ class NissanSensorEntityDescription(SensorEntityDescription):
     unit_fn: Callable[[VehicleStatus], NissanUnit] | None = None
 
 
+def _climate_temperature(status: VehicleStatus) -> float | None:
+    """Return the configured temperature while remote climate is active."""
+    if status.climate is None or status.climate.state == "OFF":
+        return None
+    if status.climate.temperature is None:
+        return None
+    return status.climate.temperature.value
+
+
+def _climate_temperature_unit(status: VehicleStatus) -> NissanUnit:
+    """Return the configured temperature unit while remote climate is active."""
+    if status.climate is None or status.climate.state == "OFF":
+        return None
+    if status.climate.temperature is None:
+        return None
+    return _temperature_unit(status.climate.temperature.unit)
+
+
 BATTERY_SENSOR_DESCRIPTIONS: tuple[NissanSensorEntityDescription, ...] = (
     NissanSensorEntityDescription(
         key="battery_level",
@@ -68,16 +86,8 @@ CLIMATE_SENSOR_DESCRIPTIONS: tuple[NissanSensorEntityDescription, ...] = (
         translation_key="climate_temperature",
         device_class=SensorDeviceClass.TEMPERATURE,
         state_class=SensorStateClass.MEASUREMENT,
-        value_fn=lambda status: (
-            status.climate.temperature.value
-            if status.climate is not None and status.climate.temperature is not None
-            else None
-        ),
-        unit_fn=lambda status: (
-            _temperature_unit(status.climate.temperature.unit)
-            if status.climate is not None and status.climate.temperature is not None
-            else None
-        ),
+        value_fn=_climate_temperature,
+        unit_fn=_climate_temperature_unit,
     ),
 )
 
