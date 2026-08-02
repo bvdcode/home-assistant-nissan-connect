@@ -1,0 +1,52 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to MyNISSAN",
+        "description": "Enter the credentials used by the MyNISSAN app.",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        },
+        "data_description": {
+          "email": "Email address for the MyNISSAN account.",
+          "password": "Used to authenticate and never stored by Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnect MyNISSAN",
+        "description": "Enter the current password for {email}.",
+        "data": {
+          "password": "Password"
+        },
+        "data_description": {
+          "password": "Used to authenticate and never stored by Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to MyNISSAN. Try again later.",
+      "invalid_auth": "The email address or password is incorrect.",
+      "no_vehicles": "No vehicles were found in this MyNISSAN account.",
+      "unknown": "Unexpected error while connecting to MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "This MyNISSAN account is already configured.",
+      "reauth_successful": "MyNISSAN authentication was renewed successfully."
+    }
+  },
+  "exceptions": {
+    "api_error": {
+      "message": "MyNISSAN returned an unexpected response."
+    },
+    "cannot_connect": {
+      "message": "Unable to connect to MyNISSAN."
+    },
+    "invalid_auth": {
+      "message": "MyNISSAN authentication has expired."
+    },
+    "no_vehicles": {
+      "message": "No vehicles were found in this MyNISSAN account."
+    }
+  }
+}

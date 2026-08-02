@@ -209,6 +209,9 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# Local working notes
+notes/
+
 # Marimo
 marimo/_static/
 marimo/_lsp/

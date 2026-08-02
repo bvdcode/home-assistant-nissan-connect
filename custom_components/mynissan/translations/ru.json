@@ -1,0 +1,52 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Подключение к MyNISSAN",
+        "description": "Введите данные учётной записи из приложения MyNISSAN.",
+        "data": {
+          "email": "Электронная почта",
+          "password": "Пароль"
+        },
+        "data_description": {
+          "email": "Адрес электронной почты учётной записи MyNISSAN.",
+          "password": "Используется только для входа и не сохраняется Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Повторное подключение MyNISSAN",
+        "description": "Введите текущий пароль для {email}.",
+        "data": {
+          "password": "Пароль"
+        },
+        "data_description": {
+          "password": "Используется только для входа и не сохраняется Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Не удалось подключиться к MyNISSAN. Повторите попытку позже.",
+      "invalid_auth": "Неверный адрес электронной почты или пароль.",
+      "no_vehicles": "В этой учётной записи MyNISSAN не найдено автомобилей.",
+      "unknown": "Непредвиденная ошибка при подключении к MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "Эта учётная запись MyNISSAN уже настроена.",
+      "reauth_successful": "Авторизация MyNISSAN успешно обновлена."
+    }
+  },
+  "exceptions": {
+    "api_error": {
+      "message": "MyNISSAN вернул непредвиденный ответ."
+    },
+    "cannot_connect": {
+      "message": "Не удалось подключиться к MyNISSAN."
+    },
+    "invalid_auth": {
+      "message": "Срок действия авторизации MyNISSAN истёк."
+    },
+    "no_vehicles": {
+      "message": "В этой учётной записи MyNISSAN не найдено автомобилей."
+    }
+  }
+}
