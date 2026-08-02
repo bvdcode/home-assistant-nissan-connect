@@ -1,6 +1,7 @@
 # MyNISSAN for Home Assistant
 
 [![CI](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/ci.yml/badge.svg)](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/ci.yml)
+[![HACS](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/hacs.yml/badge.svg)](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/hacs.yml)
 [![Hassfest](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/hassfest.yml/badge.svg)](https://github.com/bvdcode/home-assistant-nissan-connect/actions/workflows/hassfest.yml)
 
 MyNISSAN connects supported Nissan vehicles to Home Assistant through the
@@ -23,6 +24,9 @@ Additional vehicle data and remote commands will be added in subsequent releases
   from Mexico, with at least one connected vehicle.
 
 ## Installation
+
+The integration is available through HACS as a custom repository while its
+default-catalog submission is under review.
 
 1. Open HACS.
 2. Select **Integrations**.
