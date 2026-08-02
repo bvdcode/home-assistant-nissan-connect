@@ -54,7 +54,7 @@ PASSWORD_SELECTOR = selector.TextSelector(
 )
 COUNTRY_SELECTOR = selector.SelectSelector(
     selector.SelectSelectorConfig(
-        options=[country.value for country in Country],
+        options=[country.value.lower() for country in Country],
         translation_key="country",
     )
 )
@@ -83,7 +83,7 @@ class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             credentials = cast(CredentialsInput, user_input)
-            country = country_from_value(credentials[CONF_COUNTRY])
+            country = country_from_value(credentials[CONF_COUNTRY].upper())
             email = credentials[CONF_EMAIL].strip().casefold()
             self._async_abort_entries_match(
                 {

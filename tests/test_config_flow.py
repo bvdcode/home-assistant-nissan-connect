@@ -39,7 +39,7 @@ async def test_user_flow_creates_entry(
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
-            CONF_COUNTRY: Country.US.value,
+            CONF_COUNTRY: Country.US.value.lower(),
             CONF_EMAIL: " Driver@Example.com ",
             CONF_PASSWORD: PASSWORD,
         },
@@ -191,7 +191,7 @@ async def _submit_user_flow(
     return await hass.config_entries.flow.async_configure(
         result["flow_id"],
         {
-            CONF_COUNTRY: country.value,
+            CONF_COUNTRY: country.value.lower(),
             CONF_EMAIL: EMAIL,
             CONF_PASSWORD: PASSWORD,
         },

@@ -40,9 +40,9 @@
   "selector": {
     "country": {
       "options": {
-        "CA": "Canada",
-        "MX": "Mexico",
-        "US": "United States"
+        "ca": "Canada",
+        "mx": "Mexico",
+        "us": "United States"
       }
     }
   },
