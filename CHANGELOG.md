@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.3 (2026-08-06)
+
+### Bug Fixes
+
+- Retry transient setup failures
+  ([`e68b897`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/e68b8977233be81f1cf757c67a5c9a25fb84d81c))
+
+
 ## v0.3.2 (2026-08-02)
 
 ### Bug Fixes
