@@ -77,7 +77,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
             translation_domain=DOMAIN,
             translation_key="cannot_connect",
         ) from error
-    except (NissanError, ValueError) as error:
+    except NissanError as error:
+        raise ConfigEntryNotReady(
+            translation_domain=DOMAIN,
+            translation_key="api_error",
+        ) from error
+    except ValueError as error:
         raise ConfigEntryError(
             translation_domain=DOMAIN,
             translation_key="api_error",
@@ -111,7 +116,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
             translation_key="cannot_connect",
         ) from error
     except NissanError as error:
-        raise ConfigEntryError(
+        raise ConfigEntryNotReady(
             translation_domain=DOMAIN,
             translation_key="api_error",
         ) from error

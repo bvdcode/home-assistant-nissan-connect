@@ -204,7 +204,7 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     [
         (AuthenticationError(401, "Unauthorized"), ConfigEntryAuthFailed),
         (NetworkError(), ConfigEntryNotReady),
-        (NissanError(), ConfigEntryError),
+        (NissanError(), ConfigEntryNotReady),
     ],
 )
 async def test_setup_translates_client_errors(
@@ -221,6 +221,21 @@ async def test_setup_translates_client_errors(
     with (
         patch("custom_components.mynissan.create_client", return_value=client),
         pytest.raises(expected_exception),
+    ):
+        await async_setup_entry(hass, entry)
+
+
+async def test_setup_retries_capability_response_errors(hass: HomeAssistant) -> None:
+    """A temporary capability response failure leaves the entry retryable."""
+    entry = _entry()
+    entry.add_to_hass(hass)
+    client = MagicMock()
+    client.async_get_vehicles = AsyncMock(return_value=(VEHICLE,))
+    client.async_get_vehicle_capabilities = AsyncMock(side_effect=NissanError())
+
+    with (
+        patch("custom_components.mynissan.create_client", return_value=client),
+        pytest.raises(ConfigEntryNotReady),
     ):
         await async_setup_entry(hass, entry)
 
