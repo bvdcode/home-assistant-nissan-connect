@@ -2,6 +2,24 @@
 
 <!-- version list -->
 
+## v0.3.4 (2026-09-11)
+
+### Bug Fixes
+
+- Publish HACS release archive
+  ([`ae2ce78`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/ae2ce786b1497ffd0c811eac36582eeb8b8c797e))
+
+### Chores
+
+- Add Ko-fi funding
+  ([`b0cf020`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/b0cf0207de41cde6b145379a03dc2435dca56c0d))
+
+### Documentation
+
+- Add Home Assistant setup buttons
+  ([`79d4a61`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/79d4a61c86b3638f736d75a8e43453d0ce6a3e1e))
+
+
 ## v0.3.3 (2026-08-06)
 
 ### Bug Fixes
