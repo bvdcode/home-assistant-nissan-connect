@@ -33,8 +33,11 @@ from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 PLATFORMS: tuple[Platform, ...] = (
     Platform.BINARY_SENSOR,
+    Platform.BUTTON,
     Platform.CLIMATE,
     Platform.DEVICE_TRACKER,
+    Platform.IMAGE,
+    Platform.LOCK,
     Platform.SENSOR,
 )
 
