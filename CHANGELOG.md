@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v0.3.6 (2026-10-31)
+
+### Bug Fixes
+
+- **deps**: Update pynissan to 0.2.2
+  ([`dd2e5b2`](https://github.com/bvdcode/home-assistant-nissan-connect/commit/dd2e5b2e233a9d6dfa9918384e6605c0b67686da))
+
+
 ## v0.3.5 (2026-09-21)
 
 ### Bug Fixes
