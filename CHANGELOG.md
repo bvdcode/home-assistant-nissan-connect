@@ -4,6 +4,17 @@
 
 ## v0.3.7 (2026-10-31)
 
+Added vehicle status, remote controls, and translations in 13 languages
+
+- Added remaining charging time and estimated charging completion.
+- Added odometer, tire pressures with status codes, door and lock status, and active warning messages.
+- Added vehicle artwork and paint code.
+- Added remote door locking/unlocking and light/horn buttons for supported subscriptions.
+- Added complete setup, entity, and error translations in 13 languages.
+
+
+## v0.3.7 (2026-10-31)
+
 Added charging estimates, vehicle sensors, and remote lock, light, and horn controls
 
 Home Assistant now shows remaining charging time and estimated completion, the odometer, pressure in each tire, door, trunk, hood and lock states, and active warnings with their messages. Your vehicle image is also available.
