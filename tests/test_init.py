@@ -146,7 +146,11 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
     assert entry.runtime_data.client is client
     assert entry.runtime_data.vehicles == (VEHICLE,)
     assert entry.runtime_data.coordinator.data == {
-        VEHICLE.vin: NissanVehicleData(VEHICLE_STATUS, VEHICLE_LOCATION)
+        VEHICLE.vin: NissanVehicleData(
+            VEHICLE_STATUS,
+            VEHICLE_LOCATION,
+            entry.runtime_data.coordinator.data[VEHICLE.vin].received_at,
+        )
     }
 
     device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, VEHICLE.vin)})

@@ -89,6 +89,30 @@
       }
     },
     "sensor": {
+      "remaining_charge_time": {
+        "name": "Оставшееся время зарядки"
+      },
+      "charge_completion": {
+        "name": "Предполагаемое завершение зарядки"
+      },
+      "odometer": {
+        "name": "Пробег"
+      },
+      "tire_pressure_front_left": {
+        "name": "Давление в передней левой шине"
+      },
+      "tire_pressure_front_right": {
+        "name": "Давление в передней правой шине"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Давление в задней левой шине"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Давление в задней правой шине"
+      },
+      "warnings": {
+        "name": "Предупреждения"
+      },
       "battery_level": {
         "name": "Уровень заряда"
       },

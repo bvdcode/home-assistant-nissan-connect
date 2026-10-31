@@ -89,6 +89,30 @@
       }
     },
     "sensor": {
+      "remaining_charge_time": {
+        "name": "Remaining charging time"
+      },
+      "charge_completion": {
+        "name": "Estimated charging completion"
+      },
+      "odometer": {
+        "name": "Odometer"
+      },
+      "tire_pressure_front_left": {
+        "name": "Front left tire pressure"
+      },
+      "tire_pressure_front_right": {
+        "name": "Front right tire pressure"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Rear left tire pressure"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Rear right tire pressure"
+      },
+      "warnings": {
+        "name": "Warnings"
+      },
       "battery_level": {
         "name": "Battery level"
       },
