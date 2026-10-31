@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.3.8 (2026-10-31)
+
+Added vehicle-reported timestamps
+
+- Added `last_updated_at` attributes to odometer, tire pressure, door, and lock entities.
+
+Co-authored-by: SpOuK3 <137101667+SpOuK3@users.noreply.github.com>
+
+
 ## v0.3.7 (2026-10-31)
 
 Added vehicle status, remote controls, and translations in 13 languages
