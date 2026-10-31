@@ -1,6 +1,5 @@
 """Climate control entities for MyNISSAN vehicles."""
 
-from collections.abc import Awaitable
 from typing import Any
 
 from homeassistant.components.climate import (
@@ -10,22 +9,20 @@ from homeassistant.components.climate import (
 from homeassistant.components.climate.const import ClimateEntityFeature, HVACMode
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from pynissan import (
     ClimateSettings,
     HvacTemperatureCapabilities,
     NissanClient,
-    NissanError,
-    ServiceRequest,
     TemperatureUnit,
     Vehicle,
     VehicleCapabilities,
 )
 
+from .commands import NissanCommandEntity, supports_service
 from .const import DOMAIN, REMOTE_CLIMATE_CONTROL_SERVICE
 from .coordinator import NissanDataUpdateCoordinator
-from .entity import NissanEntity
 from .models import NissanConfigEntry
 
 CLIMATE_DESCRIPTION = ClimateEntityDescription(
@@ -59,10 +56,12 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NissanClimate(NissanEntity, ClimateEntity):
+class NissanClimate(NissanCommandEntity, ClimateEntity):
     """Control a vehicle's remote cabin climate system."""
 
     entity_description = CLIMATE_DESCRIPTION
+    _command_failed_key = "climate_command_failed"
+    _command_rejected_key = "climate_command_rejected"
 
     def __init__(
         self,
@@ -72,8 +71,7 @@ class NissanClimate(NissanEntity, ClimateEntity):
         temperatures: HvacTemperatureCapabilities,
     ) -> None:
         """Initialize a MyNISSAN climate control."""
-        super().__init__(coordinator, vehicle)
-        self._client = client
+        super().__init__(coordinator, client, vehicle)
         self._attr_hvac_modes = [HVACMode.HEAT_COOL, HVACMode.OFF]
         self._attr_supported_features = (
             ClimateEntityFeature.TARGET_TEMPERATURE
@@ -124,7 +122,7 @@ class NissanClimate(NissanEntity, ClimateEntity):
         if self.hvac_mode == HVACMode.HEAT_COOL:
             return
         await self._async_run_command(
-            self._client.async_start_climate(
+            lambda: self._client.async_start_climate(
                 self._vehicle.vin,
                 self._settings(self._target_temperature),
             )
@@ -134,7 +132,7 @@ class NissanClimate(NissanEntity, ClimateEntity):
         """Stop remote climate control."""
         if self.hvac_mode == HVACMode.OFF:
             return
-        await self._async_run_command(self._client.async_stop_climate(self._vehicle.vin))
+        await self._async_run_command(lambda: self._client.async_stop_climate(self._vehicle.vin))
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """Start or stop remote climate control."""
@@ -159,7 +157,7 @@ class NissanClimate(NissanEntity, ClimateEntity):
         self._target_temperature = float(temperature)
         if self.hvac_mode == HVACMode.HEAT_COOL:
             await self._async_run_command(
-                self._client.async_adjust_climate(
+                lambda: self._client.async_adjust_climate(
                     self._vehicle.vin,
                     self._settings(self._target_temperature),
                 )
@@ -170,39 +168,12 @@ class NissanClimate(NissanEntity, ClimateEntity):
     def _settings(self, temperature: float) -> ClimateSettings:
         return ClimateSettings(temperature, self._nissan_temperature_unit)
 
-    async def _async_run_command(self, command: Awaitable[ServiceRequest]) -> None:
-        try:
-            request = await command
-            result = await self._client.async_wait_for_service_request(
-                self._vehicle.vin,
-                request,
-            )
-        except (NissanError, TimeoutError) as error:
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="climate_command_failed",
-            ) from error
-
-        if not result.is_success:
-            status = result.status.value if result.status is not None else "unknown"
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key="climate_command_rejected",
-                translation_placeholders={"status": status},
-            )
-        await self.coordinator.async_request_refresh()
-
 
 def _climate_temperatures(
     capabilities: VehicleCapabilities,
 ) -> HvacTemperatureCapabilities | None:
     """Return HVAC temperatures when remote climate is enabled and subscribed."""
-    climate_enabled = any(
-        service.type == REMOTE_CLIMATE_CONTROL_SERVICE
-        and service.enabled
-        and service.subscribed is True
-        for service in capabilities.services
-    )
+    climate_enabled = supports_service(capabilities, (REMOTE_CLIMATE_CONTROL_SERVICE,))
     if not climate_enabled or capabilities.accessories_details is None:
         return None
     return capabilities.accessories_details.hvac_temperatures
