@@ -10,7 +10,7 @@ from .commands import (
     NissanCommandEntity,
     supports_service,
 )
-from .door_status import unlocked_state
+from .door_status import door_timestamp_attributes, unlocked_state
 from .models import NissanConfigEntry
 
 
@@ -34,6 +34,11 @@ class NissanDoorLock(NissanCommandEntity, LockEntity):
     """Control the door locks while retaining the last reported lock state."""
 
     entity_description = LockEntityDescription(key="door_lock", translation_key="door_lock")
+
+    @property
+    def extra_state_attributes(self) -> dict[str, object]:
+        """Expose when the vehicle last reported its lock state."""
+        return door_timestamp_attributes(self.vehicle_status)
 
     @property
     def is_locked(self) -> bool | None:

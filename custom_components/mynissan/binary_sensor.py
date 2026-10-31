@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from pynissan import Vehicle, VehicleStatus
 
 from .coordinator import NissanDataUpdateCoordinator
-from .door_status import opening_state, unlocked_state
+from .door_status import door_timestamp_attributes, opening_state, unlocked_state
 from .entity import NissanEntity
 from .models import NissanConfigEntry
 
@@ -145,14 +145,16 @@ async def async_setup_entry(
     entities: list[NissanBinarySensor] = []
     for vehicle in entry.runtime_data.vehicles:
         status = coordinator.data[vehicle.vin].status
-        descriptions: tuple[NissanBinarySensorEntityDescription, ...] = ()
         if status.battery is not None:
-            descriptions += BINARY_SENSOR_DESCRIPTIONS
+            entities.extend(
+                NissanBinarySensor(coordinator, vehicle, description)
+                for description in BINARY_SENSOR_DESCRIPTIONS
+            )
         if status.doors is not None:
-            descriptions += DOOR_SENSOR_DESCRIPTIONS
-        entities.extend(
-            NissanBinarySensor(coordinator, vehicle, description) for description in descriptions
-        )
+            entities.extend(
+                NissanDoorBinarySensor(coordinator, vehicle, description)
+                for description in DOOR_SENSOR_DESCRIPTIONS
+            )
     async_add_entities(entities)
 
 
@@ -182,3 +184,12 @@ class NissanBinarySensor(NissanEntity, BinarySensorEntity):
     def is_on(self) -> bool | None:
         """Return the sensor's current boolean value."""
         return self.entity_description.value_fn(self.vehicle_status)
+
+
+class NissanDoorBinarySensor(NissanBinarySensor):
+    """Represent an opening or lock with its reported observation time."""
+
+    @property
+    def extra_state_attributes(self) -> dict[str, object]:
+        """Return the vehicle's door-status timestamp when provided."""
+        return door_timestamp_attributes(self.vehicle_status)
