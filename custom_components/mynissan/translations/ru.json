@@ -76,6 +76,42 @@
       }
     },
     "binary_sensor": {
+      "hood": {
+        "name": "Капот"
+      },
+      "hatch": {
+        "name": "Багажник"
+      },
+      "doors_unlocked": {
+        "name": "Замки дверей"
+      },
+      "trunk_unlocked": {
+        "name": "Замок багажника"
+      },
+      "door_front_left": {
+        "name": "Передняя левая дверь"
+      },
+      "door_front_left_unlocked": {
+        "name": "Замок: передняя левая дверь"
+      },
+      "door_front_right": {
+        "name": "Передняя правая дверь"
+      },
+      "door_front_right_unlocked": {
+        "name": "Замок: передняя правая дверь"
+      },
+      "door_rear_left": {
+        "name": "Задняя левая дверь"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Замок: задняя левая дверь"
+      },
+      "door_rear_right": {
+        "name": "Задняя правая дверь"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Замок: задняя правая дверь"
+      },
       "charging": {
         "name": "Зарядка"
       },

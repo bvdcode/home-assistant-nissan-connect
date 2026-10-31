@@ -13,6 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from pynissan import Vehicle, VehicleStatus
 
 from .coordinator import NissanDataUpdateCoordinator
+from .door_status import opening_state, unlocked_state
 from .entity import NissanEntity
 from .models import NissanConfigEntry
 
@@ -41,6 +42,97 @@ BINARY_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
     ),
 )
 
+DOOR_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
+    NissanBinarySensorEntityDescription(
+        key="door_front_left",
+        translation_key="door_front_left",
+        device_class=BinarySensorDeviceClass.DOOR,
+        value_fn=lambda s: (
+            opening_state(s.doors.front_left.ajar) if s.doors and s.doors.front_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_front_left_unlocked",
+        translation_key="door_front_left_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: (
+            unlocked_state(s.doors.front_left.lock) if s.doors and s.doors.front_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_front_right",
+        translation_key="door_front_right",
+        device_class=BinarySensorDeviceClass.DOOR,
+        value_fn=lambda s: (
+            opening_state(s.doors.front_right.ajar) if s.doors and s.doors.front_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_front_right_unlocked",
+        translation_key="door_front_right_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: (
+            unlocked_state(s.doors.front_right.lock) if s.doors and s.doors.front_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_rear_left",
+        translation_key="door_rear_left",
+        device_class=BinarySensorDeviceClass.DOOR,
+        value_fn=lambda s: (
+            opening_state(s.doors.rear_left.ajar) if s.doors and s.doors.rear_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_rear_left_unlocked",
+        translation_key="door_rear_left_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: (
+            unlocked_state(s.doors.rear_left.lock) if s.doors and s.doors.rear_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_rear_right",
+        translation_key="door_rear_right",
+        device_class=BinarySensorDeviceClass.DOOR,
+        value_fn=lambda s: (
+            opening_state(s.doors.rear_right.ajar) if s.doors and s.doors.rear_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="door_rear_right_unlocked",
+        translation_key="door_rear_right_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: (
+            unlocked_state(s.doors.rear_right.lock) if s.doors and s.doors.rear_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="hood",
+        translation_key="hood",
+        device_class=BinarySensorDeviceClass.OPENING,
+        value_fn=lambda s: opening_state(s.doors.engine_hood_ajar) if s.doors else None,
+    ),
+    NissanBinarySensorEntityDescription(
+        key="hatch",
+        translation_key="hatch",
+        device_class=BinarySensorDeviceClass.OPENING,
+        value_fn=lambda s: opening_state(s.doors.hatch_ajar) if s.doors else None,
+    ),
+    NissanBinarySensorEntityDescription(
+        key="doors_unlocked",
+        translation_key="doors_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: unlocked_state(s.doors.overall_lock) if s.doors else None,
+    ),
+    NissanBinarySensorEntityDescription(
+        key="trunk_unlocked",
+        translation_key="trunk_unlocked",
+        device_class=BinarySensorDeviceClass.LOCK,
+        value_fn=lambda s: unlocked_state(s.doors.trunk_lock) if s.doors else None,
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -50,12 +142,18 @@ async def async_setup_entry(
     """Set up MyNISSAN binary sensors from a config entry."""
     del hass
     coordinator = entry.runtime_data.coordinator
-    async_add_entities(
-        NissanBinarySensor(coordinator, vehicle, description)
-        for vehicle in entry.runtime_data.vehicles
-        if coordinator.data[vehicle.vin].status.battery is not None
-        for description in BINARY_SENSOR_DESCRIPTIONS
-    )
+    entities: list[NissanBinarySensor] = []
+    for vehicle in entry.runtime_data.vehicles:
+        status = coordinator.data[vehicle.vin].status
+        descriptions: tuple[NissanBinarySensorEntityDescription, ...] = ()
+        if status.battery is not None:
+            descriptions += BINARY_SENSOR_DESCRIPTIONS
+        if status.doors is not None:
+            descriptions += DOOR_SENSOR_DESCRIPTIONS
+        entities.extend(
+            NissanBinarySensor(coordinator, vehicle, description) for description in descriptions
+        )
+    async_add_entities(entities)
 
 
 class NissanBinarySensor(NissanEntity, BinarySensorEntity):

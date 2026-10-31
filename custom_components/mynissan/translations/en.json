@@ -76,6 +76,42 @@
       }
     },
     "binary_sensor": {
+      "hood": {
+        "name": "Hood"
+      },
+      "hatch": {
+        "name": "Trunk"
+      },
+      "doors_unlocked": {
+        "name": "Door locks"
+      },
+      "trunk_unlocked": {
+        "name": "Trunk lock"
+      },
+      "door_front_left": {
+        "name": "Front left door"
+      },
+      "door_front_left_unlocked": {
+        "name": "Front left door lock"
+      },
+      "door_front_right": {
+        "name": "Front right door"
+      },
+      "door_front_right_unlocked": {
+        "name": "Front right door lock"
+      },
+      "door_rear_left": {
+        "name": "Rear left door"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Rear left door lock"
+      },
+      "door_rear_right": {
+        "name": "Rear right door"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Rear right door lock"
+      },
       "charging": {
         "name": "Charging"
       },
