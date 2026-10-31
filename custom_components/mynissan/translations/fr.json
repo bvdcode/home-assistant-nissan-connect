@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Déverrouiller les portes"
+      },
+      "refresh": {
+        "name": "Actualiser"
       }
     },
     "image": {

@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Unlock doors"
+      },
+      "refresh": {
+        "name": "Refresh"
       }
     },
     "image": {

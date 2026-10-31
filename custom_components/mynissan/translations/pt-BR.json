@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Destravar as portas"
+      },
+      "refresh": {
+        "name": "Atualizar"
       }
     },
     "image": {

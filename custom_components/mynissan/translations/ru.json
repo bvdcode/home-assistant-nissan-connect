@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Отпереть двери"
+      },
+      "refresh": {
+        "name": "Обновить"
       }
     },
     "image": {

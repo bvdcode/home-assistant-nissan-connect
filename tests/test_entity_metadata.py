@@ -13,6 +13,7 @@ from custom_components.mynissan.button import BUTTON_DESCRIPTIONS
 from custom_components.mynissan.charge_completion import NissanChargeCompletionSensor
 from custom_components.mynissan.image import NissanVehicleImage
 from custom_components.mynissan.lock import NissanDoorLock
+from custom_components.mynissan.refresh import NissanRefreshButton
 from custom_components.mynissan.sensor import (
     BATTERY_SENSOR_DESCRIPTIONS,
     CLIMATE_SENSOR_DESCRIPTIONS,
@@ -48,7 +49,7 @@ def test_entity_translations(language: str) -> None:
             ),
         ),
         ("binary_sensor", (*BINARY_SENSOR_DESCRIPTIONS, *DOOR_SENSOR_DESCRIPTIONS)),
-        ("button", BUTTON_DESCRIPTIONS),
+        ("button", (*BUTTON_DESCRIPTIONS, NissanRefreshButton.entity_description)),
         ("lock", (NissanDoorLock.entity_description,)),
         ("image", (NissanVehicleImage.entity_description,)),
     ):

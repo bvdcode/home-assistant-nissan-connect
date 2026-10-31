@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Deuren ontgrendelen"
+      },
+      "refresh": {
+        "name": "Vernieuwen"
       }
     },
     "image": {

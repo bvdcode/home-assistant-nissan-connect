@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Türen entriegeln"
+      },
+      "refresh": {
+        "name": "Aktualisieren"
       }
     },
     "image": {
