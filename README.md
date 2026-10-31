@@ -26,6 +26,7 @@ The integration provides:
 - active warning count with messages in the sensor attributes;
 - vehicle artwork as an image entity and map picture, with the paint code;
 - last reported vehicle location on the Home Assistant map;
+- a Refresh button to request fresh vehicle, battery, and climate status on demand;
 - remote climate start, stop, and target-temperature control;
 - door locking/unlocking and buttons for flashing lights or flashing lights with the horn;
 - setup, entity names, and errors translated into 13 languages.
@@ -35,6 +36,11 @@ require an enabled service and an active subscription. Lock and light/horn comma
 recheck these conditions before sending a request and wait for the reported result.
 A vehicle with only locking or only unlocking support gets a button for that action
 instead of a two-way lock control.
+
+Refresh requests fresh vehicle status and waits for the request to complete, then
+refreshes battery and climate data when reported by the vehicle and reloads the
+cloud readings. This happens only when the button is pressed. It can wake the
+vehicle and use its 12 V battery; scheduled updates only read cached cloud data.
 
 Charging time is reported in minutes, including while unplugged when supplied by
 the vehicle. Estimated completion is available only while charging and calculated

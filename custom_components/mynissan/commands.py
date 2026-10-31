@@ -42,6 +42,8 @@ class NissanCommandEntity(NissanEntity):
         self,
         command: Callable[[], Awaitable[ServiceRequest]],
         services: tuple[str, ...] = (),
+        *,
+        after_success: Callable[[], Awaitable[None]] | None = None,
     ) -> None:
         try:
             if services:
@@ -54,15 +56,17 @@ class NissanCommandEntity(NissanEntity):
                     )
             request = await command()
             result = await self._client.async_wait_for_service_request(self._vehicle.vin, request)
+            if not result.is_success:
+                status = result.status.value if result.status is not None else "unknown"
+                raise HomeAssistantError(
+                    translation_domain=DOMAIN,
+                    translation_key=self._command_rejected_key,
+                    translation_placeholders={"status": status},
+                )
+            if after_success is not None:
+                await after_success()
         except (NissanError, TimeoutError) as error:
             raise HomeAssistantError(
                 translation_domain=DOMAIN, translation_key=self._command_failed_key
             ) from error
-        if not result.is_success:
-            status = result.status.value if result.status is not None else "unknown"
-            raise HomeAssistantError(
-                translation_domain=DOMAIN,
-                translation_key=self._command_rejected_key,
-                translation_placeholders={"status": status},
-            )
         await self.coordinator.async_request_refresh()

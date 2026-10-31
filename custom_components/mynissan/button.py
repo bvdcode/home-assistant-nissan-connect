@@ -1,4 +1,4 @@
-"""Capability-gated vehicle command buttons."""
+"""Vehicle refresh and capability-gated command buttons."""
 
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
@@ -17,6 +17,7 @@ from .commands import (
 )
 from .coordinator import NissanDataUpdateCoordinator
 from .models import NissanConfigEntry
+from .refresh import NissanRefreshButton
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -67,16 +68,21 @@ async def async_setup_entry(
     entry: NissanConfigEntry,
     async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
-    """Expose supported commands, including one-way lock subscriptions."""
+    """Expose on-demand refresh and supported remote commands."""
     del hass
     runtime = entry.runtime_data
-    async_add_entities(
+    entities: list[ButtonEntity] = [
+        NissanRefreshButton(runtime.coordinator, runtime.client, vehicle)
+        for vehicle in runtime.vehicles
+    ]
+    entities.extend(
         NissanCommandButton(runtime.coordinator, runtime.client, vehicle, description)
         for vehicle in runtime.vehicles
         for description in BUTTON_DESCRIPTIONS
         if supports_service(runtime.capabilities[vehicle.vin], description.services)
         and not supports_service(runtime.capabilities[vehicle.vin], description.excluded_services)
     )
+    async_add_entities(entities)
 
 
 class NissanCommandButton(NissanCommandEntity, ButtonEntity):

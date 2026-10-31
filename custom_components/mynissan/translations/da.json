@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Lås dørene op"
+      },
+      "refresh": {
+        "name": "Opdater"
       }
     },
     "image": {

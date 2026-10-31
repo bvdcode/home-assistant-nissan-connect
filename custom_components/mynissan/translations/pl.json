@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "Odblokuj drzwi"
+      },
+      "refresh": {
+        "name": "Odśwież"
       }
     },
     "image": {

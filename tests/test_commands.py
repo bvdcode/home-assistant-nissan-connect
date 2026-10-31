@@ -61,6 +61,11 @@ async def setup_commands(
     client.async_flash_lights_and_horn = AsyncMock(
         return_value=ServiceRequest("horn", ServiceRequestKind.HORN_LIGHT)
     )
+    client.async_refresh_vehicle_status = AsyncMock(
+        return_value=ServiceRequest("refresh", ServiceRequestKind.VEHICLE_STATUS)
+    )
+    client.async_refresh_battery_status = AsyncMock(return_value=True)
+    client.async_refresh_climate_status = AsyncMock(return_value=True)
     client.async_wait_for_service_request = AsyncMock(
         return_value=ServiceRequestResult(ServiceRequestStatus.SUCCESS)
     )
@@ -73,6 +78,9 @@ async def setup_commands(
     client.async_unlock_doors.assert_not_called()
     client.async_flash_lights.assert_not_called()
     client.async_flash_lights_and_horn.assert_not_called()
+    client.async_refresh_vehicle_status.assert_not_called()
+    client.async_refresh_battery_status.assert_not_called()
+    client.async_refresh_climate_status.assert_not_called()
     return client
 
 

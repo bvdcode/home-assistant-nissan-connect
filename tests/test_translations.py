@@ -59,3 +59,7 @@ async def test_home_assistant_loads_entity_names(hass: HomeAssistant, language: 
         translated[f"component.{DOMAIN}.entity.sensor.odometer.name"]
         == source["entity.sensor.odometer.name"]
     )
+    assert (
+        translated[f"component.{DOMAIN}.entity.button.refresh.name"]
+        == source["entity.button.refresh.name"]
+    )

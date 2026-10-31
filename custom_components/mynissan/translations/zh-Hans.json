@@ -96,6 +96,9 @@
       },
       "unlock_doors": {
         "name": "解锁车门"
+      },
+      "refresh": {
+        "name": "刷新"
       }
     },
     "image": {
