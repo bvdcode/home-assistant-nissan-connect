@@ -9,9 +9,9 @@ from .entity import NissanEntity
 
 
 def remaining_charge_minutes(status: VehicleStatus) -> int | None:
-    """Return a valid remaining duration only while charging is active."""
+    """Return the reported time to full charge, including while unplugged."""
     battery = status.battery
-    if battery is None or battery.is_charging is not True:
+    if battery is None:
         return None
     minutes = battery.remaining_charge_time
     if minutes is None or minutes < 0:
@@ -32,6 +32,8 @@ class NissanChargeCompletionSensor(NissanEntity, SensorEntity):
     def native_value(self) -> datetime | None:
         """Return the estimate anchored to the status fetch, not the current clock."""
         data = self.coordinator.data[self._vehicle.vin]
+        if data.status.battery is None or data.status.battery.is_charging is not True:
+            return None
         minutes = remaining_charge_minutes(data.status)
         if minutes is None:
             return None

@@ -19,7 +19,9 @@ async def test_vehicle_image(hass: HomeAssistant, url: str | None) -> None:
     entry = _entry()
     entry.add_to_hass(hass)
     client = MagicMock()
-    client.async_get_vehicles = AsyncMock(return_value=(replace(VEHICLE, image_url=url),))
+    client.async_get_vehicles = AsyncMock(
+        return_value=(replace(VEHICLE, image_url=url, color="KAD"),)
+    )
     client.async_get_vehicle_capabilities = AsyncMock(return_value=VEHICLE_CAPABILITIES)
     client.async_get_vehicle_status = AsyncMock(return_value=VEHICLE_STATUS)
     client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
@@ -27,6 +29,14 @@ async def test_vehicle_image(hass: HomeAssistant, url: str | None) -> None:
         assert await hass.config_entries.async_setup(entry.entry_id)
         await hass.async_block_till_done()
     registry = er.async_get(hass)
+    tracker_id = registry.async_get_entity_id(
+        Platform.DEVICE_TRACKER, DOMAIN, f"{VEHICLE.vin}_location"
+    )
+    assert tracker_id is not None
+    tracker_state = hass.states.get(tracker_id)
+    assert tracker_state is not None
+    assert tracker_state.attributes["color"] == "KAD"
+    assert tracker_state.attributes.get("entity_picture") == (url or None)
     entity_id = registry.async_get_entity_id(Platform.IMAGE, DOMAIN, f"{VEHICLE.vin}_vehicle")
     if not url:
         assert entity_id is None

@@ -8,6 +8,7 @@ import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.util.unit_conversion import PressureConverter
+from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 from pynissan import MaintenanceIndicator, Mileage, TirePressure, VehicleStatus
 
 from custom_components.mynissan.charge_completion import remaining_charge_minutes
@@ -46,7 +47,7 @@ async def test_extended_sensors(hass: HomeAssistant) -> None:
         VEHICLE_STATUS,
         battery=replace(VEHICLE_STATUS.battery, is_charging=True),
         mileage=Mileage(12345, "KILOMETER", None),
-        tire_pressure=TirePressure(None, 35, 36, 37, 38, None, None, None, None),
+        tire_pressure=TirePressure(None, 35, 36, 37, 38, 0, 1, 2, None),
         maintenance_indicators=(
             MaintenanceIndicator(True, "Check tire pressure", "TIRE_PRESSURE"),
             MaintenanceIndicator(False, "Inactive message", "OTHER"),
@@ -66,15 +67,16 @@ async def test_extended_sensors(hass: HomeAssistant) -> None:
     assert NissanVehicleData(status, VEHICLE_LOCATION, fetched_at) != NissanVehicleData(
         status, VEHICLE_LOCATION, fetched_at + timedelta(minutes=15)
     )
-    for position, value in (
-        ("front_left", 35),
-        ("front_right", 36),
-        ("rear_left", 37),
-        ("rear_right", 38),
+    for position, value, tire_status in (
+        ("front_left", 35, 0),
+        ("front_right", 36, 1),
+        ("rear_left", 37, 2),
+        ("rear_right", 38, None),
     ):
         state = _entity_state(hass, Platform.SENSOR, f"tire_pressure_{position}")
         assert float(state.state) == pytest.approx(PressureConverter.convert(value, "psi", "kPa"))
         assert state.attributes["unit_of_measurement"] == "kPa"
+        assert state.attributes["status"] == tire_status
     warnings = _entity_state(hass, Platform.SENSOR, "warnings")
     assert warnings.state == "2"
     assert warnings.attributes["warnings"] == [
@@ -87,16 +89,19 @@ async def test_extended_sensors(hass: HomeAssistant) -> None:
         {VEHICLE.vin: NissanVehicleData(stopped, VEHICLE_LOCATION)}
     )
     assert _entity_state(hass, Platform.SENSOR, "charge_completion").state == "unknown"
+    assert _entity_state(hass, Platform.SENSOR, "remaining_charge_time").state == "42"
+    client.async_get_vehicle_status.assert_awaited_once()
+    client.async_get_vehicle_location.assert_awaited_once()
 
 
 @pytest.mark.parametrize(
     ("charging", "minutes", "expected"),
-    [(True, 0, 0), (True, -1, None), (True, None, None), (False, 42, None), (None, 42, None)],
+    [(True, 0, 0), (True, -1, None), (True, None, None), (False, 42, 42), (None, 42, 42)],
 )
 def test_charging_duration(
     charging: bool | None, minutes: int | None, expected: int | None
 ) -> None:
-    """Inactive, missing and invalid estimates are not exposed as a countdown."""
+    """Valid reported durations remain available even outside an active charge."""
     assert VEHICLE_STATUS.battery is not None
     status = replace(
         VEHICLE_STATUS,
@@ -126,3 +131,16 @@ async def test_missing_readings_and_recovery(hass: HomeAssistant) -> None:
     odometer = _entity_state(hass, Platform.SENSOR, "odometer")
     assert float(odometer.state) == pytest.approx(160.9344)
     assert odometer.attributes["unit_of_measurement"] == "km"
+
+
+async def test_pressure_in_us_units(hass: HomeAssistant) -> None:
+    """US units preserve SDK pressures in psi without converting them twice."""
+    hass.config.units = US_CUSTOMARY_SYSTEM
+    status = replace(
+        VEHICLE_STATUS,
+        tire_pressure=TirePressure(None, 35, 36, 37, 38, 0, 0, 0, 0),
+    )
+    await setup_vehicle(hass, status)
+    state = _entity_state(hass, Platform.SENSOR, "tire_pressure_front_left")
+    assert float(state.state) == 35
+    assert state.attributes["unit_of_measurement"] == "psi"

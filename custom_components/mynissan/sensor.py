@@ -35,6 +35,7 @@ class NissanSensorEntityDescription(SensorEntityDescription):
 
     value_fn: Callable[[VehicleStatus], NissanSensorValue]
     unit_fn: Callable[[VehicleStatus], NissanUnit] | None = None
+    attributes_fn: Callable[[VehicleStatus], dict[str, object] | None] | None = None
 
 
 def _climate_temperature(status: VehicleStatus) -> float | None:
@@ -118,12 +119,29 @@ TIRE_SENSOR_DESCRIPTIONS: tuple[NissanSensorEntityDescription, ...] = tuple(
         native_unit_of_measurement=UnitOfPressure.PSI,
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=value_fn,
+        attributes_fn=attributes_fn,
     )
-    for position, value_fn in (
-        ("front_left", lambda s: s.tire_pressure.front_left if s.tire_pressure else None),
-        ("front_right", lambda s: s.tire_pressure.front_right if s.tire_pressure else None),
-        ("rear_left", lambda s: s.tire_pressure.rear_left if s.tire_pressure else None),
-        ("rear_right", lambda s: s.tire_pressure.rear_right if s.tire_pressure else None),
+    for position, value_fn, attributes_fn in (
+        (
+            "front_left",
+            lambda s: s.tire_pressure.front_left if s.tire_pressure else None,
+            lambda s: {"status": s.tire_pressure.front_left_status} if s.tire_pressure else None,
+        ),
+        (
+            "front_right",
+            lambda s: s.tire_pressure.front_right if s.tire_pressure else None,
+            lambda s: {"status": s.tire_pressure.front_right_status} if s.tire_pressure else None,
+        ),
+        (
+            "rear_left",
+            lambda s: s.tire_pressure.rear_left if s.tire_pressure else None,
+            lambda s: {"status": s.tire_pressure.rear_left_status} if s.tire_pressure else None,
+        ),
+        (
+            "rear_right",
+            lambda s: s.tire_pressure.rear_right if s.tire_pressure else None,
+            lambda s: {"status": s.tire_pressure.rear_right_status} if s.tire_pressure else None,
+        ),
     )
 )
 
@@ -132,6 +150,13 @@ WARNINGS_DESCRIPTION = NissanSensorEntityDescription(
     translation_key="warnings",
     icon="mdi:alert-circle-outline",
     value_fn=lambda status: sum(item.active is True for item in status.maintenance_indicators),
+    attributes_fn=lambda status: {
+        "warnings": [
+            {"type": item.type, "message": item.detailed_message}
+            for item in status.maintenance_indicators
+            if item.active is True
+        ]
+    },
 )
 
 
@@ -206,16 +231,10 @@ class NissanSensor(NissanEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, object] | None:
-        """Expose active warning types and full messages without truncation."""
-        if self.entity_description.key != "warnings":
-            return None
-        return {
-            "warnings": [
-                {"type": item.type, "message": item.detailed_message}
-                for item in self.vehicle_status.maintenance_indicators
-                if item.active is True
-            ]
-        }
+        """Expose reported tire status or active warnings alongside the reading."""
+        if self.entity_description.attributes_fn is not None:
+            return self.entity_description.attributes_fn(self.vehicle_status)
+        return None
 
 
 def _distance_unit(value: str | None) -> NissanUnit:

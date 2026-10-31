@@ -35,6 +35,18 @@ class NissanVehicleTracker(NissanEntity, TrackerEntity):
     entity_description = LOCATION_DESCRIPTION
 
     @property
+    def entity_picture(self) -> str | None:
+        """Use the account's vehicle artwork on the map."""
+        return self._vehicle.image_url or None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, object] | None:
+        """Expose the paint code reported for this vehicle."""
+        if self._vehicle.color is None:
+            return None
+        return {"color": self._vehicle.color}
+
+    @property
     def available(self) -> bool:
         """Return whether the vehicle has a reported location."""
         return (
