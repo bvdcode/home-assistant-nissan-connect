@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 from dataclasses import dataclass
+from datetime import datetime
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -24,6 +25,7 @@ from .charge_completion import NissanChargeCompletionSensor, remaining_charge_mi
 from .coordinator import NissanDataUpdateCoordinator
 from .entity import NissanEntity
 from .models import NissanConfigEntry
+from .timestamps import timestamp_attributes
 
 type NissanSensorValue = int | float | str | None
 type NissanUnit = str | None
@@ -36,6 +38,7 @@ class NissanSensorEntityDescription(SensorEntityDescription):
     value_fn: Callable[[VehicleStatus], NissanSensorValue]
     unit_fn: Callable[[VehicleStatus], NissanUnit] | None = None
     attributes_fn: Callable[[VehicleStatus], dict[str, object] | None] | None = None
+    last_updated_fn: Callable[[VehicleStatus], datetime | None] | None = None
 
 
 def _climate_temperature(status: VehicleStatus) -> float | None:
@@ -109,6 +112,7 @@ ODOMETER_DESCRIPTION = NissanSensorEntityDescription(
     state_class=SensorStateClass.TOTAL_INCREASING,
     value_fn=lambda status: status.mileage.total if status.mileage is not None else None,
     unit_fn=lambda status: _distance_unit(status.mileage.unit) if status.mileage else None,
+    last_updated_fn=lambda status: status.mileage.recorded_at if status.mileage else None,
 )
 
 TIRE_SENSOR_DESCRIPTIONS: tuple[NissanSensorEntityDescription, ...] = tuple(
@@ -120,6 +124,9 @@ TIRE_SENSOR_DESCRIPTIONS: tuple[NissanSensorEntityDescription, ...] = tuple(
         state_class=SensorStateClass.MEASUREMENT,
         value_fn=value_fn,
         attributes_fn=attributes_fn,
+        last_updated_fn=lambda status: (
+            status.tire_pressure.last_updated_at if status.tire_pressure else None
+        ),
     )
     for position, value_fn, attributes_fn in (
         (
@@ -231,10 +238,17 @@ class NissanSensor(NissanEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, object] | None:
-        """Expose reported tire status or active warnings alongside the reading."""
+        """Expose reported timestamps, tire status, and active warnings."""
+        attributes: dict[str, object] = {}
         if self.entity_description.attributes_fn is not None:
-            return self.entity_description.attributes_fn(self.vehicle_status)
-        return None
+            reported_attributes = self.entity_description.attributes_fn(self.vehicle_status)
+            if reported_attributes is not None:
+                attributes.update(reported_attributes)
+        if self.entity_description.last_updated_fn is not None:
+            attributes.update(
+                timestamp_attributes(self.entity_description.last_updated_fn(self.vehicle_status))
+            )
+        return attributes or None
 
 
 def _distance_unit(value: str | None) -> NissanUnit:

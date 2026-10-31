@@ -21,6 +21,8 @@ The integration provides:
 - remaining charging time and estimated completion time;
 - odometer and individual tire pressures with reported status codes;
 - door, hood, trunk, and lock status;
+- vehicle-reported timestamps in the `last_updated_at` attribute of odometer,
+  tire-pressure, door, and lock entities, when available;
 - active warning count with messages in the sensor attributes;
 - vehicle artwork as an image entity and map picture, with the paint code;
 - last reported vehicle location on the Home Assistant map;
