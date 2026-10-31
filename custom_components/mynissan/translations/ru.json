@@ -47,6 +47,15 @@
     }
   },
   "exceptions": {
+    "command_failed": {
+      "message": "Не удалось выполнить команду автомобиля."
+    },
+    "command_rejected": {
+      "message": "Автомобиль не выполнил команду (статус: {status})."
+    },
+    "command_not_supported": {
+      "message": "Команда недоступна для этого автомобиля или активной подписки."
+    },
     "api_error": {
       "message": "MyNISSAN вернул непредвиденный ответ."
     },
@@ -70,12 +79,72 @@
     }
   },
   "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Замки дверей"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Мигнуть фарами"
+      },
+      "flash_lights_and_horn": {
+        "name": "Мигнуть фарами и подать сигнал"
+      },
+      "lock_doors": {
+        "name": "Запереть двери"
+      },
+      "unlock_doors": {
+        "name": "Отпереть двери"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Автомобиль"
+      }
+    },
     "climate": {
       "climate_control": {
         "name": "Климат-контроль"
       }
     },
     "binary_sensor": {
+      "hood": {
+        "name": "Капот"
+      },
+      "hatch": {
+        "name": "Багажник"
+      },
+      "doors_unlocked": {
+        "name": "Замки дверей"
+      },
+      "trunk_unlocked": {
+        "name": "Замок багажника"
+      },
+      "door_front_left": {
+        "name": "Передняя левая дверь"
+      },
+      "door_front_left_unlocked": {
+        "name": "Замок: передняя левая дверь"
+      },
+      "door_front_right": {
+        "name": "Передняя правая дверь"
+      },
+      "door_front_right_unlocked": {
+        "name": "Замок: передняя правая дверь"
+      },
+      "door_rear_left": {
+        "name": "Задняя левая дверь"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Замок: задняя левая дверь"
+      },
+      "door_rear_right": {
+        "name": "Задняя правая дверь"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Замок: задняя правая дверь"
+      },
       "charging": {
         "name": "Зарядка"
       },
@@ -89,6 +158,30 @@
       }
     },
     "sensor": {
+      "remaining_charge_time": {
+        "name": "Оставшееся время зарядки"
+      },
+      "charge_completion": {
+        "name": "Предполагаемое завершение зарядки"
+      },
+      "odometer": {
+        "name": "Пробег"
+      },
+      "tire_pressure_front_left": {
+        "name": "Давление в передней левой шине"
+      },
+      "tire_pressure_front_right": {
+        "name": "Давление в передней правой шине"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Давление в задней левой шине"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Давление в задней правой шине"
+      },
+      "warnings": {
+        "name": "Предупреждения"
+      },
       "battery_level": {
         "name": "Уровень заряда"
       },

@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anslut till MyNISSAN",
+        "description": "Ange de inloggningsuppgifter som du använder i MyNISSAN-appen.",
+        "data": {
+          "country": "Kontoland",
+          "email": "E-post",
+          "password": "Lösenord"
+        },
+        "data_description": {
+          "country": "Land där Nissan-kontot är registrerat.",
+          "email": "E-postadress för MyNISSAN-kontot.",
+          "password": "Används för autentisering och sparas aldrig av Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Återanslut MyNISSAN",
+        "description": "Ange det aktuella lösenordet för {email}.",
+        "data": {
+          "password": "Lösenord"
+        },
+        "data_description": {
+          "password": "Används för autentisering och sparas aldrig av Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Det går inte att ansluta till MyNISSAN. Försök igen senare.",
+      "invalid_auth": "E-postadressen eller lösenordet är felaktigt.",
+      "no_vehicles": "Inga fordon hittades på det här MyNISSAN-kontot.",
+      "unknown": "Oväntat fel vid anslutning till MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "Det här MyNISSAN-kontot är redan konfigurerat.",
+      "reauth_successful": "MyNISSAN-autentiseringen förnyades."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "Kanada",
+        "mx": "Mexiko",
+        "us": "USA"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Det gick inte att slutföra fordonskommandot."
+    },
+    "command_rejected": {
+      "message": "Fordonet slutförde inte kommandot (status: {status})."
+    },
+    "command_not_supported": {
+      "message": "Det här kommandot är inte aktiverat med ett aktivt abonnemang för fordonet."
+    },
+    "api_error": {
+      "message": "MyNISSAN returnerade ett oväntat svar."
+    },
+    "cannot_connect": {
+      "message": "Det går inte att ansluta till MyNISSAN."
+    },
+    "climate_command_failed": {
+      "message": "Det gick inte att skicka klimatkommandot till fordonet."
+    },
+    "climate_command_rejected": {
+      "message": "Fordonet slutförde inte klimatkommandot (status: {status})."
+    },
+    "invalid_auth": {
+      "message": "MyNISSAN-autentiseringen har upphört att gälla."
+    },
+    "no_vehicles": {
+      "message": "Inga fordon hittades på det här MyNISSAN-kontot."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Fordonet stöder inte klimatläget {mode}."
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Dörrlås"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Blinka med lamporna"
+      },
+      "flash_lights_and_horn": {
+        "name": "Blinka med lamporna och tuta"
+      },
+      "lock_doors": {
+        "name": "Lås dörrarna"
+      },
+      "unlock_doors": {
+        "name": "Lås upp dörrarna"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Fordon"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "Klimatanläggning"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "Motorhuv"
+      },
+      "hatch": {
+        "name": "Bagageutrymme"
+      },
+      "doors_unlocked": {
+        "name": "Dörrlås"
+      },
+      "trunk_unlocked": {
+        "name": "Bagagelås"
+      },
+      "door_front_left": {
+        "name": "Vänster framdörr"
+      },
+      "door_front_left_unlocked": {
+        "name": "Lås på vänster framdörr"
+      },
+      "door_front_right": {
+        "name": "Höger framdörr"
+      },
+      "door_front_right_unlocked": {
+        "name": "Lås på höger framdörr"
+      },
+      "door_rear_left": {
+        "name": "Vänster bakdörr"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Lås på vänster bakdörr"
+      },
+      "door_rear_right": {
+        "name": "Höger bakdörr"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Lås på höger bakdörr"
+      },
+      "charging": {
+        "name": "Laddning"
+      },
+      "plugged_in": {
+        "name": "Laddkabel ansluten"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Position"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "Återstående laddningstid"
+      },
+      "charge_completion": {
+        "name": "Beräknad laddningssluttid"
+      },
+      "odometer": {
+        "name": "Mätarställning"
+      },
+      "tire_pressure_front_left": {
+        "name": "Däcktryck vänster fram"
+      },
+      "tire_pressure_front_right": {
+        "name": "Däcktryck höger fram"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Däcktryck vänster bak"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Däcktryck höger bak"
+      },
+      "warnings": {
+        "name": "Varningar"
+      },
+      "battery_level": {
+        "name": "Batterinivå"
+      },
+      "climate_status": {
+        "name": "Klimatstatus"
+      },
+      "climate_temperature": {
+        "name": "Kupétemperatur"
+      },
+      "range": {
+        "name": "Räckvidd"
+      }
+    }
+  }
+}

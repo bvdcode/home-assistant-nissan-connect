@@ -49,8 +49,8 @@ async def test_coordinator_fetches_every_vehicle(hass: HomeAssistant) -> None:
     data = await coordinator._async_update_data()
 
     assert data == {
-        "VIN1": NissanVehicleData(_status("VIN1"), _location("VIN1")),
-        "VIN2": NissanVehicleData(_status("VIN2"), _location("VIN2")),
+        "VIN1": NissanVehicleData(_status("VIN1"), _location("VIN1"), data["VIN1"].received_at),
+        "VIN2": NissanVehicleData(_status("VIN2"), _location("VIN2"), data["VIN2"].received_at),
     }
     assert client.async_get_vehicle_status.await_count == 2
     assert client.async_get_vehicle_location.await_count == 2

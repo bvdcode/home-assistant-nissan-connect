@@ -2,13 +2,15 @@
 
 import asyncio
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfLength, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util import dt as dt_util
 from pynissan import (
     AuthenticationError,
     DistanceUnit,
@@ -31,6 +33,7 @@ class NissanVehicleData:
 
     status: VehicleStatus
     location: VehicleLocation
+    received_at: datetime = field(default_factory=dt_util.utcnow)
 
 
 type NissanCoordinatorData = dict[str, NissanVehicleData]

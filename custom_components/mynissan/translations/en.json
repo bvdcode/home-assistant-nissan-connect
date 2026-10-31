@@ -47,6 +47,15 @@
     }
   },
   "exceptions": {
+    "command_failed": {
+      "message": "Unable to complete the vehicle command."
+    },
+    "command_rejected": {
+      "message": "The vehicle did not complete the command (status: {status})."
+    },
+    "command_not_supported": {
+      "message": "This command is not enabled with an active subscription for this vehicle."
+    },
     "api_error": {
       "message": "MyNISSAN returned an unexpected response."
     },
@@ -70,12 +79,72 @@
     }
   },
   "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Door locks"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Flash lights"
+      },
+      "flash_lights_and_horn": {
+        "name": "Flash lights and sound horn"
+      },
+      "lock_doors": {
+        "name": "Lock doors"
+      },
+      "unlock_doors": {
+        "name": "Unlock doors"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Vehicle"
+      }
+    },
     "climate": {
       "climate_control": {
         "name": "Climate control"
       }
     },
     "binary_sensor": {
+      "hood": {
+        "name": "Hood"
+      },
+      "hatch": {
+        "name": "Trunk"
+      },
+      "doors_unlocked": {
+        "name": "Door locks"
+      },
+      "trunk_unlocked": {
+        "name": "Trunk lock"
+      },
+      "door_front_left": {
+        "name": "Front left door"
+      },
+      "door_front_left_unlocked": {
+        "name": "Front left door lock"
+      },
+      "door_front_right": {
+        "name": "Front right door"
+      },
+      "door_front_right_unlocked": {
+        "name": "Front right door lock"
+      },
+      "door_rear_left": {
+        "name": "Rear left door"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Rear left door lock"
+      },
+      "door_rear_right": {
+        "name": "Rear right door"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Rear right door lock"
+      },
       "charging": {
         "name": "Charging"
       },
@@ -89,6 +158,30 @@
       }
     },
     "sensor": {
+      "remaining_charge_time": {
+        "name": "Remaining charging time"
+      },
+      "charge_completion": {
+        "name": "Estimated charging completion"
+      },
+      "odometer": {
+        "name": "Odometer"
+      },
+      "tire_pressure_front_left": {
+        "name": "Front left tire pressure"
+      },
+      "tire_pressure_front_right": {
+        "name": "Front right tire pressure"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Rear left tire pressure"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Rear right tire pressure"
+      },
+      "warnings": {
+        "name": "Warnings"
+      },
       "battery_level": {
         "name": "Battery level"
       },

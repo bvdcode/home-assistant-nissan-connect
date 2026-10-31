@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Forbind til MyNISSAN",
+        "description": "Indtast de loginoplysninger, du bruger i MyNISSAN-appen.",
+        "data": {
+          "country": "Kontoland",
+          "email": "E-mail",
+          "password": "Adgangskode"
+        },
+        "data_description": {
+          "country": "Landet, hvor Nissan-kontoen er registreret.",
+          "email": "E-mailadressen til MyNISSAN-kontoen.",
+          "password": "Bruges til godkendelse og gemmes aldrig af Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Forbind MyNISSAN igen",
+        "description": "Indtast den aktuelle adgangskode til {email}.",
+        "data": {
+          "password": "Adgangskode"
+        },
+        "data_description": {
+          "password": "Bruges til godkendelse og gemmes aldrig af Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Kan ikke oprette forbindelse til MyNISSAN. Prøv igen senere.",
+      "invalid_auth": "E-mailadressen eller adgangskoden er forkert.",
+      "no_vehicles": "Der blev ikke fundet nogen køretøjer på denne MyNISSAN-konto.",
+      "unknown": "Uventet fejl under oprettelse af forbindelse til MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "Denne MyNISSAN-konto er allerede konfigureret.",
+      "reauth_successful": "MyNISSAN-godkendelsen blev fornyet."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "Canada",
+        "mx": "Mexico",
+        "us": "USA"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Kommandoen til køretøjet kunne ikke fuldføres."
+    },
+    "command_rejected": {
+      "message": "Køretøjet fuldførte ikke kommandoen (status: {status})."
+    },
+    "command_not_supported": {
+      "message": "Denne kommando er ikke aktiveret med et aktivt abonnement for køretøjet."
+    },
+    "api_error": {
+      "message": "MyNISSAN returnerede et uventet svar."
+    },
+    "cannot_connect": {
+      "message": "Kan ikke oprette forbindelse til MyNISSAN."
+    },
+    "climate_command_failed": {
+      "message": "Klimakommandoen kunne ikke sendes til køretøjet."
+    },
+    "climate_command_rejected": {
+      "message": "Køretøjet fuldførte ikke klimakommandoen (status: {status})."
+    },
+    "invalid_auth": {
+      "message": "MyNISSAN-godkendelsen er udløbet."
+    },
+    "no_vehicles": {
+      "message": "Der blev ikke fundet nogen køretøjer på denne MyNISSAN-konto."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Køretøjet understøtter ikke klimatilstanden {mode}."
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Dørlåse"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Blink med lygterne"
+      },
+      "flash_lights_and_horn": {
+        "name": "Blink med lygterne og brug hornet"
+      },
+      "lock_doors": {
+        "name": "Lås dørene"
+      },
+      "unlock_doors": {
+        "name": "Lås dørene op"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Køretøj"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "Klimaanlæg"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "Motorhjelm"
+      },
+      "hatch": {
+        "name": "Bagagerum"
+      },
+      "doors_unlocked": {
+        "name": "Dørlåse"
+      },
+      "trunk_unlocked": {
+        "name": "Bagagerumslås"
+      },
+      "door_front_left": {
+        "name": "Venstre fordør"
+      },
+      "door_front_left_unlocked": {
+        "name": "Lås på venstre fordør"
+      },
+      "door_front_right": {
+        "name": "Højre fordør"
+      },
+      "door_front_right_unlocked": {
+        "name": "Lås på højre fordør"
+      },
+      "door_rear_left": {
+        "name": "Venstre bagdør"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Lås på venstre bagdør"
+      },
+      "door_rear_right": {
+        "name": "Højre bagdør"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Lås på højre bagdør"
+      },
+      "charging": {
+        "name": "Opladning"
+      },
+      "plugged_in": {
+        "name": "Ladekabel tilsluttet"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Placering"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "Resterende opladningstid"
+      },
+      "charge_completion": {
+        "name": "Forventet afslutning af opladning"
+      },
+      "odometer": {
+        "name": "Kilometertæller"
+      },
+      "tire_pressure_front_left": {
+        "name": "Dæktryk forrest til venstre"
+      },
+      "tire_pressure_front_right": {
+        "name": "Dæktryk forrest til højre"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Dæktryk bagest til venstre"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Dæktryk bagest til højre"
+      },
+      "warnings": {
+        "name": "Advarsler"
+      },
+      "battery_level": {
+        "name": "Batteriniveau"
+      },
+      "climate_status": {
+        "name": "Klimastatus"
+      },
+      "climate_temperature": {
+        "name": "Kabinetemperatur"
+      },
+      "range": {
+        "name": "Rækkevidde"
+      }
+    }
+  }
+}

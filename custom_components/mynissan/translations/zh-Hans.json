@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "连接 MyNISSAN",
+        "description": "输入 MyNISSAN 应用使用的登录信息。",
+        "data": {
+          "country": "账户所属国家",
+          "email": "电子邮箱",
+          "password": "密码"
+        },
+        "data_description": {
+          "country": "注册 Nissan 账户的国家。",
+          "email": "MyNISSAN 账户的电子邮箱地址。",
+          "password": "仅用于身份验证，Home Assistant 不会存储密码。"
+        }
+      },
+      "reauth_confirm": {
+        "title": "重新连接 MyNISSAN",
+        "description": "输入 {email} 当前使用的密码。",
+        "data": {
+          "password": "密码"
+        },
+        "data_description": {
+          "password": "仅用于身份验证，Home Assistant 不会存储密码。"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "无法连接到 MyNISSAN。请稍后重试。",
+      "invalid_auth": "电子邮箱地址或密码不正确。",
+      "no_vehicles": "此 MyNISSAN 账户中未找到车辆。",
+      "unknown": "连接 MyNISSAN 时发生意外错误。"
+    },
+    "abort": {
+      "already_configured": "此 MyNISSAN 账户已配置。",
+      "reauth_successful": "MyNISSAN 身份验证已成功更新。"
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "加拿大",
+        "mx": "墨西哥",
+        "us": "美国"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "无法完成车辆指令。"
+    },
+    "command_rejected": {
+      "message": "车辆未完成指令（状态：{status}）。"
+    },
+    "command_not_supported": {
+      "message": "此车辆未通过有效订阅启用该指令。"
+    },
+    "api_error": {
+      "message": "MyNISSAN 返回了意外响应。"
+    },
+    "cannot_connect": {
+      "message": "无法连接到 MyNISSAN。"
+    },
+    "climate_command_failed": {
+      "message": "无法向车辆发送空调指令。"
+    },
+    "climate_command_rejected": {
+      "message": "车辆未完成空调指令（状态：{status}）。"
+    },
+    "invalid_auth": {
+      "message": "MyNISSAN 身份验证已过期。"
+    },
+    "no_vehicles": {
+      "message": "此 MyNISSAN 账户中未找到车辆。"
+    },
+    "unsupported_hvac_mode": {
+      "message": "车辆不支持空调模式 {mode}。"
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "车门锁"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "闪烁车灯"
+      },
+      "flash_lights_and_horn": {
+        "name": "闪烁车灯并鸣笛"
+      },
+      "lock_doors": {
+        "name": "锁定车门"
+      },
+      "unlock_doors": {
+        "name": "解锁车门"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "车辆"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "空调"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "引擎盖"
+      },
+      "hatch": {
+        "name": "后备厢"
+      },
+      "doors_unlocked": {
+        "name": "车门锁"
+      },
+      "trunk_unlocked": {
+        "name": "后备厢锁"
+      },
+      "door_front_left": {
+        "name": "左前车门"
+      },
+      "door_front_left_unlocked": {
+        "name": "左前车门锁"
+      },
+      "door_front_right": {
+        "name": "右前车门"
+      },
+      "door_front_right_unlocked": {
+        "name": "右前车门锁"
+      },
+      "door_rear_left": {
+        "name": "左后车门"
+      },
+      "door_rear_left_unlocked": {
+        "name": "左后车门锁"
+      },
+      "door_rear_right": {
+        "name": "右后车门"
+      },
+      "door_rear_right_unlocked": {
+        "name": "右后车门锁"
+      },
+      "charging": {
+        "name": "正在充电"
+      },
+      "plugged_in": {
+        "name": "充电线已连接"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "位置"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "剩余充电时间"
+      },
+      "charge_completion": {
+        "name": "预计充电完成时间"
+      },
+      "odometer": {
+        "name": "总里程"
+      },
+      "tire_pressure_front_left": {
+        "name": "左前轮胎压"
+      },
+      "tire_pressure_front_right": {
+        "name": "右前轮胎压"
+      },
+      "tire_pressure_rear_left": {
+        "name": "左后轮胎压"
+      },
+      "tire_pressure_rear_right": {
+        "name": "右后轮胎压"
+      },
+      "warnings": {
+        "name": "警告"
+      },
+      "battery_level": {
+        "name": "电池电量"
+      },
+      "climate_status": {
+        "name": "空调状态"
+      },
+      "climate_temperature": {
+        "name": "车内温度"
+      },
+      "range": {
+        "name": "续航里程"
+      }
+    }
+  }
+}

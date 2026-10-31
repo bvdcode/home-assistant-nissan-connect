@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v0.3.7 (2026-10-31)
+
+Added charging estimates, vehicle sensors, and remote lock, light, and horn controls
+
+Home Assistant now shows remaining charging time and estimated completion, the odometer, pressure in each tire, door, trunk, hood and lock states, and active warnings with their messages. Your vehicle image is also available.
+
+You can lock or unlock the doors, flash the lights, or flash the lights and sound the horn when supported by your vehicle and subscription.
+
+Vehicle status updates every 15 minutes. Charging completion is an estimate based on the latest available data.
+
+
 ## v0.3.6 (2026-10-31)
 
 ### Bug Fixes

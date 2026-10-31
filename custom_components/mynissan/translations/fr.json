@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Se connecter à MyNISSAN",
+        "description": "Saisissez les identifiants utilisés dans l'application MyNISSAN.",
+        "data": {
+          "country": "Pays du compte",
+          "email": "E-mail",
+          "password": "Mot de passe"
+        },
+        "data_description": {
+          "country": "Pays dans lequel le compte Nissan est enregistré.",
+          "email": "Adresse e-mail du compte MyNISSAN.",
+          "password": "Utilisé pour l'authentification et jamais enregistré par Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reconnecter MyNISSAN",
+        "description": "Saisissez le mot de passe actuel de {email}.",
+        "data": {
+          "password": "Mot de passe"
+        },
+        "data_description": {
+          "password": "Utilisé pour l'authentification et jamais enregistré par Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de se connecter à MyNISSAN. Réessayez plus tard.",
+      "invalid_auth": "L'adresse e-mail ou le mot de passe est incorrect.",
+      "no_vehicles": "Aucun véhicule n'a été trouvé sur ce compte MyNISSAN.",
+      "unknown": "Erreur inattendue lors de la connexion à MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "Ce compte MyNISSAN est déjà configuré.",
+      "reauth_successful": "L'authentification MyNISSAN a été renouvelée."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "Canada",
+        "mx": "Mexique",
+        "us": "États-Unis"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Impossible de terminer la commande du véhicule."
+    },
+    "command_rejected": {
+      "message": "Le véhicule n'a pas terminé la commande (état : {status})."
+    },
+    "command_not_supported": {
+      "message": "Cette commande n'est pas activée avec un abonnement en cours pour ce véhicule."
+    },
+    "api_error": {
+      "message": "MyNISSAN a renvoyé une réponse inattendue."
+    },
+    "cannot_connect": {
+      "message": "Impossible de se connecter à MyNISSAN."
+    },
+    "climate_command_failed": {
+      "message": "Impossible d'envoyer la commande de climatisation au véhicule."
+    },
+    "climate_command_rejected": {
+      "message": "Le véhicule n'a pas terminé la commande de climatisation (état : {status})."
+    },
+    "invalid_auth": {
+      "message": "L'authentification MyNISSAN a expiré."
+    },
+    "no_vehicles": {
+      "message": "Aucun véhicule n'a été trouvé sur ce compte MyNISSAN."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Le véhicule ne prend pas en charge le mode de climatisation {mode}."
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Serrures des portes"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Faire clignoter les feux"
+      },
+      "flash_lights_and_horn": {
+        "name": "Faire clignoter les feux et klaxonner"
+      },
+      "lock_doors": {
+        "name": "Verrouiller les portes"
+      },
+      "unlock_doors": {
+        "name": "Déverrouiller les portes"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Véhicule"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "Climatisation"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "Capot"
+      },
+      "hatch": {
+        "name": "Coffre"
+      },
+      "doors_unlocked": {
+        "name": "Serrures des portes"
+      },
+      "trunk_unlocked": {
+        "name": "Serrure du coffre"
+      },
+      "door_front_left": {
+        "name": "Porte avant gauche"
+      },
+      "door_front_left_unlocked": {
+        "name": "Serrure de la porte avant gauche"
+      },
+      "door_front_right": {
+        "name": "Porte avant droite"
+      },
+      "door_front_right_unlocked": {
+        "name": "Serrure de la porte avant droite"
+      },
+      "door_rear_left": {
+        "name": "Porte arrière gauche"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Serrure de la porte arrière gauche"
+      },
+      "door_rear_right": {
+        "name": "Porte arrière droite"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Serrure de la porte arrière droite"
+      },
+      "charging": {
+        "name": "Recharge"
+      },
+      "plugged_in": {
+        "name": "Câble branché"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Position"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "Temps de recharge restant"
+      },
+      "charge_completion": {
+        "name": "Fin de recharge estimée"
+      },
+      "odometer": {
+        "name": "Kilométrage"
+      },
+      "tire_pressure_front_left": {
+        "name": "Pression du pneu avant gauche"
+      },
+      "tire_pressure_front_right": {
+        "name": "Pression du pneu avant droit"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Pression du pneu arrière gauche"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Pression du pneu arrière droit"
+      },
+      "warnings": {
+        "name": "Avertissements"
+      },
+      "battery_level": {
+        "name": "Niveau de batterie"
+      },
+      "climate_status": {
+        "name": "État de la climatisation"
+      },
+      "climate_temperature": {
+        "name": "Température de l'habitacle"
+      },
+      "range": {
+        "name": "Autonomie"
+      }
+    }
+  }
+}
