@@ -47,6 +47,15 @@
     }
   },
   "exceptions": {
+    "command_failed": {
+      "message": "Не удалось выполнить команду автомобиля."
+    },
+    "command_rejected": {
+      "message": "Автомобиль не выполнил команду (статус: {status})."
+    },
+    "command_not_supported": {
+      "message": "Команда недоступна для этого автомобиля или активной подписки."
+    },
     "api_error": {
       "message": "MyNISSAN вернул непредвиденный ответ."
     },
@@ -70,6 +79,15 @@
     }
   },
   "entity": {
+    "lock": {
+      "door_lock": {"name": "Замки дверей"}
+    },
+    "button": {
+      "flash_lights": {"name": "Мигнуть фарами"},
+      "flash_lights_and_horn": {"name": "Мигнуть фарами и подать сигнал"},
+      "lock_doors": {"name": "Запереть двери"},
+      "unlock_doors": {"name": "Отпереть двери"}
+    },
     "image": {
       "vehicle": {
         "name": "Автомобиль"

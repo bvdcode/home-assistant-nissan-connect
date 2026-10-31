@@ -47,6 +47,15 @@
     }
   },
   "exceptions": {
+    "command_failed": {
+      "message": "Unable to complete the vehicle command."
+    },
+    "command_rejected": {
+      "message": "The vehicle did not complete the command (status: {status})."
+    },
+    "command_not_supported": {
+      "message": "This command is not enabled with an active subscription for this vehicle."
+    },
     "api_error": {
       "message": "MyNISSAN returned an unexpected response."
     },
@@ -70,6 +79,15 @@
     }
   },
   "entity": {
+    "lock": {
+      "door_lock": {"name": "Door locks"}
+    },
+    "button": {
+      "flash_lights": {"name": "Flash lights"},
+      "flash_lights_and_horn": {"name": "Flash lights and sound horn"},
+      "lock_doors": {"name": "Lock doors"},
+      "unlock_doors": {"name": "Unlock doors"}
+    },
     "image": {
       "vehicle": {
         "name": "Vehicle"
