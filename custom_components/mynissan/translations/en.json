@@ -80,13 +80,23 @@
   },
   "entity": {
     "lock": {
-      "door_lock": {"name": "Door locks"}
+      "door_lock": {
+        "name": "Door locks"
+      }
     },
     "button": {
-      "flash_lights": {"name": "Flash lights"},
-      "flash_lights_and_horn": {"name": "Flash lights and sound horn"},
-      "lock_doors": {"name": "Lock doors"},
-      "unlock_doors": {"name": "Unlock doors"}
+      "flash_lights": {
+        "name": "Flash lights"
+      },
+      "flash_lights_and_horn": {
+        "name": "Flash lights and sound horn"
+      },
+      "lock_doors": {
+        "name": "Lock doors"
+      },
+      "unlock_doors": {
+        "name": "Unlock doors"
+      }
     },
     "image": {
       "vehicle": {

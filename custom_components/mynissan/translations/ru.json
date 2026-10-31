@@ -80,13 +80,23 @@
   },
   "entity": {
     "lock": {
-      "door_lock": {"name": "Замки дверей"}
+      "door_lock": {
+        "name": "Замки дверей"
+      }
     },
     "button": {
-      "flash_lights": {"name": "Мигнуть фарами"},
-      "flash_lights_and_horn": {"name": "Мигнуть фарами и подать сигнал"},
-      "lock_doors": {"name": "Запереть двери"},
-      "unlock_doors": {"name": "Отпереть двери"}
+      "flash_lights": {
+        "name": "Мигнуть фарами"
+      },
+      "flash_lights_and_horn": {
+        "name": "Мигнуть фарами и подать сигнал"
+      },
+      "lock_doors": {
+        "name": "Запереть двери"
+      },
+      "unlock_doors": {
+        "name": "Отпереть двери"
+      }
     },
     "image": {
       "vehicle": {

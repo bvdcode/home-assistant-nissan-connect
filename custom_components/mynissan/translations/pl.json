@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Połącz z MyNISSAN",
+        "description": "Wprowadź dane logowania używane w aplikacji MyNISSAN.",
+        "data": {
+          "country": "Kraj konta",
+          "email": "E-mail",
+          "password": "Hasło"
+        },
+        "data_description": {
+          "country": "Kraj, w którym zarejestrowano konto Nissan.",
+          "email": "Adres e-mail konta MyNISSAN.",
+          "password": "Używane do uwierzytelniania i nigdy niezapisywane przez Home Assistant."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Połącz ponownie MyNISSAN",
+        "description": "Wprowadź aktualne hasło do konta {email}.",
+        "data": {
+          "password": "Hasło"
+        },
+        "data_description": {
+          "password": "Używane do uwierzytelniania i nigdy niezapisywane przez Home Assistant."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie można połączyć się z MyNISSAN. Spróbuj ponownie później.",
+      "invalid_auth": "Adres e-mail lub hasło są nieprawidłowe.",
+      "no_vehicles": "Na tym koncie MyNISSAN nie znaleziono pojazdów.",
+      "unknown": "Nieoczekiwany błąd podczas łączenia z MyNISSAN."
+    },
+    "abort": {
+      "already_configured": "To konto MyNISSAN jest już skonfigurowane.",
+      "reauth_successful": "Uwierzytelnianie MyNISSAN zostało pomyślnie odnowione."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "Kanada",
+        "mx": "Meksyk",
+        "us": "Stany Zjednoczone"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Nie udało się wykonać polecenia pojazdu."
+    },
+    "command_rejected": {
+      "message": "Pojazd nie wykonał polecenia (stan: {status})."
+    },
+    "command_not_supported": {
+      "message": "To polecenie nie jest włączone z aktywną subskrypcją dla tego pojazdu."
+    },
+    "api_error": {
+      "message": "MyNISSAN zwrócił nieoczekiwaną odpowiedź."
+    },
+    "cannot_connect": {
+      "message": "Nie można połączyć się z MyNISSAN."
+    },
+    "climate_command_failed": {
+      "message": "Nie udało się wysłać polecenia klimatyzacji do pojazdu."
+    },
+    "climate_command_rejected": {
+      "message": "Pojazd nie wykonał polecenia klimatyzacji (stan: {status})."
+    },
+    "invalid_auth": {
+      "message": "Uwierzytelnianie MyNISSAN wygasło."
+    },
+    "no_vehicles": {
+      "message": "Na tym koncie MyNISSAN nie znaleziono pojazdów."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Pojazd nie obsługuje trybu klimatyzacji {mode}."
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Zamki drzwi"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Mignij światłami"
+      },
+      "flash_lights_and_horn": {
+        "name": "Mignij światłami i użyj klaksonu"
+      },
+      "lock_doors": {
+        "name": "Zablokuj drzwi"
+      },
+      "unlock_doors": {
+        "name": "Odblokuj drzwi"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Pojazd"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "Klimatyzacja"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "Maska"
+      },
+      "hatch": {
+        "name": "Bagażnik"
+      },
+      "doors_unlocked": {
+        "name": "Zamki drzwi"
+      },
+      "trunk_unlocked": {
+        "name": "Zamek bagażnika"
+      },
+      "door_front_left": {
+        "name": "Lewe przednie drzwi"
+      },
+      "door_front_left_unlocked": {
+        "name": "Zamek lewych przednich drzwi"
+      },
+      "door_front_right": {
+        "name": "Prawe przednie drzwi"
+      },
+      "door_front_right_unlocked": {
+        "name": "Zamek prawych przednich drzwi"
+      },
+      "door_rear_left": {
+        "name": "Lewe tylne drzwi"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Zamek lewych tylnych drzwi"
+      },
+      "door_rear_right": {
+        "name": "Prawe tylne drzwi"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Zamek prawych tylnych drzwi"
+      },
+      "charging": {
+        "name": "Ładowanie"
+      },
+      "plugged_in": {
+        "name": "Przewód podłączony"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Lokalizacja"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "Pozostały czas ładowania"
+      },
+      "charge_completion": {
+        "name": "Przewidywane zakończenie ładowania"
+      },
+      "odometer": {
+        "name": "Przebieg"
+      },
+      "tire_pressure_front_left": {
+        "name": "Ciśnienie w lewej przedniej oponie"
+      },
+      "tire_pressure_front_right": {
+        "name": "Ciśnienie w prawej przedniej oponie"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Ciśnienie w lewej tylnej oponie"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Ciśnienie w prawej tylnej oponie"
+      },
+      "warnings": {
+        "name": "Ostrzeżenia"
+      },
+      "battery_level": {
+        "name": "Poziom naładowania akumulatora"
+      },
+      "climate_status": {
+        "name": "Stan klimatyzacji"
+      },
+      "climate_temperature": {
+        "name": "Temperatura w kabinie"
+      },
+      "range": {
+        "name": "Zasięg"
+      }
+    }
+  }
+}

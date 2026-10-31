@@ -1,0 +1,199 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Připojit k MyNISSAN",
+        "description": "Zadejte přihlašovací údaje používané v aplikaci MyNISSAN.",
+        "data": {
+          "country": "Země účtu",
+          "email": "E-mail",
+          "password": "Heslo"
+        },
+        "data_description": {
+          "country": "Země, ve které je účet Nissan registrován.",
+          "email": "E-mailová adresa účtu MyNISSAN.",
+          "password": "Používá se k ověření a Home Assistant jej nikdy neukládá."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Znovu připojit MyNISSAN",
+        "description": "Zadejte aktuální heslo pro {email}.",
+        "data": {
+          "password": "Heslo"
+        },
+        "data_description": {
+          "password": "Používá se k ověření a Home Assistant jej nikdy neukládá."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nelze se připojit k MyNISSAN. Zkuste to později.",
+      "invalid_auth": "E-mailová adresa nebo heslo nejsou správné.",
+      "no_vehicles": "V tomto účtu MyNISSAN nebyla nalezena žádná vozidla.",
+      "unknown": "Při připojování k MyNISSAN došlo k neočekávané chybě."
+    },
+    "abort": {
+      "already_configured": "Tento účet MyNISSAN je již nakonfigurován.",
+      "reauth_successful": "Ověření MyNISSAN bylo úspěšně obnoveno."
+    }
+  },
+  "selector": {
+    "country": {
+      "options": {
+        "ca": "Kanada",
+        "mx": "Mexiko",
+        "us": "Spojené státy"
+      }
+    }
+  },
+  "exceptions": {
+    "command_failed": {
+      "message": "Příkaz pro vozidlo se nepodařilo dokončit."
+    },
+    "command_rejected": {
+      "message": "Vozidlo nedokončilo příkaz (stav: {status})."
+    },
+    "command_not_supported": {
+      "message": "Tento příkaz není pro vozidlo povolen s aktivním předplatným."
+    },
+    "api_error": {
+      "message": "MyNISSAN vrátil neočekávanou odpověď."
+    },
+    "cannot_connect": {
+      "message": "Nelze se připojit k MyNISSAN."
+    },
+    "climate_command_failed": {
+      "message": "Příkaz klimatizace se nepodařilo odeslat do vozidla."
+    },
+    "climate_command_rejected": {
+      "message": "Vozidlo nedokončilo příkaz klimatizace (stav: {status})."
+    },
+    "invalid_auth": {
+      "message": "Platnost ověření MyNISSAN vypršela."
+    },
+    "no_vehicles": {
+      "message": "V tomto účtu MyNISSAN nebyla nalezena žádná vozidla."
+    },
+    "unsupported_hvac_mode": {
+      "message": "Vozidlo nepodporuje režim klimatizace {mode}."
+    }
+  },
+  "entity": {
+    "lock": {
+      "door_lock": {
+        "name": "Zámky dveří"
+      }
+    },
+    "button": {
+      "flash_lights": {
+        "name": "Zablikat světly"
+      },
+      "flash_lights_and_horn": {
+        "name": "Zablikat světly a zatroubit"
+      },
+      "lock_doors": {
+        "name": "Zamknout dveře"
+      },
+      "unlock_doors": {
+        "name": "Odemknout dveře"
+      }
+    },
+    "image": {
+      "vehicle": {
+        "name": "Vozidlo"
+      }
+    },
+    "climate": {
+      "climate_control": {
+        "name": "Klimatizace"
+      }
+    },
+    "binary_sensor": {
+      "hood": {
+        "name": "Kapota"
+      },
+      "hatch": {
+        "name": "Zavazadlový prostor"
+      },
+      "doors_unlocked": {
+        "name": "Zámky dveří"
+      },
+      "trunk_unlocked": {
+        "name": "Zámek zavazadlového prostoru"
+      },
+      "door_front_left": {
+        "name": "Levé přední dveře"
+      },
+      "door_front_left_unlocked": {
+        "name": "Zámek levých předních dveří"
+      },
+      "door_front_right": {
+        "name": "Pravé přední dveře"
+      },
+      "door_front_right_unlocked": {
+        "name": "Zámek pravých předních dveří"
+      },
+      "door_rear_left": {
+        "name": "Levé zadní dveře"
+      },
+      "door_rear_left_unlocked": {
+        "name": "Zámek levých zadních dveří"
+      },
+      "door_rear_right": {
+        "name": "Pravé zadní dveře"
+      },
+      "door_rear_right_unlocked": {
+        "name": "Zámek pravých zadních dveří"
+      },
+      "charging": {
+        "name": "Nabíjení"
+      },
+      "plugged_in": {
+        "name": "Kabel připojen"
+      }
+    },
+    "device_tracker": {
+      "location": {
+        "name": "Poloha"
+      }
+    },
+    "sensor": {
+      "remaining_charge_time": {
+        "name": "Zbývající doba nabíjení"
+      },
+      "charge_completion": {
+        "name": "Odhadované dokončení nabíjení"
+      },
+      "odometer": {
+        "name": "Celkový nájezd"
+      },
+      "tire_pressure_front_left": {
+        "name": "Tlak v levé přední pneumatice"
+      },
+      "tire_pressure_front_right": {
+        "name": "Tlak v pravé přední pneumatice"
+      },
+      "tire_pressure_rear_left": {
+        "name": "Tlak v levé zadní pneumatice"
+      },
+      "tire_pressure_rear_right": {
+        "name": "Tlak v pravé zadní pneumatice"
+      },
+      "warnings": {
+        "name": "Varování"
+      },
+      "battery_level": {
+        "name": "Úroveň nabití baterie"
+      },
+      "climate_status": {
+        "name": "Stav klimatizace"
+      },
+      "climate_temperature": {
+        "name": "Teplota v kabině"
+      },
+      "range": {
+        "name": "Dojezd"
+      }
+    }
+  }
+}

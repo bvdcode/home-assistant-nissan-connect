@@ -22,7 +22,15 @@ from custom_components.mynissan.sensor import (
 )
 
 
-@pytest.mark.parametrize("language", ["en", "ru"])
+@pytest.mark.parametrize(
+    "language",
+    sorted(
+        path.stem
+        for path in (
+            Path(__file__).resolve().parents[1] / "custom_components/mynissan/translations"
+        ).glob("*.json")
+    ),
+)
 def test_entity_translations(language: str) -> None:
     """Every added entity and command error has a translated label."""
     path = Path(__file__).resolve().parents[1] / "custom_components" / "mynissan" / "translations"
