@@ -35,6 +35,7 @@ PLATFORMS: tuple[Platform, ...] = (
     Platform.BINARY_SENSOR,
     Platform.CLIMATE,
     Platform.DEVICE_TRACKER,
+    Platform.IMAGE,
     Platform.SENSOR,
 )
 

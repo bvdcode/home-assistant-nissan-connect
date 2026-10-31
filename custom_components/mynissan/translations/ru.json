@@ -70,6 +70,11 @@
     }
   },
   "entity": {
+    "image": {
+      "vehicle": {
+        "name": "Автомобиль"
+      }
+    },
     "climate": {
       "climate_control": {
         "name": "Климат-контроль"
