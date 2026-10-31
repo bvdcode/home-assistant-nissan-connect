@@ -18,10 +18,28 @@ The integration provides:
 - discovery of every vehicle attached to the account;
 - one Home Assistant device per vehicle;
 - battery level, charging, plugged-in state, range, and climate sensors;
+- remaining charging time and estimated completion time;
+- odometer and individual tire pressures;
+- door, hood, trunk, and lock status;
+- active warning count with messages in the sensor attributes;
+- vehicle artwork as an image entity;
 - last reported vehicle location on the Home Assistant map;
-- remote climate start, stop, and target-temperature control.
+- remote climate start, stop, and target-temperature control;
+- door locking/unlocking and buttons for flashing lights or flashing lights with the horn.
 
-Additional vehicle data and remote commands will be added in subsequent releases.
+Available entities depend on the data reported for each vehicle. Remote controls
+require an enabled service and an active subscription. Lock and light/horn commands
+recheck these conditions before sending a request and wait for the reported result.
+A vehicle with only locking or only unlocking support gets a button for that action
+instead of a two-way lock control.
+
+Charging time is reported in minutes. Estimated completion is calculated from the
+remaining duration at the time the cached status is fetched; it is not a completion
+time reported by the vehicle. The estimate is cleared when charging stops or the
+remaining duration is unknown. Vehicle status is refreshed every 15 minutes, so it
+can lag behind the vehicle. Home Assistant converts distance and pressure readings
+to the configured units. Unknown door and lock values are not treated as closed or
+locked. The vehicle image is model artwork supplied by the account, not a live camera.
 
 ## Requirements
 

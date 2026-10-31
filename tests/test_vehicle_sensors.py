@@ -106,3 +106,23 @@ def test_charging_duration(
     )
     assert remaining_charge_minutes(status) == expected
     assert remaining_charge_minutes(replace(status, battery=None)) is None
+
+
+async def test_missing_readings_and_recovery(hass: HomeAssistant) -> None:
+    """Missing values remain unknown and recover when data becomes available."""
+    status = replace(
+        VEHICLE_STATUS,
+        mileage=Mileage(None, "MILE", None),
+        tire_pressure=TirePressure(None, None, 35, None, 36, None, None, None, None),
+    )
+    client = await setup_vehicle(hass, status)
+    assert _entity_state(hass, Platform.SENSOR, "odometer").state == "unavailable"
+    assert _entity_state(hass, Platform.SENSOR, "tire_pressure_front_left").state == "unavailable"
+    assert _entity_state(hass, Platform.SENSOR, "warnings").state == "0"
+    updated = replace(status, mileage=Mileage(100, "MILE", None))
+    client.coordinator.async_set_updated_data(
+        {VEHICLE.vin: NissanVehicleData(updated, VEHICLE_LOCATION)}
+    )
+    odometer = _entity_state(hass, Platform.SENSOR, "odometer")
+    assert float(odometer.state) == pytest.approx(160.9344)
+    assert odometer.attributes["unit_of_measurement"] == "km"

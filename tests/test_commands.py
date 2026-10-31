@@ -181,3 +181,14 @@ async def test_failed_remote_result(hass: HomeAssistant) -> None:
         await call_command(hass, Platform.LOCK, "door_lock", "lock")
     assert _entity_state(hass, Platform.LOCK, "door_lock").state == "unlocked"
     client.coordinator.async_request_refresh.assert_not_called()
+
+
+async def test_unknown_lock_status(hass: HomeAssistant) -> None:
+    """Missing lock data never becomes a locked state."""
+    client = await setup_commands(hass)
+    for doors in (None, replace(DOORS, overall_lock="UNKNOWN__")):
+        status = replace(VEHICLE_STATUS, doors=doors)
+        client.coordinator.async_set_updated_data(
+            {VEHICLE.vin: NissanVehicleData(status, VEHICLE_LOCATION)}
+        )
+        assert _entity_state(hass, Platform.LOCK, "door_lock").state == "unknown"
