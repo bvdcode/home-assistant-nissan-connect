@@ -44,6 +44,13 @@
         "mx": "Mexique",
         "us": "États-Unis"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Arrêt",
+        "heat": "Chauffage",
+        "cool": "Refroidissement"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Le véhicule ne prend pas en charge le mode de climatisation {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Le véhicule n'a pas exécuté la commande du moteur (statut : {status}, détails : {details}). Causes fréquentes : deux démarrages à distance consécutifs sans rouler entre les deux, portes déverrouillées, une porte, le capot, le coffre ou une vitre ouverts, feux de détresse allumés, une clé à l'intérieur, ou moteur non utilisé depuis 14 jours."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} n'est pas un bouton de démarrage du moteur à distance MyNISSAN."
+    },
+    "invalid_remote_start_option": {
+      "message": "Le véhicule ne prend pas en charge le réglage de démarrage à distance demandé : {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Actualiser"
+      },
+      "remote_engine_start": {
+        "name": "Démarrage du moteur à distance"
+      },
+      "remote_engine_stop": {
+        "name": "Arrêt du moteur à distance"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Câble branché"
+      },
+      "window_front_left": {
+        "name": "Vitre avant gauche"
+      },
+      "window_front_right": {
+        "name": "Vitre avant droite"
+      },
+      "window_rear_left": {
+        "name": "Vitre arrière gauche"
+      },
+      "window_rear_right": {
+        "name": "Vitre arrière droite"
+      },
+      "sunroof": {
+        "name": "Toit ouvrant"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Autonomie"
+      },
+      "fuel_range": {
+        "name": "Autonomie en carburant"
+      },
+      "oil_change_range": {
+        "name": "Distance avant la vidange"
+      },
+      "last_remote_engine_start": {
+        "name": "Dernier démarrage du moteur à distance"
+      },
+      "last_remote_engine_stop": {
+        "name": "Dernier arrêt du moteur à distance"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Température au démarrage à distance"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Siège conducteur au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Siège passager au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Siège arrière gauche au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Siège arrière droit au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Siège arrière central au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Siège gauche de 3e rangée au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Siège droit de 3e rangée au démarrage à distance",
+        "state": {
+          "off": "Arrêt",
+          "heat": "Chauffage",
+          "cool": "Refroidissement"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Volant chauffant au démarrage à distance"
+      },
+      "remote_start_defrost": {
+        "name": "Dégivrage au démarrage à distance"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Démarrage du moteur à distance",
+      "description": "Démarre le moteur à distance. Les réglages indiqués ici ne s'appliquent qu'à ce démarrage ; les réglages omis utilisent ceux du véhicule pour le démarrage à distance.",
+      "fields": {
+        "temperature": {
+          "name": "Température",
+          "description": "Température cible de l'habitacle."
+        },
+        "front_seats": {
+          "name": "Sièges avant",
+          "description": "Chauffer ou refroidir les deux sièges avant."
+        },
+        "rear_seats": {
+          "name": "Sièges arrière",
+          "description": "Chauffer ou refroidir tous les sièges arrière compatibles."
+        },
+        "steering_wheel_heater": {
+          "name": "Volant chauffant",
+          "description": "Activer ou désactiver le volant chauffant."
+        },
+        "defrost": {
+          "name": "Dégivrage",
+          "description": "Activer ou désactiver le désembuage et le dégivrage."
+        }
       }
     }
   }

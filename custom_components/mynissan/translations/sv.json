@@ -44,6 +44,13 @@
         "mx": "Mexiko",
         "us": "USA"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Av",
+        "heat": "Värme",
+        "cool": "Kyla"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Fordonet stöder inte klimatläget {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Fordonet slutförde inte motorkommandot (status: {status}, detaljer: {details}). Vanliga orsaker: två fjärrstarter i rad utan körning emellan, olåsta dörrar, en öppen dörr, motorhuv, baklucka eller ruta, varningsblinkers på, en nyckel i bilen eller en motor som inte har gått på 14 dagar."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} är inte en MyNISSAN-knapp för fjärrstart av motor."
+    },
+    "invalid_remote_start_option": {
+      "message": "Fordonet stöder inte den begärda fjärrstartsinställningen: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Uppdatera"
+      },
+      "remote_engine_start": {
+        "name": "Fjärrstart av motor"
+      },
+      "remote_engine_stop": {
+        "name": "Fjärrstopp av motor"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Laddkabel ansluten"
+      },
+      "window_front_left": {
+        "name": "Vänster främre ruta"
+      },
+      "window_front_right": {
+        "name": "Höger främre ruta"
+      },
+      "window_rear_left": {
+        "name": "Vänster bakre ruta"
+      },
+      "window_rear_right": {
+        "name": "Höger bakre ruta"
+      },
+      "sunroof": {
+        "name": "Taklucka"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Räckvidd"
+      },
+      "fuel_range": {
+        "name": "Räckvidd på bränsle"
+      },
+      "oil_change_range": {
+        "name": "Sträcka till oljebyte"
+      },
+      "last_remote_engine_start": {
+        "name": "Senaste fjärrstart av motor"
+      },
+      "last_remote_engine_stop": {
+        "name": "Senaste fjärrstopp av motor"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Fjärrstartstemperatur"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Fjärrstart förarstol",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Fjärrstart passagerarstol",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Fjärrstart baksäte vänster",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Fjärrstart baksäte höger",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Fjärrstart baksäte mitt",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Fjärrstart tredje raden vänster",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Fjärrstart tredje raden höger",
+        "state": {
+          "off": "Av",
+          "heat": "Värme",
+          "cool": "Kyla"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Fjärrstart rattvärme"
+      },
+      "remote_start_defrost": {
+        "name": "Fjärrstart avfrostning"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Fjärrstart av motor",
+      "description": "Startar motorn på distans. Inställningar som anges här gäller bara för denna start; utelämnade inställningar använder fordonets fjärrstartsinställningar.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatur",
+          "description": "Önskad kupétemperatur."
+        },
+        "front_seats": {
+          "name": "Framsäten",
+          "description": "Värm eller kyl båda framsätena."
+        },
+        "rear_seats": {
+          "name": "Baksäten",
+          "description": "Värm eller kyl alla baksäten som stöder det."
+        },
+        "steering_wheel_heater": {
+          "name": "Rattvärme",
+          "description": "Slå på eller av rattvärmen."
+        },
+        "defrost": {
+          "name": "Avfrostning",
+          "description": "Slå på eller av avimning och avfrostning."
+        }
       }
     }
   }

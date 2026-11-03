@@ -13,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from pynissan import Vehicle, VehicleStatus
 
 from .coordinator import NissanDataUpdateCoordinator
-from .door_status import door_timestamp_attributes, opening_state, unlocked_state
+from .door_status import door_timestamp_attributes, opening_state, unlocked_state, window_state
 from .entity import NissanEntity
 from .models import NissanConfigEntry
 
@@ -133,6 +133,48 @@ DOOR_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
     ),
 )
 
+# Only vehicles that report window positions get these; see async_setup_entry.
+WINDOW_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
+    NissanBinarySensorEntityDescription(
+        key="window_front_left",
+        translation_key="window_front_left",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=lambda s: (
+            window_state(s.doors.front_left.window) if s.doors and s.doors.front_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="window_front_right",
+        translation_key="window_front_right",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=lambda s: (
+            window_state(s.doors.front_right.window) if s.doors and s.doors.front_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="window_rear_left",
+        translation_key="window_rear_left",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=lambda s: (
+            window_state(s.doors.rear_left.window) if s.doors and s.doors.rear_left else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="window_rear_right",
+        translation_key="window_rear_right",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=lambda s: (
+            window_state(s.doors.rear_right.window) if s.doors and s.doors.rear_right else None
+        ),
+    ),
+    NissanBinarySensorEntityDescription(
+        key="sunroof",
+        translation_key="sunroof",
+        device_class=BinarySensorDeviceClass.WINDOW,
+        value_fn=lambda s: window_state(s.doors.sunroof_ajar) if s.doors else None,
+    ),
+)
+
 
 async def async_setup_entry(
     hass: HomeAssistant,
@@ -154,6 +196,11 @@ async def async_setup_entry(
             entities.extend(
                 NissanDoorBinarySensor(coordinator, vehicle, description)
                 for description in DOOR_SENSOR_DESCRIPTIONS
+            )
+            entities.extend(
+                NissanDoorBinarySensor(coordinator, vehicle, description)
+                for description in WINDOW_SENSOR_DESCRIPTIONS
+                if description.value_fn(status) is not None
             )
     async_add_entities(entities)
 

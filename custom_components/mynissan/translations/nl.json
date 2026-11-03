@@ -44,6 +44,13 @@
         "mx": "Mexico",
         "us": "Verenigde Staten"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Uit",
+        "heat": "Verwarmen",
+        "cool": "Koelen"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Het voertuig ondersteunt klimaatmodus {mode} niet."
+    },
+    "engine_command_rejected": {
+      "message": "Het voertuig heeft de motoropdracht niet voltooid (status: {status}, details: {details}). Veelvoorkomende oorzaken: twee keer achter elkaar op afstand gestart zonder tussendoor te rijden, ontgrendelde deuren, een open deur, motorkap, kofferbak of raam, alarmlichten aan, een sleutel in het voertuig of een motor die 14 dagen niet heeft gedraaid."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} is geen MyNISSAN-knop voor het op afstand starten van de motor."
+    },
+    "invalid_remote_start_option": {
+      "message": "Het voertuig ondersteunt de gevraagde instelling voor starten op afstand niet: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Vernieuwen"
+      },
+      "remote_engine_start": {
+        "name": "Motor op afstand starten"
+      },
+      "remote_engine_stop": {
+        "name": "Motor op afstand stoppen"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Laadkabel aangesloten"
+      },
+      "window_front_left": {
+        "name": "Raam linksvoor"
+      },
+      "window_front_right": {
+        "name": "Raam rechtsvoor"
+      },
+      "window_rear_left": {
+        "name": "Raam linksachter"
+      },
+      "window_rear_right": {
+        "name": "Raam rechtsachter"
+      },
+      "sunroof": {
+        "name": "Schuifdak"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Actieradius"
+      },
+      "fuel_range": {
+        "name": "Actieradius brandstof"
+      },
+      "oil_change_range": {
+        "name": "Afstand tot olieverversing"
+      },
+      "last_remote_engine_start": {
+        "name": "Laatste motorstart op afstand"
+      },
+      "last_remote_engine_stop": {
+        "name": "Laatste motorstop op afstand"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Temperatuur bij starten op afstand"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Bestuurdersstoel bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Passagiersstoel bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Achterstoel links bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Achterstoel rechts bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Achterstoel midden bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Derde rij links bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Derde rij rechts bij starten op afstand",
+        "state": {
+          "off": "Uit",
+          "heat": "Verwarmen",
+          "cool": "Koelen"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Stuurverwarming bij starten op afstand"
+      },
+      "remote_start_defrost": {
+        "name": "Ontdooien bij starten op afstand"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Motor op afstand starten",
+      "description": "Start de motor op afstand. Instellingen die hier worden opgegeven gelden alleen voor deze start; weggelaten instellingen gebruiken de instellingen voor starten op afstand van het voertuig.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatuur",
+          "description": "Gewenste interieurtemperatuur."
+        },
+        "front_seats": {
+          "name": "Voorstoelen",
+          "description": "Beide voorstoelen verwarmen of koelen."
+        },
+        "rear_seats": {
+          "name": "Achterstoelen",
+          "description": "Alle achterstoelen die dit ondersteunen verwarmen of koelen."
+        },
+        "steering_wheel_heater": {
+          "name": "Stuurverwarming",
+          "description": "Stuurverwarming in- of uitschakelen."
+        },
+        "defrost": {
+          "name": "Ontdooien",
+          "description": "Ontwaseming en ontdooiing in- of uitschakelen."
+        }
       }
     }
   }
