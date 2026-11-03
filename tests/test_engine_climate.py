@@ -10,7 +10,7 @@ from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, State
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import entity_registry as er
-from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
+from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM, UnitSystem
 from pynissan import (
     AccessoryCapability,
     AuthenticationError,
@@ -102,9 +102,10 @@ async def setup_engine(
     accessories: VehicleAccessoriesDetails | None = ACCESSORIES,
     *,
     setup_succeeds: bool = True,
+    units: UnitSystem = US_CUSTOMARY_SYSTEM,
 ) -> MagicMock:
     """Load a gasoline vehicle with remote engine start and the given climate support."""
-    hass.config.units = US_CUSTOMARY_SYSTEM
+    hass.config.units = units
     entry = _entry()
     entry.add_to_hass(hass)
     client = MagicMock()

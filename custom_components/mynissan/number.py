@@ -7,6 +7,7 @@ from homeassistant.components.number import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.util.unit_conversion import TemperatureConverter
 from pynissan import Vehicle
 
 from .climate import _temperature_unit
@@ -60,10 +61,20 @@ class NissanEngineTemperature(NissanEngineSetting, RestoreNumber):
         """Keep the temperature chosen before Home Assistant restarted."""
         await super().async_added_to_hass()
         last = await self.async_get_last_number_data()
-        if last is None or last.native_value is None:
+        unit = self.native_unit_of_measurement
+        if (
+            last is None
+            or last.native_value is None
+            or last.native_unit_of_measurement is None
+            or last.native_unit_of_measurement not in TemperatureConverter.VALID_UNITS
+            or unit is None
+        ):
             return
-        if self._climate.minimum <= last.native_value <= self._climate.maximum:
-            self._climate.temperature = last.native_value
+        value = TemperatureConverter.convert(
+            last.native_value, last.native_unit_of_measurement, unit
+        )
+        if self._climate.minimum <= value <= self._climate.maximum:
+            self._climate.temperature = value
 
     @property
     def native_value(self) -> float:
