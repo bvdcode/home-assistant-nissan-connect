@@ -44,6 +44,13 @@
         "mx": "Mexico",
         "us": "USA"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Fra",
+        "heat": "Varme",
+        "cool": "Køling"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Køretøjet understøtter ikke klimatilstanden {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Køretøjet gennemførte ikke motorkommandoen (status: {status}, detaljer: {details}). Almindelige årsager: to fjernstarter i træk uden kørsel imellem, ulåste døre, en åben dør, motorhjelm, bagagerum eller rude, katastrofeblink tændt, en nøgle i bilen eller en motor, der ikke har kørt i 14 dage."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} er ikke en MyNISSAN-knap til fjernstart af motor."
+    },
+    "invalid_remote_start_option": {
+      "message": "Køretøjet understøtter ikke den ønskede fjernstartindstilling: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Opdater"
+      },
+      "remote_engine_start": {
+        "name": "Fjernstart af motor"
+      },
+      "remote_engine_stop": {
+        "name": "Fjernstop af motor"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Ladekabel tilsluttet"
+      },
+      "window_front_left": {
+        "name": "Venstre forrude"
+      },
+      "window_front_right": {
+        "name": "Højre forrude"
+      },
+      "window_rear_left": {
+        "name": "Venstre bagrude"
+      },
+      "window_rear_right": {
+        "name": "Højre bagrude"
+      },
+      "sunroof": {
+        "name": "Soltag"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Rækkevidde"
+      },
+      "fuel_range": {
+        "name": "Rækkevidde på brændstof"
+      },
+      "oil_change_range": {
+        "name": "Afstand til olieskift"
+      },
+      "last_remote_engine_start": {
+        "name": "Seneste fjernstart af motor"
+      },
+      "last_remote_engine_stop": {
+        "name": "Seneste fjernstop af motor"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Fjernstarttemperatur"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Fjernstart førersæde",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Fjernstart passagersæde",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Fjernstart bagsæde venstre",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Fjernstart bagsæde højre",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Fjernstart bagsæde midt",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Fjernstart tredje række venstre",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Fjernstart tredje række højre",
+        "state": {
+          "off": "Fra",
+          "heat": "Varme",
+          "cool": "Køling"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Fjernstart rattvarme"
+      },
+      "remote_start_defrost": {
+        "name": "Fjernstart afrimning"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Fjernstart af motor",
+      "description": "Starter motoren på afstand. Indstillinger angivet her gælder kun for denne start; udeladte indstillinger bruger køretøjets fjernstartindstillinger.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatur",
+          "description": "Ønsket kabinetemperatur."
+        },
+        "front_seats": {
+          "name": "Forsæder",
+          "description": "Varm eller køl begge forsæder."
+        },
+        "rear_seats": {
+          "name": "Bagsæder",
+          "description": "Varm eller køl alle bagsæder, der understøtter det."
+        },
+        "steering_wheel_heater": {
+          "name": "Rattvarme",
+          "description": "Slå rattvarmen til eller fra."
+        },
+        "defrost": {
+          "name": "Afrimning",
+          "description": "Slå afdugning og afrimning til eller fra."
+        }
       }
     }
   }

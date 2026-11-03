@@ -1,0 +1,35 @@
+remote_engine_start:
+  target:
+    entity:
+      integration: mynissan
+      domain: button
+  fields:
+    temperature:
+      selector:
+        number:
+          min: 16
+          max: 88
+          step: 0.5
+          mode: box
+    front_seats:
+      selector:
+        select:
+          translation_key: seat_mode
+          options:
+            - "off"
+            - "heat"
+            - "cool"
+    rear_seats:
+      selector:
+        select:
+          translation_key: seat_mode
+          options:
+            - "off"
+            - "heat"
+            - "cool"
+    steering_wheel_heater:
+      selector:
+        boolean:
+    defrost:
+      selector:
+        boolean:

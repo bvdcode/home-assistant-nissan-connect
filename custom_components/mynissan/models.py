@@ -1,12 +1,13 @@
 """Data models for the MyNISSAN integration."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TypedDict
 
 from homeassistant.config_entries import ConfigEntry
 from pynissan import NissanClient, Vehicle, VehicleCapabilities
 
 from .coordinator import NissanDataUpdateCoordinator
+from .engine_climate import EngineClimate
 
 
 class StoredTokens(TypedDict):
@@ -35,6 +36,7 @@ class NissanRuntimeData:
     vehicles: tuple[Vehicle, ...]
     capabilities: dict[str, VehicleCapabilities]
     coordinator: NissanDataUpdateCoordinator
+    engine_climate: dict[str, EngineClimate] = field(default_factory=dict)
 
 
 type NissanConfigEntry = ConfigEntry[NissanRuntimeData]

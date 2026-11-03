@@ -44,6 +44,13 @@
         "mx": "Messico",
         "us": "Stati Uniti"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Spento",
+        "heat": "Riscaldamento",
+        "cool": "Raffreddamento"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Il veicolo non supporta la modalità del climatizzatore {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Il veicolo non ha completato il comando del motore (stato: {status}, dettagli: {details}). Cause comuni: due avviamenti remoti consecutivi senza guidare nel frattempo, portiere sbloccate, una portiera, il cofano, il bagagliaio o un finestrino aperti, luci di emergenza accese, una chiave all'interno o motore non avviato da 14 giorni."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} non è un pulsante di avviamento remoto del motore MyNISSAN."
+    },
+    "invalid_remote_start_option": {
+      "message": "Il veicolo non supporta l'impostazione di avviamento remoto richiesta: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Aggiorna"
+      },
+      "remote_engine_start": {
+        "name": "Avviamento remoto del motore"
+      },
+      "remote_engine_stop": {
+        "name": "Arresto remoto del motore"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Cavo collegato"
+      },
+      "window_front_left": {
+        "name": "Finestrino anteriore sinistro"
+      },
+      "window_front_right": {
+        "name": "Finestrino anteriore destro"
+      },
+      "window_rear_left": {
+        "name": "Finestrino posteriore sinistro"
+      },
+      "window_rear_right": {
+        "name": "Finestrino posteriore destro"
+      },
+      "sunroof": {
+        "name": "Tetto apribile"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Autonomia"
+      },
+      "fuel_range": {
+        "name": "Autonomia carburante"
+      },
+      "oil_change_range": {
+        "name": "Distanza al cambio olio"
+      },
+      "last_remote_engine_start": {
+        "name": "Ultimo avviamento remoto del motore"
+      },
+      "last_remote_engine_stop": {
+        "name": "Ultimo arresto remoto del motore"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Temperatura avviamento remoto"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Sedile conducente avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Sedile passeggero avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Sedile posteriore sinistro avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Sedile posteriore destro avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Sedile posteriore centrale avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Sedile sinistro terza fila avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Sedile destro terza fila avviamento remoto",
+        "state": {
+          "off": "Spento",
+          "heat": "Riscaldamento",
+          "cool": "Raffreddamento"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Volante riscaldato avviamento remoto"
+      },
+      "remote_start_defrost": {
+        "name": "Sbrinamento avviamento remoto"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Avviamento remoto del motore",
+      "description": "Avvia il motore da remoto. Le impostazioni indicate qui valgono solo per questo avviamento; quelle omesse usano le impostazioni di avviamento remoto del veicolo.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatura",
+          "description": "Temperatura dell'abitacolo desiderata."
+        },
+        "front_seats": {
+          "name": "Sedili anteriori",
+          "description": "Riscalda o raffredda entrambi i sedili anteriori."
+        },
+        "rear_seats": {
+          "name": "Sedili posteriori",
+          "description": "Riscalda o raffredda tutti i sedili posteriori che lo supportano."
+        },
+        "steering_wheel_heater": {
+          "name": "Volante riscaldato",
+          "description": "Attiva o disattiva il volante riscaldato."
+        },
+        "defrost": {
+          "name": "Sbrinamento",
+          "description": "Attiva o disattiva lo sbrinatore e il disgelo."
+        }
       }
     }
   }

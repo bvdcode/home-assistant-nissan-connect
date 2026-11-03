@@ -21,6 +21,12 @@ DEFAULT_UPDATE_INTERVAL: Final = timedelta(minutes=15)
 MOBILE_AUTH_PROFILE: Final = "mobile"
 REMOTE_CLIMATE_CONTROL_SERVICE: Final = "REMOTE_CLIMATE_CONTROL"
 
+# Sent with the vehicle VIN when a remote engine command completes successfully.
+SIGNAL_ENGINE_COMMAND: Final = "mynissan_engine_command_{}"
+ENGINE_START_EVENT: Final = "start"
+ENGINE_STOP_EVENT: Final = "stop"
+SERVICE_REMOTE_ENGINE_START: Final = "remote_engine_start"
+
 
 def country_from_value(value: str) -> Country:
     """Return the SDK country matching stored config entry data."""

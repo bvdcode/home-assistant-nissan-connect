@@ -44,6 +44,13 @@
         "mx": "México",
         "us": "Estados Unidos"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Desligado",
+        "heat": "Aquecer",
+        "cool": "Resfriar"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "O veículo não oferece suporte ao modo de climatização {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "O veículo não concluiu o comando do motor (status: {status}, detalhes: {details}). Causas comuns: duas partidas remotas seguidas sem dirigir entre elas, portas destrancadas, uma porta, o capô, o porta-malas ou um vidro abertos, pisca-alerta ligado, uma chave dentro ou o motor sem funcionar há 14 dias."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} não é um botão de partida remota do motor do MyNISSAN."
+    },
+    "invalid_remote_start_option": {
+      "message": "O veículo não suporta a configuração de partida remota solicitada: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Atualizar"
+      },
+      "remote_engine_start": {
+        "name": "Partida remota do motor"
+      },
+      "remote_engine_stop": {
+        "name": "Desligamento remoto do motor"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Cabo conectado"
+      },
+      "window_front_left": {
+        "name": "Vidro dianteiro esquerdo"
+      },
+      "window_front_right": {
+        "name": "Vidro dianteiro direito"
+      },
+      "window_rear_left": {
+        "name": "Vidro traseiro esquerdo"
+      },
+      "window_rear_right": {
+        "name": "Vidro traseiro direito"
+      },
+      "sunroof": {
+        "name": "Teto solar"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Autonomia"
+      },
+      "fuel_range": {
+        "name": "Autonomia de combustível"
+      },
+      "oil_change_range": {
+        "name": "Distância até a troca de óleo"
+      },
+      "last_remote_engine_start": {
+        "name": "Última partida remota do motor"
+      },
+      "last_remote_engine_stop": {
+        "name": "Último desligamento remoto do motor"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Temperatura da partida remota"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Banco do motorista na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Banco do passageiro na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Banco traseiro esquerdo na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Banco traseiro direito na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Banco traseiro central na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Banco esquerdo da terceira fileira na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Banco direito da terceira fileira na partida remota",
+        "state": {
+          "off": "Desligado",
+          "heat": "Aquecer",
+          "cool": "Resfriar"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Volante aquecido na partida remota"
+      },
+      "remote_start_defrost": {
+        "name": "Desembaçador na partida remota"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Partida remota do motor",
+      "description": "Dá a partida no motor remotamente. As configurações informadas aqui valem apenas para esta partida; as omitidas usam as configurações de partida remota do veículo.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatura",
+          "description": "Temperatura desejada da cabine."
+        },
+        "front_seats": {
+          "name": "Bancos dianteiros",
+          "description": "Aquecer ou resfriar os dois bancos dianteiros."
+        },
+        "rear_seats": {
+          "name": "Bancos traseiros",
+          "description": "Aquecer ou resfriar todos os bancos traseiros compatíveis."
+        },
+        "steering_wheel_heater": {
+          "name": "Volante aquecido",
+          "description": "Ligar ou desligar o volante aquecido."
+        },
+        "defrost": {
+          "name": "Desembaçador",
+          "description": "Ligar ou desligar o desembaçador e o degelo."
+        }
       }
     }
   }
