@@ -1,14 +1,15 @@
 """Remote engine start action with per-start climate settings."""
 
 from collections.abc import Mapping
+from functools import partial
 from typing import NoReturn
 
 import voluptuous as vol
-from homeassistant.const import Platform
-from homeassistant.core import HomeAssistant, ServiceCall, callback
+from homeassistant.const import ATTR_ENTITY_ID, ENTITY_MATCH_ALL, Platform
+from homeassistant.core import HassJob, HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import service
+from homeassistant.helpers import entity_platform, service, target
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import VolDictType
 from pynissan import SeatClimateOption
@@ -50,14 +51,34 @@ START_OPTIONS = (
 @callback
 def async_setup_services(hass: HomeAssistant) -> None:
     """Register the remote engine start action."""
-    service.async_register_platform_entity_service(
-        hass,
+    hass.services.async_register(
         DOMAIN,
         SERVICE_REMOTE_ENGINE_START,
-        entity_domain=Platform.BUTTON,
-        schema=START_SCHEMA,
-        func=_async_remote_engine_start,
+        partial(_async_handle_remote_engine_start, hass),
+        schema=cv.make_entity_service_schema(START_SCHEMA),
     )
+
+
+async def _async_handle_remote_engine_start(hass: HomeAssistant, call: ServiceCall) -> None:
+    """Resolve engine start targets before dispatching any vehicle commands."""
+    entities: dict[str, Entity] = {
+        entity.entity_id: entity
+        for platform in entity_platform.async_get_platforms(hass, DOMAIN)
+        if platform.domain == Platform.BUTTON
+        for entity in platform.entities.values()
+        if isinstance(entity, NissanEngineStartButton)
+    }
+    if call.data.get(ATTR_ENTITY_ID) != ENTITY_MATCH_ALL:
+        selected = target.async_extract_referenced_entity_ids(
+            hass, target.TargetSelection(call.data)
+        )
+        if invalid := sorted(selected.referenced - entities.keys()):
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="not_remote_engine_start",
+                translation_placeholders={"entity_id": invalid[0]},
+            )
+    await service.entity_service_call(hass, entities, HassJob(_async_remote_engine_start), call)
 
 
 async def _async_remote_engine_start(entity: Entity, call: ServiceCall) -> None:
