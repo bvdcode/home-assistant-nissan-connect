@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, State
 from homeassistant.exceptions import ServiceValidationError
@@ -12,10 +13,12 @@ from homeassistant.helpers import entity_registry as er
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 from pynissan import (
     AccessoryCapability,
+    AuthenticationError,
     ClimateDefaults,
     ClimateParameters,
     ClimateSettings,
     HvacTemperatureCapabilities,
+    NetworkError,
     NissanError,
     SeatClimateOption,
     SeatClimateSettings,
@@ -97,6 +100,8 @@ async def setup_engine(
     hass: HomeAssistant,
     defaults: ClimateDefaults | Exception | None = DEFAULTS,
     accessories: VehicleAccessoriesDetails | None = ACCESSORIES,
+    *,
+    setup_succeeds: bool = True,
 ) -> MagicMock:
     """Load a gasoline vehicle with remote engine start and the given climate support."""
     hass.config.units = US_CUSTOMARY_SYSTEM
@@ -125,9 +130,10 @@ async def setup_engine(
         return_value=ServiceRequestResult(ServiceRequestStatus.SUCCESS)
     )
     with patch("custom_components.mynissan.create_client", return_value=client):
-        assert await hass.config_entries.async_setup(entry.entry_id)
+        assert await hass.config_entries.async_setup(entry.entry_id) is setup_succeeds
         await hass.async_block_till_done()
-    entry.runtime_data.coordinator.async_request_refresh = AsyncMock()
+    if setup_succeeds:
+        entry.runtime_data.coordinator.async_request_refresh = AsyncMock()
     return client
 
 
@@ -288,14 +294,34 @@ async def test_action_requires_start_button(hass: HomeAssistant) -> None:
     client.async_start_engine.assert_not_called()
 
 
-async def test_unavailable_defaults_use_vehicle_default(hass: HomeAssistant) -> None:
+async def test_absent_defaults_use_vehicle_default(hass: HomeAssistant) -> None:
     """Without saved defaults the vehicle's default temperature is used and options are off."""
-    client = await setup_engine(hass, defaults=NissanError())
+    client = await setup_engine(hass, defaults=None)
     assert float(_entity_state(hass, Platform.NUMBER, "remote_start_temperature").state) == 75.0
     await _start(hass)
     client.async_start_engine.assert_awaited_once_with(
         VEHICLE.vin, climate=_settings(75.0, (OFF, OFF, OFF, OFF), False, False)
     )
+
+
+@pytest.mark.parametrize(
+    ("error", "state", "reauth"),
+    [
+        (AuthenticationError(401, "Expired credentials"), ConfigEntryState.SETUP_ERROR, True),
+        (NetworkError("Offline"), ConfigEntryState.SETUP_RETRY, False),
+        (NissanError("Invalid response"), ConfigEntryState.SETUP_RETRY, False),
+    ],
+)
+async def test_defaults_errors_follow_config_entry_error_handling(
+    hass: HomeAssistant, error: NissanError, state: ConfigEntryState, reauth: bool
+) -> None:
+    """Authentication starts reauth; API failures retry setup instead of replacing settings."""
+    client = await setup_engine(hass, defaults=error, setup_succeeds=False)
+    entry = hass.config_entries.async_entries(DOMAIN)[0]
+    assert entry.state is state
+    assert bool(hass.config_entries.flow.async_progress_by_handler(DOMAIN)) is reauth
+    client.async_start_engine.assert_not_called()
+    client.async_get_vehicle_status.assert_not_called()
 
 
 async def test_without_climate_capabilities(hass: HomeAssistant) -> None:

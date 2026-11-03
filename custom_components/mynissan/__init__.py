@@ -1,7 +1,6 @@
 """MyNISSAN integration for Home Assistant."""
 
 import asyncio
-import logging
 from collections.abc import Mapping
 from typing import cast
 
@@ -44,8 +43,6 @@ from .coordinator import NissanDataUpdateCoordinator
 from .engine_climate import EngineClimate, engine_climate
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
 from .services import async_setup_services
-
-_LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 PLATFORMS: tuple[Platform, ...] = (
@@ -135,6 +132,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
                 for vehicle in vehicles
             )
         )
+        capabilities_by_vin = {
+            capabilities.vin: capabilities for capabilities in vehicle_capabilities
+        }
+        engine_climates = await _async_engine_climate(
+            client, vehicles, capabilities_by_vin, coordinator.temperature_unit
+        )
     except AuthenticationError as error:
         raise ConfigEntryAuthFailed(
             translation_domain=DOMAIN,
@@ -152,15 +155,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
         ) from error
 
     await coordinator.async_config_entry_first_refresh()
-    capabilities_by_vin = {capabilities.vin: capabilities for capabilities in vehicle_capabilities}
     entry.runtime_data = NissanRuntimeData(
         client=client,
         vehicles=vehicles,
         capabilities=capabilities_by_vin,
         coordinator=coordinator,
-        engine_climate=await _async_engine_climate(
-            client, vehicles, capabilities_by_vin, coordinator.temperature_unit
-        ),
+        engine_climate=engine_climates,
     )
     _register_vehicles(hass, entry, vehicles)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -184,11 +184,9 @@ async def _async_engine_climate(
         vehicle_capabilities = capabilities[vehicle.vin]
         if not supports_service(vehicle_capabilities, ENGINE_SERVICES):
             continue
-        defaults: ClimateDefaults | None = None
-        try:
-            defaults = await client.async_get_climate_defaults(vehicle.vin, temperature_unit=unit)
-        except NissanError as error:
-            _LOGGER.debug("Saved climate defaults are unavailable for remote start: %s", error)
+        defaults: ClimateDefaults | None = await client.async_get_climate_defaults(
+            vehicle.vin, temperature_unit=unit
+        )
         climate = engine_climate(vehicle_capabilities, defaults)
         if climate is not None:
             result[vehicle.vin] = climate
