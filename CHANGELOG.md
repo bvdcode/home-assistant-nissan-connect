@@ -2,6 +2,16 @@
 
 <!-- version list -->
 
+## v0.3.9 (2026-10-31)
+
+Added an on-demand Refresh button
+
+- Added a Refresh button that requests fresh vehicle status, waits for completion, then updates battery, climate, and Home Assistant readings.
+- Added the button name in all 13 supported languages.
+
+Co-authored-by: SpOuK3 <137101667+SpOuK3@users.noreply.github.com>
+
+
 ## v0.3.8 (2026-10-31)
 
 Added vehicle-reported timestamps
