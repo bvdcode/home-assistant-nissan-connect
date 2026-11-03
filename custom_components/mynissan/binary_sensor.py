@@ -10,7 +10,7 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
-from pynissan import Vehicle, VehicleStatus
+from pynissan import Vehicle, VehicleCapabilities, VehicleStatus
 
 from .coordinator import NissanDataUpdateCoordinator
 from .door_status import door_timestamp_attributes, opening_state, unlocked_state, window_state
@@ -133,7 +133,6 @@ DOOR_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
     ),
 )
 
-# Only vehicles that report window positions get these; see async_setup_entry.
 WINDOW_SENSOR_DESCRIPTIONS: tuple[NissanBinarySensorEntityDescription, ...] = (
     NissanBinarySensorEntityDescription(
         key="window_front_left",
@@ -197,12 +196,30 @@ async def async_setup_entry(
                 NissanDoorBinarySensor(coordinator, vehicle, description)
                 for description in DOOR_SENSOR_DESCRIPTIONS
             )
-            entities.extend(
-                NissanDoorBinarySensor(coordinator, vehicle, description)
-                for description in WINDOW_SENSOR_DESCRIPTIONS
-                if description.value_fn(status) is not None
-            )
+        entities.extend(
+            NissanDoorBinarySensor(coordinator, vehicle, description)
+            for description in WINDOW_SENSOR_DESCRIPTIONS
+            if _supports_window_sensor(entry.runtime_data.capabilities[vehicle.vin], description)
+            or description.value_fn(status) is not None
+        )
     async_add_entities(entities)
+
+
+def _supports_window_sensor(
+    capabilities: VehicleCapabilities,
+    description: NissanBinarySensorEntityDescription,
+) -> bool:
+    """Retain advertised window sensors while their initial readings are unavailable."""
+    details = capabilities.accessories_details
+    if details is None:
+        return False
+    match description.key:
+        case "sunroof":
+            return details.sun_roof is not None and details.sun_roof.enabled is True
+        case "window_front_left" | "window_front_right" | "window_rear_left" | "window_rear_right":
+            return details.window_status is not None and details.window_status.enabled is True
+        case _:
+            raise ValueError(f"Unsupported window sensor: {description.key}")
 
 
 class NissanBinarySensor(NissanEntity, BinarySensorEntity):

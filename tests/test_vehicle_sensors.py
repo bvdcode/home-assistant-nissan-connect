@@ -17,6 +17,7 @@ from pynissan import (
     MaintenanceIndicator,
     Mileage,
     TirePressure,
+    VehicleCapabilities,
     VehicleStatus,
 )
 
@@ -34,13 +35,18 @@ from .test_init import (
 )
 
 
-async def setup_vehicle(hass: HomeAssistant, status: VehicleStatus) -> MagicMock:
+async def setup_vehicle(
+    hass: HomeAssistant,
+    status: VehicleStatus,
+    *,
+    capabilities: VehicleCapabilities = VEHICLE_CAPABILITIES,
+) -> MagicMock:
     """Load one vehicle using cached SDK data."""
     entry = _entry()
     entry.add_to_hass(hass)
     client = MagicMock()
     client.async_get_vehicles = AsyncMock(return_value=(VEHICLE,))
-    client.async_get_vehicle_capabilities = AsyncMock(return_value=VEHICLE_CAPABILITIES)
+    client.async_get_vehicle_capabilities = AsyncMock(return_value=capabilities)
     client.async_get_vehicle_status = AsyncMock(return_value=status)
     client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
     with patch("custom_components.mynissan.create_client", return_value=client):
