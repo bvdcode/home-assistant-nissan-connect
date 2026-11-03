@@ -2,6 +2,18 @@
 
 <!-- version list -->
 
+## v0.3.10 (2026-11-03)
+
+Add remote engine start and climate settings
+
+- Add remote engine start and stop for supported gasoline vehicles.
+- Add cabin temperature, seat heating and cooling, steering wheel heating and defrost settings for remote starts.
+- Add the remote engine start action with climate settings for each call.
+- Add timestamps for the last successful engine start and stop commands sent from Home Assistant.
+- Add fuel range, distance until the next oil change, window and sunroof sensors.
+- Add translations for the new controls, sensors and messages in all 13 supported languages.
+
+
 ## v0.3.9 (2026-10-31)
 
 Added an on-demand Refresh button
