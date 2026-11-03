@@ -28,6 +28,10 @@ The integration provides:
 - last reported vehicle location on the Home Assistant map;
 - a Refresh button to request fresh vehicle, battery, and climate status on demand;
 - remote climate start, stop, and target-temperature control;
+- remote engine start and stop for vehicles with the remote engine service, with
+  cabin temperature, seat heating or cooling, steering wheel heat, and defrost
+  settings for each start, and the time of the last start and stop sent from
+  Home Assistant;
 - door locking/unlocking and buttons for flashing lights or flashing lights with the horn;
 - setup, entity names, and errors translated into 13 languages.
 
@@ -36,6 +40,29 @@ require an enabled service and an active subscription. Lock and light/horn comma
 recheck these conditions before sending a request and wait for the reported result.
 A vehicle with only locking or only unlocking support gets a button for that action
 instead of a two-way lock control.
+
+Remote engine start sends the temperature, seat, steering wheel, and defrost
+settings shown on the vehicle's configuration controls. They start from the defaults
+saved in the MyNISSAN app and only list the seats and options the vehicle reports.
+The `mynissan.remote_engine_start` action starts the engine with different settings
+for one start, for example based on the outside temperature:
+
+```yaml
+action: mynissan.remote_engine_start
+target:
+  entity_id: button.pathfinder_remote_engine_start
+data:
+  temperature: 72
+  front_seats: heat
+  steering_wheel_heater: true
+  defrost: true
+```
+
+Vehicles do not report whether the engine is running, so Last remote engine start
+and Last remote engine stop only record successful commands sent from Home
+Assistant. Nissan refuses a start when the vehicle is not ready, for example after
+two remote starts without driving in between, with a door unlocked or open, the
+hood, the trunk or a window open, or a key inside; the error lists these causes.
 
 Refresh requests fresh vehicle status and waits for the request to complete, then
 refreshes battery and climate data when reported by the vehicle and reloads the

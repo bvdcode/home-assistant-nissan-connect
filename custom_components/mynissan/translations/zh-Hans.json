@@ -44,6 +44,13 @@
         "mx": "墨西哥",
         "us": "美国"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "关闭",
+        "heat": "加热",
+        "cool": "制冷"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "车辆不支持空调模式 {mode}。"
+    },
+    "engine_command_rejected": {
+      "message": "车辆未完成发动机指令（状态：{status}，详情：{details}）。常见原因：连续两次远程启动且期间未行驶车辆、车门未锁、车门、发动机盖、后备箱或车窗未关闭、危险警告灯开启、车内有钥匙，或发动机已 14 天未运行。"
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} 不是 MyNISSAN 远程启动发动机按钮。"
+    },
+    "invalid_remote_start_option": {
+      "message": "车辆不支持所请求的远程启动设置：{option}。"
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "刷新"
+      },
+      "remote_engine_start": {
+        "name": "远程启动发动机"
+      },
+      "remote_engine_stop": {
+        "name": "远程关闭发动机"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "充电线已连接"
+      },
+      "window_front_left": {
+        "name": "左前车窗"
+      },
+      "window_front_right": {
+        "name": "右前车窗"
+      },
+      "window_rear_left": {
+        "name": "左后车窗"
+      },
+      "window_rear_right": {
+        "name": "右后车窗"
+      },
+      "sunroof": {
+        "name": "天窗"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "续航里程"
+      },
+      "fuel_range": {
+        "name": "燃油续航里程"
+      },
+      "oil_change_range": {
+        "name": "距离换机油"
+      },
+      "last_remote_engine_start": {
+        "name": "上次远程启动发动机"
+      },
+      "last_remote_engine_stop": {
+        "name": "上次远程关闭发动机"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "远程启动温度"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "远程启动驾驶座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "远程启动副驾驶座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "远程启动后排左座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "远程启动后排右座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "远程启动后排中座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "远程启动第三排左座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "远程启动第三排右座",
+        "state": {
+          "off": "关闭",
+          "heat": "加热",
+          "cool": "制冷"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "远程启动方向盘加热"
+      },
+      "remote_start_defrost": {
+        "name": "远程启动除霜"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "远程启动发动机",
+      "description": "远程启动发动机。此处提供的设置仅适用于本次启动；未提供的设置将使用车辆的远程启动设置。",
+      "fields": {
+        "temperature": {
+          "name": "温度",
+          "description": "目标车内温度。"
+        },
+        "front_seats": {
+          "name": "前排座椅",
+          "description": "加热或冷却两个前排座椅。"
+        },
+        "rear_seats": {
+          "name": "后排座椅",
+          "description": "加热或冷却所有支持该功能的后排座椅。"
+        },
+        "steering_wheel_heater": {
+          "name": "方向盘加热",
+          "description": "打开或关闭方向盘加热。"
+        },
+        "defrost": {
+          "name": "除霜",
+          "description": "打开或关闭除雾和除霜。"
+        }
       }
     }
   }

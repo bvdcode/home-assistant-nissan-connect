@@ -12,6 +12,7 @@ from .entity import NissanEntity
 DOOR_LOCK_SERVICES = ("REMOTE_DOOR_LOCK_UNLOCK", "REMOTE_DOOR_LOCK")
 DOOR_UNLOCK_SERVICES = ("REMOTE_DOOR_LOCK_UNLOCK", "REMOTE_DOOR_UNLOCK")
 HORN_LIGHTS_SERVICES = ("REMOTE_HORN_LIGHTS",)
+ENGINE_SERVICES = ("REMOTE_ENGINE",)
 
 
 def supports_service(capabilities: VehicleCapabilities, services: tuple[str, ...]) -> bool:
@@ -61,7 +62,10 @@ class NissanCommandEntity(NissanEntity):
                 raise HomeAssistantError(
                     translation_domain=DOMAIN,
                     translation_key=self._command_rejected_key,
-                    translation_placeholders={"status": status},
+                    translation_placeholders={
+                        "status": status,
+                        "details": result.status_details or "unknown",
+                    },
                 )
             if after_success is not None:
                 await after_success()

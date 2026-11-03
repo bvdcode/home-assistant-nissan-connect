@@ -44,6 +44,13 @@
         "mx": "Meksyk",
         "us": "Stany Zjednoczone"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Wyłączone",
+        "heat": "Grzanie",
+        "cool": "Chłodzenie"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Pojazd nie obsługuje trybu klimatyzacji {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Pojazd nie wykonał polecenia silnika (status: {status}, szczegóły: {details}). Częste przyczyny: dwa zdalne uruchomienia z rzędu bez jazdy pomiędzy nimi, niezablokowane drzwi, otwarte drzwi, maska, bagażnik lub szyba, włączone światła awaryjne, kluczyk w środku lub silnik nieuruchamiany od 14 dni."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} nie jest przyciskiem zdalnego uruchamiania silnika MyNISSAN."
+    },
+    "invalid_remote_start_option": {
+      "message": "Pojazd nie obsługuje żądanego ustawienia zdalnego uruchamiania: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Odśwież"
+      },
+      "remote_engine_start": {
+        "name": "Zdalne uruchomienie silnika"
+      },
+      "remote_engine_stop": {
+        "name": "Zdalne wyłączenie silnika"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Przewód podłączony"
+      },
+      "window_front_left": {
+        "name": "Lewa przednia szyba"
+      },
+      "window_front_right": {
+        "name": "Prawa przednia szyba"
+      },
+      "window_rear_left": {
+        "name": "Lewa tylna szyba"
+      },
+      "window_rear_right": {
+        "name": "Prawa tylna szyba"
+      },
+      "sunroof": {
+        "name": "Szyberdach"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Zasięg"
+      },
+      "fuel_range": {
+        "name": "Zasięg na paliwie"
+      },
+      "oil_change_range": {
+        "name": "Dystans do wymiany oleju"
+      },
+      "last_remote_engine_start": {
+        "name": "Ostatnie zdalne uruchomienie silnika"
+      },
+      "last_remote_engine_stop": {
+        "name": "Ostatnie zdalne wyłączenie silnika"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Temperatura zdalnego uruchomienia"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Fotel kierowcy przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Fotel pasażera przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Lewy tylny fotel przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Prawy tylny fotel przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Środkowy tylny fotel przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Lewy fotel trzeciego rzędu przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Prawy fotel trzeciego rzędu przy zdalnym uruchomieniu",
+        "state": {
+          "off": "Wyłączone",
+          "heat": "Grzanie",
+          "cool": "Chłodzenie"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Podgrzewanie kierownicy przy zdalnym uruchomieniu"
+      },
+      "remote_start_defrost": {
+        "name": "Odmrażanie przy zdalnym uruchomieniu"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Zdalne uruchomienie silnika",
+      "description": "Zdalnie uruchamia silnik. Podane tutaj ustawienia dotyczą tylko tego uruchomienia; pominięte ustawienia są brane z ustawień zdalnego uruchamiania pojazdu.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatura",
+          "description": "Docelowa temperatura w kabinie."
+        },
+        "front_seats": {
+          "name": "Przednie fotele",
+          "description": "Podgrzewanie lub chłodzenie obu przednich foteli."
+        },
+        "rear_seats": {
+          "name": "Tylne fotele",
+          "description": "Podgrzewanie lub chłodzenie wszystkich tylnych foteli, które to obsługują."
+        },
+        "steering_wheel_heater": {
+          "name": "Podgrzewanie kierownicy",
+          "description": "Włącz lub wyłącz podgrzewanie kierownicy."
+        },
+        "defrost": {
+          "name": "Odmrażanie",
+          "description": "Włącz lub wyłącz odparowywanie i odmrażanie szyb."
+        }
       }
     }
   }

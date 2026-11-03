@@ -7,11 +7,22 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.util.unit_conversion import PressureConverter
 from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
-from pynissan import MaintenanceIndicator, Mileage, TirePressure, VehicleStatus
+from pynissan import (
+    DistanceReading,
+    DistanceUnit,
+    EngineOilDrainRange,
+    MaintenanceIndicator,
+    Mileage,
+    TirePressure,
+    VehicleCapabilities,
+    VehicleStatus,
+)
 
 from custom_components.mynissan.charge_completion import remaining_charge_minutes
+from custom_components.mynissan.const import DOMAIN
 from custom_components.mynissan.coordinator import NissanVehicleData
 
 from .test_init import (
@@ -24,13 +35,18 @@ from .test_init import (
 )
 
 
-async def setup_vehicle(hass: HomeAssistant, status: VehicleStatus) -> MagicMock:
+async def setup_vehicle(
+    hass: HomeAssistant,
+    status: VehicleStatus,
+    *,
+    capabilities: VehicleCapabilities = VEHICLE_CAPABILITIES,
+) -> MagicMock:
     """Load one vehicle using cached SDK data."""
     entry = _entry()
     entry.add_to_hass(hass)
     client = MagicMock()
     client.async_get_vehicles = AsyncMock(return_value=(VEHICLE,))
-    client.async_get_vehicle_capabilities = AsyncMock(return_value=VEHICLE_CAPABILITIES)
+    client.async_get_vehicle_capabilities = AsyncMock(return_value=capabilities)
     client.async_get_vehicle_status = AsyncMock(return_value=status)
     client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
     with patch("custom_components.mynissan.create_client", return_value=client):
@@ -131,6 +147,39 @@ async def test_missing_readings_and_recovery(hass: HomeAssistant) -> None:
     odometer = _entity_state(hass, Platform.SENSOR, "odometer")
     assert float(odometer.state) == pytest.approx(160.9344)
     assert odometer.attributes["unit_of_measurement"] == "km"
+
+
+async def test_fuel_and_oil_change_range(hass: HomeAssistant) -> None:
+    """Gasoline vehicles report fuel range and distance until the next oil change."""
+    hass.config.units = US_CUSTOMARY_SYSTEM
+    reported_at = datetime(2026, 11, 2, 3, 6, 5, tzinfo=UTC)
+    status = replace(
+        VEHICLE_STATUS,
+        battery=None,
+        climate=None,
+        fuel_range=DistanceReading(345, "MILE", reported_at),
+        engine_oil_drain_range=EngineOilDrainRange(9700, DistanceUnit.MILE, reported_at),
+    )
+    client = await setup_vehicle(hass, status)
+    fuel = _entity_state(hass, Platform.SENSOR, "fuel_range")
+    assert float(fuel.state) == 345
+    assert fuel.attributes["unit_of_measurement"] == "mi"
+    oil = _entity_state(hass, Platform.SENSOR, "oil_change_range")
+    assert float(oil.state) == 9700
+    assert oil.attributes["unit_of_measurement"] == "mi"
+    missing = replace(status, fuel_range=DistanceReading(None, "MILE", None))
+    client.coordinator.async_set_updated_data(
+        {VEHICLE.vin: NissanVehicleData(missing, VEHICLE_LOCATION)}
+    )
+    assert _entity_state(hass, Platform.SENSOR, "fuel_range").state == "unavailable"
+
+
+async def test_electric_vehicle_has_no_fuel_sensors(hass: HomeAssistant) -> None:
+    """Vehicles that report no fuel or oil data get no sensors for them."""
+    await setup_vehicle(hass, VEHICLE_STATUS)
+    registry = er.async_get(hass)
+    for key in ("fuel_range", "oil_change_range"):
+        assert registry.async_get_entity_id(Platform.SENSOR, DOMAIN, f"{VEHICLE.vin}_{key}") is None
 
 
 async def test_pressure_in_us_units(hass: HomeAssistant) -> None:

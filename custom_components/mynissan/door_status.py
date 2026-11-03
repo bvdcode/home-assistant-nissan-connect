@@ -21,6 +21,17 @@ def opening_state(value: str | None) -> bool | None:
             return None
 
 
+def window_state(value: str | None) -> bool | None:
+    """Return whether a window is open, counting a partly open window as open."""
+    match value:
+        case "CLOSED":
+            return False
+        case str() if "OPEN" in value or value == "AJAR":
+            return True
+        case _:
+            return None
+
+
 def unlocked_state(value: str | None) -> bool | None:
     """Return whether a lock is unlocked without treating unknown as locked."""
     match value:

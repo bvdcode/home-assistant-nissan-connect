@@ -9,12 +9,15 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
 from pynissan import (
+    ClimateParameters,
+    ClimateSettings,
     NissanError,
     ServiceCapability,
     ServiceRequest,
     ServiceRequestKind,
     ServiceRequestResult,
     ServiceRequestStatus,
+    TemperatureUnit,
 )
 
 from custom_components.mynissan.const import DOMAIN
@@ -49,6 +52,7 @@ async def setup_commands(
     )
     client.async_get_vehicle_status = AsyncMock(return_value=replace(VEHICLE_STATUS, doors=DOORS))
     client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
+    client.async_get_climate_defaults = AsyncMock(return_value=None)
     client.async_lock_doors = AsyncMock(
         return_value=ServiceRequest("lock", ServiceRequestKind.DOOR)
     )
@@ -60,6 +64,12 @@ async def setup_commands(
     )
     client.async_flash_lights_and_horn = AsyncMock(
         return_value=ServiceRequest("horn", ServiceRequestKind.HORN_LIGHT)
+    )
+    client.async_start_engine = AsyncMock(
+        return_value=ServiceRequest("start", ServiceRequestKind.ENGINE)
+    )
+    client.async_stop_engine = AsyncMock(
+        return_value=ServiceRequest("stop", ServiceRequestKind.ENGINE)
     )
     client.async_refresh_vehicle_status = AsyncMock(
         return_value=ServiceRequest("refresh", ServiceRequestKind.VEHICLE_STATUS)
@@ -78,6 +88,8 @@ async def setup_commands(
     client.async_unlock_doors.assert_not_called()
     client.async_flash_lights.assert_not_called()
     client.async_flash_lights_and_horn.assert_not_called()
+    client.async_start_engine.assert_not_called()
+    client.async_stop_engine.assert_not_called()
     client.async_refresh_vehicle_status.assert_not_called()
     client.async_refresh_battery_status.assert_not_called()
     client.async_refresh_climate_status.assert_not_called()
@@ -157,6 +169,78 @@ async def test_directional_lock_services(
         assert (found is not None) == expected
         if expected and platform is Platform.BUTTON:
             await call_command(hass, platform, key, "press")
+
+
+ENGINE_SERVICES = (ServiceCapability("REMOTE_ENGINE", True, True),)
+
+
+async def test_remote_engine_commands(hass: HomeAssistant) -> None:
+    """Remote start and stop each send one engine request and wait for it."""
+    client = await setup_commands(hass, ENGINE_SERVICES)
+    assert _entity_state(hass, Platform.SENSOR, "last_remote_engine_start").state == "unknown"
+    await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
+    client.async_start_engine.assert_awaited_once_with(
+        VEHICLE.vin,
+        climate=ClimateSettings(
+            22.0,
+            TemperatureUnit.CELSIUS,
+            ClimateParameters(seats=None, steering_wheel_heater=False, defrost_and_deicer=False),
+        ),
+    )
+    client.async_wait_for_service_request.assert_awaited_with(
+        VEHICLE.vin, ServiceRequest("start", ServiceRequestKind.ENGINE)
+    )
+    await call_command(hass, Platform.BUTTON, "remote_engine_stop", "press")
+    client.async_stop_engine.assert_awaited_once_with(VEHICLE.vin)
+    client.async_wait_for_service_request.assert_awaited_with(
+        VEHICLE.vin, ServiceRequest("stop", ServiceRequestKind.ENGINE)
+    )
+    assert client.coordinator.async_request_refresh.await_count == 2
+    for key in ("last_remote_engine_start", "last_remote_engine_stop"):
+        assert _entity_state(hass, Platform.SENSOR, key).state not in ("unknown", "unavailable")
+
+
+@pytest.mark.parametrize(
+    "services",
+    [
+        ALL_SERVICES,
+        (ServiceCapability("REMOTE_ENGINE", False, True),),
+        (ServiceCapability("REMOTE_ENGINE", True, None),),
+    ],
+)
+async def test_remote_engine_requires_subscription(
+    hass: HomeAssistant, services: tuple[ServiceCapability, ...]
+) -> None:
+    """Vehicles without an enabled, subscribed REMOTE_ENGINE get no engine buttons."""
+    await setup_commands(hass, services)
+    for key in ("remote_engine_start", "remote_engine_stop"):
+        assert (
+            er.async_get(hass).async_get_entity_id(Platform.BUTTON, DOMAIN, f"{VEHICLE.vin}_{key}")
+            is None
+        )
+
+
+async def test_remote_engine_rejection_explains_cause(hass: HomeAssistant) -> None:
+    """A refused start reports Nissan's reason and does not refresh as if it ran."""
+    client = await setup_commands(hass, ENGINE_SERVICES)
+    client.async_wait_for_service_request.return_value = ServiceRequestResult(
+        ServiceRequestStatus.FAILED, "RES_FAILED"
+    )
+    with pytest.raises(HomeAssistantError) as error:
+        await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
+    assert error.value.translation_key == "engine_command_rejected"
+    assert error.value.translation_placeholders == {"status": "FAILED", "details": "RES_FAILED"}
+    client.coordinator.async_request_refresh.assert_not_called()
+    assert _entity_state(hass, Platform.SENSOR, "last_remote_engine_start").state == "unknown"
+
+
+async def test_revoked_engine_subscription_blocks_start(hass: HomeAssistant) -> None:
+    """An engine subscription lost after setup must prevent sending the start."""
+    client = await setup_commands(hass, ENGINE_SERVICES)
+    client.async_get_vehicle_capabilities.return_value = replace(VEHICLE_CAPABILITIES, services=())
+    with pytest.raises(ServiceValidationError):
+        await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
+    client.async_start_engine.assert_not_called()
 
 
 async def test_revoked_subscription_blocks_command(hass: HomeAssistant) -> None:

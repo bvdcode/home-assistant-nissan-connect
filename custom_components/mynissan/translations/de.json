@@ -44,6 +44,13 @@
         "mx": "Mexiko",
         "us": "Vereinigte Staaten"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Aus",
+        "heat": "Heizen",
+        "cool": "Kühlen"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Das Fahrzeug unterstützt den Klimamodus {mode} nicht."
+    },
+    "engine_command_rejected": {
+      "message": "Das Fahrzeug hat den Motorbefehl nicht ausgeführt (Status: {status}, Details: {details}). Häufige Ursachen: zwei Fernstarts hintereinander ohne zwischenzeitliche Fahrt, unverriegelte Türen, eine offene Tür, Motorhaube, Kofferraum oder ein offenes Fenster, eingeschaltete Warnblinkanlage, ein Schlüssel im Fahrzeug oder ein Motor, der 14 Tage nicht gelaufen ist."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} ist keine MyNISSAN-Taste für den Motor-Fernstart."
+    },
+    "invalid_remote_start_option": {
+      "message": "Das Fahrzeug unterstützt die angeforderte Fernstart-Einstellung nicht: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Aktualisieren"
+      },
+      "remote_engine_start": {
+        "name": "Motor-Fernstart"
+      },
+      "remote_engine_stop": {
+        "name": "Motor-Fernstopp"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Ladekabel angeschlossen"
+      },
+      "window_front_left": {
+        "name": "Fenster vorne links"
+      },
+      "window_front_right": {
+        "name": "Fenster vorne rechts"
+      },
+      "window_rear_left": {
+        "name": "Fenster hinten links"
+      },
+      "window_rear_right": {
+        "name": "Fenster hinten rechts"
+      },
+      "sunroof": {
+        "name": "Schiebedach"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Reichweite"
+      },
+      "fuel_range": {
+        "name": "Kraftstoffreichweite"
+      },
+      "oil_change_range": {
+        "name": "Strecke bis zum Ölwechsel"
+      },
+      "last_remote_engine_start": {
+        "name": "Letzter Motor-Fernstart"
+      },
+      "last_remote_engine_stop": {
+        "name": "Letzter Motor-Fernstopp"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Fernstart-Temperatur"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Fernstart Fahrersitz",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Fernstart Beifahrersitz",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Fernstart Rücksitz links",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Fernstart Rücksitz rechts",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Fernstart Rücksitz Mitte",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Fernstart dritte Reihe links",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Fernstart dritte Reihe rechts",
+        "state": {
+          "off": "Aus",
+          "heat": "Heizen",
+          "cool": "Kühlen"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Fernstart Lenkradheizung"
+      },
+      "remote_start_defrost": {
+        "name": "Fernstart Enteisung"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Motor-Fernstart",
+      "description": "Startet den Motor aus der Ferne. Die hier angegebenen Einstellungen gelten nur für diesen Start; fehlende Einstellungen werden aus den Fernstart-Einstellungen des Fahrzeugs übernommen.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatur",
+          "description": "Gewünschte Innenraumtemperatur."
+        },
+        "front_seats": {
+          "name": "Vordersitze",
+          "description": "Beide Vordersitze heizen oder kühlen."
+        },
+        "rear_seats": {
+          "name": "Rücksitze",
+          "description": "Alle Rücksitze heizen oder kühlen, die dies unterstützen."
+        },
+        "steering_wheel_heater": {
+          "name": "Lenkradheizung",
+          "description": "Lenkradheizung ein- oder ausschalten."
+        },
+        "defrost": {
+          "name": "Enteisung",
+          "description": "Defroster und Enteisung ein- oder ausschalten."
+        }
       }
     }
   }

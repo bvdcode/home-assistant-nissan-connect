@@ -44,6 +44,13 @@
         "mx": "Mexiko",
         "us": "Spojené státy"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Vypnuto",
+        "heat": "Vyhřívání",
+        "cool": "Chlazení"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "Vozidlo nepodporuje režim klimatizace {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "Vozidlo nedokončilo příkaz pro motor (stav: {status}, podrobnosti: {details}). Časté příčiny: dvě dálková nastartování po sobě bez jízdy mezi nimi, odemčené dveře, otevřené dveře, kapota, kufr nebo okno, zapnutá výstražná světla, klíč uvnitř nebo motor, který neběžel 14 dní."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} není tlačítko MyNISSAN pro dálkové nastartování motoru."
+    },
+    "invalid_remote_start_option": {
+      "message": "Vozidlo nepodporuje požadované nastavení dálkového startu: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Obnovit"
+      },
+      "remote_engine_start": {
+        "name": "Dálkové nastartování motoru"
+      },
+      "remote_engine_stop": {
+        "name": "Dálkové vypnutí motoru"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Kabel připojen"
+      },
+      "window_front_left": {
+        "name": "Levé přední okno"
+      },
+      "window_front_right": {
+        "name": "Pravé přední okno"
+      },
+      "window_rear_left": {
+        "name": "Levé zadní okno"
+      },
+      "window_rear_right": {
+        "name": "Pravé zadní okno"
+      },
+      "sunroof": {
+        "name": "Střešní okno"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Dojezd"
+      },
+      "fuel_range": {
+        "name": "Dojezd na palivo"
+      },
+      "oil_change_range": {
+        "name": "Vzdálenost do výměny oleje"
+      },
+      "last_remote_engine_start": {
+        "name": "Poslední dálkové nastartování motoru"
+      },
+      "last_remote_engine_stop": {
+        "name": "Poslední dálkové vypnutí motoru"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Teplota při dálkovém startu"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Sedadlo řidiče při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Sedadlo spolujezdce při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Levé zadní sedadlo při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Pravé zadní sedadlo při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Prostřední zadní sedadlo při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Levé sedadlo třetí řady při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Pravé sedadlo třetí řady při dálkovém startu",
+        "state": {
+          "off": "Vypnuto",
+          "heat": "Vyhřívání",
+          "cool": "Chlazení"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Vyhřívání volantu při dálkovém startu"
+      },
+      "remote_start_defrost": {
+        "name": "Odmrazování při dálkovém startu"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Dálkové nastartování motoru",
+      "description": "Dálkově nastartuje motor. Zde zadaná nastavení platí jen pro toto nastartování; vynechaná nastavení se převezmou z nastavení dálkového startu vozidla.",
+      "fields": {
+        "temperature": {
+          "name": "Teplota",
+          "description": "Cílová teplota v kabině."
+        },
+        "front_seats": {
+          "name": "Přední sedadla",
+          "description": "Vyhřívat nebo chladit obě přední sedadla."
+        },
+        "rear_seats": {
+          "name": "Zadní sedadla",
+          "description": "Vyhřívat nebo chladit všechna zadní sedadla, která to podporují."
+        },
+        "steering_wheel_heater": {
+          "name": "Vyhřívání volantu",
+          "description": "Zapnout nebo vypnout vyhřívání volantu."
+        },
+        "defrost": {
+          "name": "Odmrazování",
+          "description": "Zapnout nebo vypnout odmlžování a odmrazování."
+        }
       }
     }
   }

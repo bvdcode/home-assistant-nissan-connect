@@ -44,6 +44,13 @@
         "mx": "Mexico",
         "us": "United States"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Off",
+        "heat": "Heat",
+        "cool": "Cool"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "The vehicle does not support HVAC mode {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "The vehicle did not complete the remote engine command (status: {status}, details: {details}). Common causes: two remote starts in a row without driving the vehicle in between, the doors unlocked, a door, the hood, the trunk or a window open, the hazard lights on, a key inside, or the engine not run for 14 days."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} is not a MyNISSAN remote engine start button."
+    },
+    "invalid_remote_start_option": {
+      "message": "The vehicle does not support the requested remote start setting: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Refresh"
+      },
+      "remote_engine_start": {
+        "name": "Remote engine start"
+      },
+      "remote_engine_stop": {
+        "name": "Remote engine stop"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Plugged in"
+      },
+      "window_front_left": {
+        "name": "Front left window"
+      },
+      "window_front_right": {
+        "name": "Front right window"
+      },
+      "window_rear_left": {
+        "name": "Rear left window"
+      },
+      "window_rear_right": {
+        "name": "Rear right window"
+      },
+      "sunroof": {
+        "name": "Sunroof"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Range"
+      },
+      "fuel_range": {
+        "name": "Fuel range"
+      },
+      "oil_change_range": {
+        "name": "Distance until oil change"
+      },
+      "last_remote_engine_start": {
+        "name": "Last remote engine start"
+      },
+      "last_remote_engine_stop": {
+        "name": "Last remote engine stop"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Remote start temperature"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Remote start driver seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Remote start passenger seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Remote start rear left seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Remote start rear right seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Remote start rear center seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Remote start third-row left seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Remote start third-row right seat",
+        "state": {
+          "off": "Off",
+          "heat": "Heat",
+          "cool": "Cool"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Remote start steering wheel heat"
+      },
+      "remote_start_defrost": {
+        "name": "Remote start defrost"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Remote engine start",
+      "description": "Starts the engine remotely. Settings given here apply to this start only; omitted settings use the vehicle's remote start settings.",
+      "fields": {
+        "temperature": {
+          "name": "Temperature",
+          "description": "Target cabin temperature."
+        },
+        "front_seats": {
+          "name": "Front seats",
+          "description": "Heat or cool both front seats."
+        },
+        "rear_seats": {
+          "name": "Rear seats",
+          "description": "Heat or cool all rear seats that support it."
+        },
+        "steering_wheel_heater": {
+          "name": "Steering wheel heat",
+          "description": "Turn the heated steering wheel on or off."
+        },
+        "defrost": {
+          "name": "Defrost",
+          "description": "Turn the defroster and de-icer on or off."
+        }
       }
     }
   }

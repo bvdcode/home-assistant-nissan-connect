@@ -14,9 +14,21 @@ from homeassistant.exceptions import (
 )
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
-from pynissan import AuthenticationError, NetworkError, NissanError, Tokens, Vehicle
+from homeassistant.helpers.typing import ConfigType
+from pynissan import (
+    AuthenticationError,
+    ClimateDefaults,
+    NetworkError,
+    NissanClient,
+    NissanError,
+    TemperatureUnit,
+    Tokens,
+    Vehicle,
+    VehicleCapabilities,
+)
 
 from .api import create_client, tokens_from_data, tokens_to_data
+from .commands import ENGINE_SERVICES, supports_service
 from .const import (
     CONF_AUTH_PROFILE,
     CONF_COUNTRY,
@@ -28,7 +40,9 @@ from .const import (
     country_from_value,
 )
 from .coordinator import NissanDataUpdateCoordinator
+from .engine_climate import EngineClimate, engine_climate
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
+from .services import async_setup_services
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 PLATFORMS: tuple[Platform, ...] = (
@@ -38,8 +52,18 @@ PLATFORMS: tuple[Platform, ...] = (
     Platform.DEVICE_TRACKER,
     Platform.IMAGE,
     Platform.LOCK,
+    Platform.NUMBER,
+    Platform.SELECT,
     Platform.SENSOR,
+    Platform.SWITCH,
 )
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Register MyNISSAN actions."""
+    del config
+    async_setup_services(hass)
+    return True
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bool:
@@ -108,6 +132,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
                 for vehicle in vehicles
             )
         )
+        capabilities_by_vin = {
+            capabilities.vin: capabilities for capabilities in vehicle_capabilities
+        }
+        engine_climates = await _async_engine_climate(
+            client, vehicles, capabilities_by_vin, coordinator.temperature_unit
+        )
     except AuthenticationError as error:
         raise ConfigEntryAuthFailed(
             translation_domain=DOMAIN,
@@ -128,8 +158,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
     entry.runtime_data = NissanRuntimeData(
         client=client,
         vehicles=vehicles,
-        capabilities={capabilities.vin: capabilities for capabilities in vehicle_capabilities},
+        capabilities=capabilities_by_vin,
         coordinator=coordinator,
+        engine_climate=engine_climates,
     )
     _register_vehicles(hass, entry, vehicles)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -139,6 +170,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: NissanConfigEntry) -> bo
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a MyNISSAN config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def _async_engine_climate(
+    client: NissanClient,
+    vehicles: tuple[Vehicle, ...],
+    capabilities: dict[str, VehicleCapabilities],
+    unit: TemperatureUnit,
+) -> dict[str, EngineClimate]:
+    """Prepare remote start climate settings, starting from the app's saved defaults."""
+    result: dict[str, EngineClimate] = {}
+    for vehicle in vehicles:
+        vehicle_capabilities = capabilities[vehicle.vin]
+        if not supports_service(vehicle_capabilities, ENGINE_SERVICES):
+            continue
+        defaults: ClimateDefaults | None = await client.async_get_climate_defaults(
+            vehicle.vin, temperature_unit=unit
+        )
+        climate = engine_climate(vehicle_capabilities, defaults)
+        if climate is not None:
+            result[vehicle.vin] = climate
+    return result
 
 
 @callback

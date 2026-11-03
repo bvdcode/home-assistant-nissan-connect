@@ -44,6 +44,13 @@
         "mx": "México",
         "us": "Estados Unidos"
       }
+    },
+    "seat_mode": {
+      "options": {
+        "off": "Apagado",
+        "heat": "Calefacción",
+        "cool": "Refrigeración"
+      }
     }
   },
   "exceptions": {
@@ -76,6 +83,15 @@
     },
     "unsupported_hvac_mode": {
       "message": "El vehículo no admite el modo de climatización {mode}."
+    },
+    "engine_command_rejected": {
+      "message": "El vehículo no completó el comando del motor (estado: {status}, detalles: {details}). Causas habituales: dos arranques remotos seguidos sin conducir entre ellos, puertas sin bloquear, una puerta, el capó, el maletero o una ventanilla abiertos, luces de emergencia encendidas, una llave dentro o el motor sin funcionar durante 14 días."
+    },
+    "not_remote_engine_start": {
+      "message": "{entity_id} no es un botón de arranque remoto del motor de MyNISSAN."
+    },
+    "invalid_remote_start_option": {
+      "message": "El vehículo no admite el ajuste de arranque remoto solicitado: {option}."
     }
   },
   "entity": {
@@ -99,6 +115,12 @@
       },
       "refresh": {
         "name": "Actualizar"
+      },
+      "remote_engine_start": {
+        "name": "Arranque remoto del motor"
+      },
+      "remote_engine_stop": {
+        "name": "Parada remota del motor"
       }
     },
     "image": {
@@ -153,6 +175,21 @@
       },
       "plugged_in": {
         "name": "Cable conectado"
+      },
+      "window_front_left": {
+        "name": "Ventanilla delantera izquierda"
+      },
+      "window_front_right": {
+        "name": "Ventanilla delantera derecha"
+      },
+      "window_rear_left": {
+        "name": "Ventanilla trasera izquierda"
+      },
+      "window_rear_right": {
+        "name": "Ventanilla trasera derecha"
+      },
+      "sunroof": {
+        "name": "Techo solar"
       }
     },
     "device_tracker": {
@@ -196,6 +233,117 @@
       },
       "range": {
         "name": "Autonomía"
+      },
+      "fuel_range": {
+        "name": "Autonomía de combustible"
+      },
+      "oil_change_range": {
+        "name": "Distancia hasta el cambio de aceite"
+      },
+      "last_remote_engine_start": {
+        "name": "Último arranque remoto del motor"
+      },
+      "last_remote_engine_stop": {
+        "name": "Última parada remota del motor"
+      }
+    },
+    "number": {
+      "remote_start_temperature": {
+        "name": "Temperatura de arranque remoto"
+      }
+    },
+    "select": {
+      "remote_start_front_driver_seat": {
+        "name": "Asiento del conductor en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_front_passenger_seat": {
+        "name": "Asiento del acompañante en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_rear_left_seat": {
+        "name": "Asiento trasero izquierdo en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_rear_right_seat": {
+        "name": "Asiento trasero derecho en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_rear_center_seat": {
+        "name": "Asiento trasero central en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_third_left_seat": {
+        "name": "Asiento izquierdo de tercera fila en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      },
+      "remote_start_third_right_seat": {
+        "name": "Asiento derecho de tercera fila en arranque remoto",
+        "state": {
+          "off": "Apagado",
+          "heat": "Calefacción",
+          "cool": "Refrigeración"
+        }
+      }
+    },
+    "switch": {
+      "remote_start_steering_wheel_heater": {
+        "name": "Volante calefactado en arranque remoto"
+      },
+      "remote_start_defrost": {
+        "name": "Desempañado en arranque remoto"
+      }
+    }
+  },
+  "services": {
+    "remote_engine_start": {
+      "name": "Arranque remoto del motor",
+      "description": "Arranca el motor de forma remota. Los ajustes indicados aquí solo se aplican a este arranque; los ajustes omitidos usan los ajustes de arranque remoto del vehículo.",
+      "fields": {
+        "temperature": {
+          "name": "Temperatura",
+          "description": "Temperatura objetivo del habitáculo."
+        },
+        "front_seats": {
+          "name": "Asientos delanteros",
+          "description": "Calentar o enfriar ambos asientos delanteros."
+        },
+        "rear_seats": {
+          "name": "Asientos traseros",
+          "description": "Calentar o enfriar todos los asientos traseros que lo admitan."
+        },
+        "steering_wheel_heater": {
+          "name": "Volante calefactado",
+          "description": "Activar o desactivar el volante calefactado."
+        },
+        "defrost": {
+          "name": "Desempañado",
+          "description": "Activar o desactivar el desempañador y el descongelador."
+        }
       }
     }
   }
