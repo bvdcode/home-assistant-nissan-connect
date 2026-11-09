@@ -41,7 +41,7 @@ from pynissan import (
     VehicleLocation,
     VehicleStatus,
 )
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.mynissan import async_setup_entry
 from custom_components.mynissan.const import (
@@ -153,7 +153,9 @@ async def test_setup_registers_vehicle_and_persists_refreshed_tokens(
         )
     }
 
-    device = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, VEHICLE.vin)})
+    device = dr.async_get(hass).async_get_device_by_identifier(
+        (DOMAIN, VEHICLE.vin), entry.entry_id
+    )
     assert device is not None
     assert device.name == "Family Ariya"
     assert device.manufacturer == "Nissan"

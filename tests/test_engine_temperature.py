@@ -6,7 +6,7 @@ import pytest
 from homeassistant.core import HomeAssistant, State
 from homeassistant.util.unit_system import METRIC_SYSTEM, US_CUSTOMARY_SYSTEM
 from pynissan import HvacTemperatureCapabilities, TemperatureUnit
-from pytest_homeassistant_custom_component.common import mock_restore_cache_with_extra_data
+from pytest_homeassistant.common import mock_restore_cache_with_extra_data
 
 from .test_engine_climate import ACCESSORIES, _start, setup_engine
 

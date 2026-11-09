@@ -7,7 +7,7 @@ from homeassistant import config_entries, data_entry_flow
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from pynissan import AuthenticationError, Country, NetworkError, NissanError, Tokens, Vehicle
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.mynissan.const import (
     CONF_AUTH_PROFILE,

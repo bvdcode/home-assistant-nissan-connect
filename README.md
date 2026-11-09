@@ -80,7 +80,7 @@ locked. The vehicle image is model artwork supplied by the account, not a live c
 
 ## Requirements
 
-- Home Assistant 2026.7.4 or newer;
+- Home Assistant 2026.11.0 or newer;
 - a MyNISSAN account from the United States or Canada, or a MiNissan account
   from Mexico, with at least one connected vehicle.
 

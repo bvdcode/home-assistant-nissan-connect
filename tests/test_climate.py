@@ -2,6 +2,7 @@
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
 from homeassistant.const import (
     ATTR_ENTITY_ID,
     ATTR_TEMPERATURE,
@@ -11,6 +12,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from homeassistant.util.unit_system import METRIC_SYSTEM, US_CUSTOMARY_SYSTEM, UnitSystem
 from pynissan import (
     ClimateSettings,
     ClimateStatus,
@@ -28,7 +30,7 @@ from pynissan import (
     VehicleLocation,
     VehicleStatus,
 )
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.mynissan.const import (
     CONF_AUTH_PROFILE,
@@ -62,8 +64,31 @@ CAPABILITIES = VehicleCapabilities(
 )
 
 
-async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
-    """Climate services start, adjust, and stop the vehicle climate system."""
+@pytest.mark.parametrize(
+    (
+        "units",
+        "initial_target",
+        "initial_current",
+        "target",
+        "active_current",
+        "adjusted_target",
+    ),
+    [
+        (METRIC_SYSTEM, 22.0, 55.0, 25.0, 47.0, 20.0),
+        (US_CUSTOMARY_SYSTEM, 72.0, 131.0, 77.0, 117.0, 68.0),
+    ],
+)
+async def test_climate_entity_controls_vehicle(
+    hass: HomeAssistant,
+    units: UnitSystem,
+    initial_target: float,
+    initial_current: float,
+    target: float,
+    active_current: float,
+    adjusted_target: float,
+) -> None:
+    """Climate services convert display temperatures to the vehicle's native unit."""
+    hass.config.units = units
     entry = MockConfigEntry(
         domain=DOMAIN,
         unique_id="US:driver@example.com",
@@ -119,16 +144,16 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
         f"{VEHICLE.vin}_climate_control",
     )
     assert entity_id is not None
-    _assert_temperatures(hass, entity_id, target=22.0, current=55.0)
+    _assert_temperatures(hass, entity_id, target=initial_target, current=initial_current)
 
     await hass.services.async_call(
         "climate",
         "set_temperature",
-        {ATTR_ENTITY_ID: entity_id, ATTR_TEMPERATURE: 24.0},
+        {ATTR_ENTITY_ID: entity_id, ATTR_TEMPERATURE: target},
         blocking=True,
     )
     client.async_start_climate.assert_not_called()
-    _assert_temperatures(hass, entity_id, target=24.0, current=55.0)
+    _assert_temperatures(hass, entity_id, target=target, current=initial_current)
 
     await hass.services.async_call(
         "climate",
@@ -138,19 +163,19 @@ async def test_climate_entity_controls_vehicle(hass: HomeAssistant) -> None:
     )
     client.async_start_climate.assert_awaited_once_with(
         VEHICLE.vin,
-        ClimateSettings(24.0, TemperatureUnit.CELSIUS),
+        ClimateSettings(25.0, TemperatureUnit.CELSIUS),
     )
-    _assert_temperatures(hass, entity_id, target=24.0, current=47.0)
+    _assert_temperatures(hass, entity_id, target=target, current=active_current)
 
     await hass.services.async_call(
         "climate",
         "set_temperature",
-        {ATTR_ENTITY_ID: entity_id, ATTR_TEMPERATURE: 23.0},
+        {ATTR_ENTITY_ID: entity_id, ATTR_TEMPERATURE: adjusted_target},
         blocking=True,
     )
     client.async_adjust_climate.assert_awaited_once_with(
         VEHICLE.vin,
-        ClimateSettings(23.0, TemperatureUnit.CELSIUS),
+        ClimateSettings(20.0, TemperatureUnit.CELSIUS),
     )
 
     await hass.services.async_call(

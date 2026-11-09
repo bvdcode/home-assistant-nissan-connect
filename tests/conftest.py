@@ -6,14 +6,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(
-    enable_custom_integrations: None,
-) -> None:
-    """Enable custom integrations for every test."""
-    del enable_custom_integrations
-
-
 @pytest.fixture
 def mock_nissan_client() -> Generator[MagicMock]:
     """Replace the SDK client constructor with a configured mock."""

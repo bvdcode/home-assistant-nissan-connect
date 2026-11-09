@@ -6,7 +6,7 @@ import logging
 from collections.abc import Mapping
 from typing import TypedDict, cast
 
-import voluptuous as vol
+import probatio
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
@@ -60,14 +60,14 @@ COUNTRY_SELECTOR = selector.SelectSelector(
     )
 )
 
-USER_SCHEMA = vol.Schema(
+USER_SCHEMA = probatio.Schema(
     {
-        vol.Required(CONF_COUNTRY, default=DEFAULT_COUNTRY.value): COUNTRY_SELECTOR,
-        vol.Required(CONF_EMAIL): EMAIL_SELECTOR,
-        vol.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
+        probatio.Required(CONF_COUNTRY, default=DEFAULT_COUNTRY.value): COUNTRY_SELECTOR,
+        probatio.Required(CONF_EMAIL): EMAIL_SELECTOR,
+        probatio.Required(CONF_PASSWORD): PASSWORD_SELECTOR,
     }
 )
-REAUTH_SCHEMA = vol.Schema({vol.Required(CONF_PASSWORD): PASSWORD_SELECTOR})
+REAUTH_SCHEMA = probatio.Schema({probatio.Required(CONF_PASSWORD): PASSWORD_SELECTOR})
 
 
 class MyNissanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
