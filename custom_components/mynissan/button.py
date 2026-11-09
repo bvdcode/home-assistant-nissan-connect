@@ -9,12 +9,12 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from pynissan import NissanClient, SeatClimateOption, ServiceRequest, Vehicle
 
+from .command_button import NissanButtonEntity
 from .commands import (
     DOOR_LOCK_SERVICES,
     DOOR_UNLOCK_SERVICES,
     ENGINE_SERVICES,
     HORN_LIGHTS_SERVICES,
-    NissanCommandEntity,
     supports_service,
 )
 from .const import ENGINE_START_EVENT, ENGINE_STOP_EVENT, SIGNAL_ENGINE_COMMAND
@@ -124,7 +124,7 @@ async def async_setup_entry(
     async_add_entities(entities)
 
 
-class NissanCommandButton(NissanCommandEntity, ButtonEntity):
+class NissanCommandButton(NissanButtonEntity):
     """Send one vehicle command when explicitly pressed."""
 
     entity_description: NissanButtonDescription

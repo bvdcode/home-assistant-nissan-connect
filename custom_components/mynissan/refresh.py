@@ -1,13 +1,13 @@
 """On-demand refresh of status reported by the vehicle."""
 
-from homeassistant.components.button import ButtonDeviceClass, ButtonEntity, ButtonEntityDescription
+from homeassistant.components.button import ButtonDeviceClass, ButtonEntityDescription
 from homeassistant.exceptions import HomeAssistantError
 
-from .commands import NissanCommandEntity
+from .command_button import NissanButtonEntity
 from .const import DOMAIN
 
 
-class NissanRefreshButton(NissanCommandEntity, ButtonEntity):
+class NissanRefreshButton(NissanButtonEntity):
     """Request fresh telemetry before reading the updated cloud data."""
 
     entity_description = ButtonEntityDescription(
