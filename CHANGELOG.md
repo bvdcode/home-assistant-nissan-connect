@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v0.4.0 (2026-11-10)
+
+Add command progress and support Home Assistant 2026.11
+
+- Migrate climate control to the native temperature API.
+- Require Home Assistant 2026.11.0 or newer.
+- Show locking and unlocking states while door commands run.
+- Show an hourglass on all command buttons while requests are pending, including Refresh.
+- Update HACS installation instructions.
+
+
 ## v0.3.10 (2026-11-03)
 
 Add remote engine start and climate settings
