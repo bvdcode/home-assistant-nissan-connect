@@ -7,7 +7,7 @@ from homeassistant.exceptions import ServiceValidationError, Unauthorized
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
-from pytest_homeassistant_custom_component.common import MockUser
+from pytest_homeassistant.common import MockUser
 
 from custom_components.mynissan.const import DOMAIN
 

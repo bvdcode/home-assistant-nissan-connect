@@ -80,21 +80,17 @@ locked. The vehicle image is model artwork supplied by the account, not a live c
 
 ## Requirements
 
-- Home Assistant 2026.7.4 or newer;
+- Home Assistant 2026.11.0 or newer;
 - a MyNISSAN account from the United States or Canada, or a MiNissan account
   from Mexico, with at least one connected vehicle.
 
 ## Installation
 
-The integration is available through HACS as a custom repository while its
-default-catalog submission is under review.
+The integration is available in HACS.
 
 1. Open HACS.
-2. Select **Integrations**.
-3. Open the menu and select **Custom repositories**.
-4. Add `https://github.com/bvdcode/home-assistant-nissan-connect` as an
-   **Integration** repository.
-5. Install **MyNISSAN** and restart Home Assistant.
+2. Search for **MyNISSAN**.
+3. Install **MyNISSAN** and restart Home Assistant.
 
 ## Configuration
 

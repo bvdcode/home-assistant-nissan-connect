@@ -1,4 +1,4 @@
 mypy==2.3.0
 pynissan==0.2.2
-pytest-homeassistant-custom-component==0.13.348
+pytest-homeassistant==2026.11.0
 ruff==0.16.1

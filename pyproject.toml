@@ -1,5 +1,8 @@
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-p no:respx"
+pythonpath = ["."]
 testpaths = ["tests"]
 
 [tool.ruff]
@@ -16,5 +19,5 @@ strict = true
 warn_unreachable = true
 
 [[tool.mypy.overrides]]
-module = "pytest_homeassistant_custom_component.*"
+module = "pytest_homeassistant.*"
 ignore_missing_imports = true

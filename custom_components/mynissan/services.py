@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from functools import partial
 from typing import NoReturn
 
-import voluptuous as vol
+import probatio
 from homeassistant.const import ATTR_ENTITY_ID, ENTITY_MATCH_ALL, Platform
 from homeassistant.core import HassJob, HomeAssistant, ServiceCall, callback
 from homeassistant.exceptions import ServiceValidationError
@@ -31,11 +31,11 @@ SEAT_GROUPS: dict[str, tuple[str, ...]] = {
 SEAT_MODES = [option.value.lower() for option in SeatClimateOption if option.value != "UNKNOWN__"]
 
 START_SCHEMA: VolDictType = {
-    vol.Optional(ATTR_TEMPERATURE): vol.Coerce(float),
-    vol.Optional(ATTR_FRONT_SEATS): vol.In(SEAT_MODES),
-    vol.Optional(ATTR_REAR_SEATS): vol.In(SEAT_MODES),
-    vol.Optional(ATTR_STEERING_WHEEL_HEATER): cv.boolean,
-    vol.Optional(ATTR_DEFROST): cv.boolean,
+    probatio.Optional(ATTR_TEMPERATURE): probatio.Coerce(float),
+    probatio.Optional(ATTR_FRONT_SEATS): probatio.In(SEAT_MODES),
+    probatio.Optional(ATTR_REAR_SEATS): probatio.In(SEAT_MODES),
+    probatio.Optional(ATTR_STEERING_WHEEL_HEATER): cv.boolean,
+    probatio.Optional(ATTR_DEFROST): cv.boolean,
 }
 
 

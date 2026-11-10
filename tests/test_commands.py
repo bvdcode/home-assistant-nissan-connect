@@ -232,6 +232,10 @@ async def test_remote_engine_rejection_explains_cause(hass: HomeAssistant) -> No
     assert error.value.translation_placeholders == {"status": "FAILED", "details": "RES_FAILED"}
     client.coordinator.async_request_refresh.assert_not_called()
     assert _entity_state(hass, Platform.SENSOR, "last_remote_engine_start").state == "unknown"
+    assert (
+        _entity_state(hass, Platform.BUTTON, "remote_engine_start").attributes["icon"]
+        == "mdi:car-key"
+    )
 
 
 async def test_revoked_engine_subscription_blocks_start(hass: HomeAssistant) -> None:
@@ -241,6 +245,10 @@ async def test_revoked_engine_subscription_blocks_start(hass: HomeAssistant) -> 
     with pytest.raises(ServiceValidationError):
         await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
     client.async_start_engine.assert_not_called()
+    assert (
+        _entity_state(hass, Platform.BUTTON, "remote_engine_start").attributes["icon"]
+        == "mdi:car-key"
+    )
 
 
 async def test_revoked_subscription_blocks_command(hass: HomeAssistant) -> None:

@@ -79,7 +79,7 @@ class NissanClimate(NissanCommandEntity, ClimateEntity):
             | ClimateEntityFeature.TURN_OFF
         )
         self._nissan_temperature_unit = _nissan_temperature_unit(temperatures.unit)
-        self._attr_temperature_unit = _temperature_unit(temperatures.unit)
+        self._attr_native_temperature_unit = _temperature_unit(temperatures.unit)
         self._attr_min_temp = temperatures.minimum
         self._attr_max_temp = temperatures.maximum
         self._attr_target_temperature_step = temperatures.resolution
@@ -105,12 +105,12 @@ class NissanClimate(NissanCommandEntity, ClimateEntity):
                 return None
 
     @property
-    def target_temperature(self) -> float:
+    def native_target_temperature(self) -> float:
         """Return the most recently selected target temperature."""
         return self._target_temperature
 
     @property
-    def current_temperature(self) -> float | None:
+    def native_current_temperature(self) -> float | None:
         """Return the reported cabin temperature."""
         climate = self.vehicle_status.climate
         if climate is None or climate.temperature is None:

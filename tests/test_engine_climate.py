@@ -33,7 +33,7 @@ from pynissan import (
     TemperatureUnit,
     VehicleAccessoriesDetails,
 )
-from pytest_homeassistant_custom_component.common import mock_restore_cache_with_extra_data
+from pytest_homeassistant.common import mock_restore_cache_with_extra_data
 
 from custom_components.mynissan.const import DOMAIN
 
