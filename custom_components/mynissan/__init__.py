@@ -40,7 +40,7 @@ from .const import (
     country_from_value,
 )
 from .coordinator import NissanDataUpdateCoordinator
-from .engine_climate import EngineClimate, engine_climate
+from .engine_climate import EngineClimate, engine_climate, supports_engine_climate
 from .models import NissanConfigData, NissanConfigEntry, NissanRuntimeData
 from .services import async_setup_services
 
@@ -182,7 +182,9 @@ async def _async_engine_climate(
     result: dict[str, EngineClimate] = {}
     for vehicle in vehicles:
         vehicle_capabilities = capabilities[vehicle.vin]
-        if not supports_service(vehicle_capabilities, ENGINE_SERVICES):
+        if not supports_service(
+            vehicle_capabilities, ENGINE_SERVICES
+        ) or not supports_engine_climate(vehicle_capabilities):
             continue
         defaults: ClimateDefaults | None = await client.async_get_climate_defaults(
             vehicle.vin, temperature_unit=unit

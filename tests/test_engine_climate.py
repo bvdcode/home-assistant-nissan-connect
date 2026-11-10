@@ -94,6 +94,11 @@ SEAT_KEYS = (
     "remote_start_rear_left_seat",
     "remote_start_rear_right_seat",
 )
+ENGINE_ONLY_SERVICES = (ServiceCapability("REMOTE_ENGINE", True, True),)
+CLIMATE_START_SERVICES = (
+    *ENGINE_ONLY_SERVICES,
+    ServiceCapability("HVAC_ACCESSORIES", True, True),
+)
 
 
 async def setup_engine(
@@ -101,6 +106,7 @@ async def setup_engine(
     defaults: ClimateDefaults | Exception | None = DEFAULTS,
     accessories: VehicleAccessoriesDetails | None = ACCESSORIES,
     *,
+    services: tuple[ServiceCapability, ...] = CLIMATE_START_SERVICES,
     setup_succeeds: bool = True,
     units: UnitSystem = US_CUSTOMARY_SYSTEM,
 ) -> MagicMock:
@@ -113,7 +119,7 @@ async def setup_engine(
     client.async_get_vehicle_capabilities = AsyncMock(
         return_value=replace(
             VEHICLE_CAPABILITIES,
-            services=(ServiceCapability("REMOTE_ENGINE", True, True),),
+            services=services,
             accessories_details=accessories,
         )
     )
@@ -338,6 +344,37 @@ async def test_without_climate_capabilities(hass: HomeAssistant) -> None:
     client.async_start_engine.assert_awaited_once_with(VEHICLE.vin, climate=None)
     with pytest.raises(ServiceValidationError):
         await _start(hass, temperature=70)
+
+
+@pytest.mark.parametrize(
+    "services",
+    [
+        ENGINE_ONLY_SERVICES,
+        (*ENGINE_ONLY_SERVICES, ServiceCapability("HVAC_ACCESSORIES", False, True)),
+    ],
+)
+async def test_climate_requires_hvac_accessories_service(
+    hass: HomeAssistant, services: tuple[ServiceCapability, ...]
+) -> None:
+    """Without an enabled HVAC accessories service, starts are plain like the app's.
+
+    Such vehicles report a temperature range and seat heaters but refuse a start
+    that carries climate settings.
+    """
+    client = await setup_engine(hass, services=services)
+    registry = er.async_get(hass)
+    for platform, key in (
+        (Platform.NUMBER, "remote_start_temperature"),
+        (Platform.SELECT, "remote_start_front_driver_seat"),
+        (Platform.SWITCH, "remote_start_steering_wheel_heater"),
+        (Platform.SWITCH, "remote_start_defrost"),
+    ):
+        assert registry.async_get_entity_id(platform, DOMAIN, f"{VEHICLE.vin}_{key}") is None
+    client.async_get_climate_defaults.assert_not_called()
+    await _start(hass)
+    client.async_start_engine.assert_awaited_once_with(VEHICLE.vin, climate=None)
+    with pytest.raises(ServiceValidationError):
+        await _start(hass, front_seats="heat")
 
 
 async def test_settings_survive_restart(hass: HomeAssistant) -> None:
