@@ -172,11 +172,12 @@ async def test_directional_lock_services(
 
 
 ENGINE_SERVICES = (ServiceCapability("REMOTE_ENGINE", True, True),)
+HVAC_SERVICES = (ServiceCapability("HVAC_ACCESSORIES", True, True),)
 
 
 async def test_remote_engine_commands(hass: HomeAssistant) -> None:
     """Remote start and stop each send one engine request and wait for it."""
-    client = await setup_commands(hass, ENGINE_SERVICES)
+    client = await setup_commands(hass, ENGINE_SERVICES + HVAC_SERVICES)
     assert _entity_state(hass, Platform.SENSOR, "last_remote_engine_start").state == "unknown"
     await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
     client.async_start_engine.assert_awaited_once_with(

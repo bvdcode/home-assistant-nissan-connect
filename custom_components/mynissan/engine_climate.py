@@ -31,6 +31,20 @@ SEAT_SUPPORT: dict[str, tuple[SeatClimateOption, ...]] = {
         SeatClimateOption.COOL,
     ),
 }
+# Service the MyNISSAN app requires before it sends climate settings with a start.
+HVAC_ACCESSORIES_SERVICE = "HVAC_ACCESSORIES"
+
+
+def supports_engine_climate(capabilities: VehicleCapabilities) -> bool:
+    """Whether the vehicle accepts climate settings with a remote engine start.
+
+    Vehicles without an enabled HVAC accessories service refuse a start that
+    carries climate settings, so the MyNISSAN app sends them a plain start.
+    """
+    return any(
+        service.type == HVAC_ACCESSORIES_SERVICE and service.enabled
+        for service in capabilities.services
+    )
 
 
 @dataclass(slots=True)
@@ -76,6 +90,8 @@ def engine_climate(
     defaults: ClimateDefaults | None,
 ) -> EngineClimate | None:
     """Describe the climate options a vehicle accepts with a remote engine start."""
+    if not supports_engine_climate(capabilities):
+        return None
     details = capabilities.accessories_details
     if details is None or details.hvac_temperatures is None:
         return None
