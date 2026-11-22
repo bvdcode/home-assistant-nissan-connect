@@ -3,7 +3,7 @@
 from collections.abc import Awaitable, Callable
 
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
-from pynissan import NissanClient, ServiceRequest, Vehicle
+from pynissan import NissanClient, ServiceRequest, ServiceRequestResult, Vehicle
 
 from .commands import NissanCommandEntity
 from .coordinator import NissanDataUpdateCoordinator
@@ -39,11 +39,14 @@ class NissanButtonEntity(NissanCommandEntity, ButtonEntity):
         services: tuple[str, ...] = (),
         *,
         after_success: Callable[[], Awaitable[None]] | None = None,
+        publish_result: Callable[[ServiceRequestResult], None] | None = None,
     ) -> None:
         self._commands_in_progress += 1
         self.async_write_ha_state()
         try:
-            await super()._async_run_command(command, services, after_success=after_success)
+            await super()._async_run_command(
+                command, services, after_success=after_success, publish_result=publish_result
+            )
         finally:
             self._commands_in_progress -= 1
             self.async_write_ha_state()

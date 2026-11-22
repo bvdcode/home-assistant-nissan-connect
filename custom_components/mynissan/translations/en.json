@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan did not return a verifiably newer vehicle location."
+    },
     "command_failed": {
       "message": "Unable to complete the vehicle command."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Unlock doors"
+      },
+      "refresh_location": {
+        "name": "Refresh location"
       },
       "refresh": {
         "name": "Refresh"

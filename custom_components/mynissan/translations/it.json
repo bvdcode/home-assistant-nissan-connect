@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan non ha restituito una posizione del veicolo verificabilmente più recente."
+    },
     "command_failed": {
       "message": "Impossibile completare il comando del veicolo."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Sblocca le portiere"
+      },
+      "refresh_location": {
+        "name": "Aggiorna posizione"
       },
       "refresh": {
         "name": "Aggiorna"

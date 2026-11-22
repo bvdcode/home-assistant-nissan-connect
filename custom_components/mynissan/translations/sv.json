@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan returnerade ingen bekräftat nyare fordonsposition."
+    },
     "command_failed": {
       "message": "Det gick inte att slutföra fordonskommandot."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Lås upp dörrarna"
+      },
+      "refresh_location": {
+        "name": "Uppdatera plats"
       },
       "refresh": {
         "name": "Uppdatera"

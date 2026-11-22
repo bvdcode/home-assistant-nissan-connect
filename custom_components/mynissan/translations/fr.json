@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan n’a pas renvoyé de position du véhicule dont la fraîcheur a pu être confirmée."
+    },
     "command_failed": {
       "message": "Impossible de terminer la commande du véhicule."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Déverrouiller les portes"
+      },
+      "refresh_location": {
+        "name": "Actualiser la position"
       },
       "refresh": {
         "name": "Actualiser"

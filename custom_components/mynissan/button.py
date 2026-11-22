@@ -20,6 +20,7 @@ from .commands import (
 from .const import ENGINE_START_EVENT, ENGINE_STOP_EVENT, SIGNAL_ENGINE_COMMAND
 from .coordinator import NissanDataUpdateCoordinator
 from .engine_climate import EngineClimate
+from .location import LOCATION_SERVICES, NissanLocationRefreshButton
 from .models import NissanConfigEntry
 from .refresh import NissanRefreshButton
 
@@ -101,8 +102,12 @@ async def async_setup_entry(
         for vehicle in runtime.vehicles
     ]
     for vehicle in runtime.vehicles:
+        capabilities = runtime.capabilities[vehicle.vin]
+        if supports_service(capabilities, LOCATION_SERVICES):
+            entities.append(
+                NissanLocationRefreshButton(runtime.coordinator, runtime.client, vehicle)
+            )
         for description in BUTTON_DESCRIPTIONS:
-            capabilities = runtime.capabilities[vehicle.vin]
             if not supports_service(capabilities, description.services) or supports_service(
                 capabilities, description.excluded_services
             ):

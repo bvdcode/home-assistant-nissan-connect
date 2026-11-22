@@ -27,6 +27,7 @@ The integration provides:
 - vehicle artwork as an image entity and map picture, with the paint code;
 - last reported vehicle location on the Home Assistant map;
 - a Refresh button to request fresh vehicle, battery, and climate status on demand;
+- a Refresh location button for vehicles with a subscribed Parked Car Finder capability;
 - remote climate start, stop, and target-temperature control;
 - remote engine start and stop for vehicles with the remote engine service, with
   cabin temperature, seat heating or cooling, steering wheel heat, and defrost
@@ -68,6 +69,22 @@ Refresh requests fresh vehicle status and waits for the request to complete, the
 refreshes battery and climate data when reported by the vehicle and reloads the
 cloud readings. This happens only when the button is pressed. It can wake the
 vehicle and use its 12 V battery; scheduled updates only read cached cloud data.
+
+Refresh location sends Nissan’s Parked Car Finder command on demand. It can wake
+the vehicle and use its 12 V battery. The button is available when Nissan reports
+Parked Car Finder as enabled and subscribed. Home Assistant waits up to 210 seconds
+for Nissan’s command result. The tracker uses the returned coordinates only when
+Nissan supplies a newer location timestamp. A parked vehicle can return the same
+coordinates with a newer timestamp. A rejection, timeout, or missing or stale fix
+fails the action. Scheduled updates continue reading cached data.
+
+Use the Refresh location button’s entity ID in an automation action. For example:
+
+```yaml
+- action: button.press
+  target:
+    entity_id: button.ariya_refresh_location
+```
 
 Charging time is reported in minutes, including while unplugged when supplied by
 the vehicle. Estimated completion is available only while charging and calculated

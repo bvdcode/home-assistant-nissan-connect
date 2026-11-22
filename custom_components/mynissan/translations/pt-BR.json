@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "A Nissan não retornou uma localização do veículo comprovadamente mais recente."
+    },
     "command_failed": {
       "message": "Não foi possível concluir o comando do veículo."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Destravar as portas"
+      },
+      "refresh_location": {
+        "name": "Atualizar localização"
       },
       "refresh": {
         "name": "Atualizar"

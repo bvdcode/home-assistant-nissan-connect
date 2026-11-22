@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan nevrátil prokazatelně novější polohu vozidla."
+    },
     "command_failed": {
       "message": "Příkaz pro vozidlo se nepodařilo dokončit."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Odemknout dveře"
+      },
+      "refresh_location": {
+        "name": "Obnovit polohu"
       },
       "refresh": {
         "name": "Obnovit"

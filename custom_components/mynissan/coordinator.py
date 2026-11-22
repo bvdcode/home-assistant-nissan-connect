@@ -2,12 +2,12 @@
 
 import asyncio
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfLength, UnitOfTemperature
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
@@ -81,6 +81,15 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
         """Return the Nissan temperature unit selected for Home Assistant."""
         return self._temperature_unit
 
+    @callback
+    def async_set_vehicle_location(self, location: VehicleLocation) -> None:
+        """Publish a location reported by a completed command."""
+        current = self.data[location.vin]
+        if _is_newer_location(location, current.location):
+            self.async_set_updated_data(
+                {**self.data, location.vin: replace(current, location=location)}
+            )
+
     async def _async_update_data(self) -> NissanCoordinatorData:
         """Fetch the latest cached vehicle data without waking the vehicles."""
         try:
@@ -95,7 +104,15 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
         except NissanError as error:
             raise UpdateFailed("Unable to update MyNISSAN vehicle status") from error
 
-        return {data.status.vin: data for data in vehicle_data}
+        data_by_vin = {data.status.vin: data for data in vehicle_data}
+        for vin, data in data_by_vin.items():
+            if (
+                self.data
+                and (current := self.data.get(vin))
+                and _is_newer_location(current.location, data.location)
+            ):
+                data_by_vin[vin] = replace(data, location=current.location)
+        return data_by_vin
 
     async def _async_get_vehicle_data(self, vehicle: Vehicle) -> NissanVehicleData:
         status, location = await asyncio.gather(
@@ -107,3 +124,17 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
             self._client.async_get_vehicle_location(vehicle.vin),
         )
         return NissanVehicleData(status, location)
+
+
+def _is_newer_location(location: VehicleLocation, previous: VehicleLocation) -> bool:
+    timestamp = location.last_updated_at
+    previous_timestamp = previous.last_updated_at
+    return (
+        timestamp is not None
+        and timestamp.utcoffset() is not None
+        and (
+            previous_timestamp is None
+            or previous_timestamp.utcoffset() is None
+            or timestamp > previous_timestamp
+        )
+    )

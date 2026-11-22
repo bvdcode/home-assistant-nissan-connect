@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "日产未返回可确认更新的车辆位置。"
+    },
     "command_failed": {
       "message": "无法完成车辆指令。"
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "解锁车门"
+      },
+      "refresh_location": {
+        "name": "刷新位置"
       },
       "refresh": {
         "name": "刷新"

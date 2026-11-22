@@ -71,6 +71,9 @@ async def setup_commands(
     client.async_stop_engine = AsyncMock(
         return_value=ServiceRequest("stop", ServiceRequestKind.ENGINE)
     )
+    client.async_locate_vehicle = AsyncMock(
+        return_value=ServiceRequest("locate", ServiceRequestKind.LOCATION)
+    )
     client.async_refresh_vehicle_status = AsyncMock(
         return_value=ServiceRequest("refresh", ServiceRequestKind.VEHICLE_STATUS)
     )
@@ -90,6 +93,7 @@ async def setup_commands(
     client.async_flash_lights_and_horn.assert_not_called()
     client.async_start_engine.assert_not_called()
     client.async_stop_engine.assert_not_called()
+    client.async_locate_vehicle.assert_not_called()
     client.async_refresh_vehicle_status.assert_not_called()
     client.async_refresh_battery_status.assert_not_called()
     client.async_refresh_climate_status.assert_not_called()

@@ -3,7 +3,14 @@
 from collections.abc import Awaitable, Callable
 
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from pynissan import NissanClient, NissanError, ServiceRequest, Vehicle, VehicleCapabilities
+from pynissan import (
+    NissanClient,
+    NissanError,
+    ServiceRequest,
+    ServiceRequestResult,
+    Vehicle,
+    VehicleCapabilities,
+)
 
 from .const import DOMAIN
 from .coordinator import NissanDataUpdateCoordinator
@@ -45,6 +52,7 @@ class NissanCommandEntity(NissanEntity):
         services: tuple[str, ...] = (),
         *,
         after_success: Callable[[], Awaitable[None]] | None = None,
+        publish_result: Callable[[ServiceRequestResult], None] | None = None,
     ) -> None:
         try:
             if services:
@@ -67,6 +75,9 @@ class NissanCommandEntity(NissanEntity):
                         "details": result.status_details or "unknown",
                     },
                 )
+            if publish_result is not None:
+                publish_result(result)
+                return
             if after_success is not None:
                 await after_success()
         except (NissanError, TimeoutError) as error:

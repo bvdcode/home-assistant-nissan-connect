@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan returnerede ingen bekræftet nyere placering for køretøjet."
+    },
     "command_failed": {
       "message": "Kommandoen til køretøjet kunne ikke fuldføres."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Lås dørene op"
+      },
+      "refresh_location": {
+        "name": "Opdater placering"
       },
       "refresh": {
         "name": "Opdater"

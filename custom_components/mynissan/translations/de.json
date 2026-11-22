@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan hat keinen nachweislich neueren Fahrzeugstandort geliefert."
+    },
     "command_failed": {
       "message": "Der Fahrzeugbefehl konnte nicht abgeschlossen werden."
     },
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Türen entriegeln"
+      },
+      "refresh_location": {
+        "name": "Standort aktualisieren"
       },
       "refresh": {
         "name": "Aktualisieren"
