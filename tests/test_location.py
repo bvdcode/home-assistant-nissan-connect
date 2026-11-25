@@ -2,13 +2,14 @@
 
 from dataclasses import replace
 from datetime import UTC, datetime
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er
+from homeassistant.util import dt as dt_util
 from pynissan import (
     NissanError,
     ServiceCapability,
@@ -27,14 +28,12 @@ from .test_init import VEHICLE, VEHICLE_LOCATION, _entity_state
 LOCATION_SERVICE = ServiceCapability("PARKED_CAR_FINDER", True, True)
 CACHED = replace(VEHICLE_LOCATION, last_updated_at=datetime(2026, 1, 1, tzinfo=UTC))
 FRESH = replace(CACHED, latitude=0.0, last_updated_at=datetime(2026, 1, 2, tzinfo=UTC))
+NEWER = replace(FRESH, last_updated_at=datetime(2026, 1, 3, tzinfo=UTC))
 
 
 async def setup_location(hass: HomeAssistant) -> MagicMock:
     """Load the location tracker and command button with a dated cached fix."""
-    client = await setup_commands(hass, (LOCATION_SERVICE,))
-    client.coordinator.async_set_vehicle_location(CACHED)
-    client.async_get_vehicle_location.return_value = CACHED
-    return client
+    return await setup_commands(hass, (LOCATION_SERVICE,), location=CACHED)
 
 
 async def press_location(hass: HomeAssistant) -> None:
@@ -69,10 +68,101 @@ async def test_refresh_location_publishes_completed_fix(hass: HomeAssistant) -> 
     await client.coordinator.async_refresh()
     assert client.coordinator.data[VEHICLE.vin].location == FRESH
 
-    newer = replace(FRESH, last_updated_at=datetime(2026, 1, 3, tzinfo=UTC))
-    client.async_get_vehicle_location.return_value = newer
+    client.async_get_vehicle_location.return_value = replace(FRESH, longitude=None)
     await client.coordinator.async_refresh()
-    assert client.coordinator.data[VEHICLE.vin].location == newer
+    assert client.coordinator.data[VEHICLE.vin].location == FRESH
+
+    client.async_get_vehicle_location.return_value = NEWER
+    await client.coordinator.async_refresh()
+    assert client.coordinator.data[VEHICLE.vin].location == NEWER
+
+
+async def test_refresh_location_accepts_first_timestamp(hass: HomeAssistant) -> None:
+    """Accept the first fix when Nissan stamps it in the button press second."""
+    client = await setup_commands(hass, (LOCATION_SERVICE,))
+    client.async_wait_for_service_request.return_value = ServiceRequestResult(
+        ServiceRequestStatus.SUCCESS, location=FRESH
+    )
+
+    with patch.object(dt_util, "utcnow", return_value=FRESH.last_updated_at):
+        await press_location(hass)
+
+    assert client.coordinator.data[VEHICLE.vin].location == FRESH
+
+
+async def test_incomplete_poll_keeps_last_complete_coordinates(hass: HomeAssistant) -> None:
+    """Only a complete position may advance the last known fix on the map."""
+    client = await setup_location(hass)
+    client.async_get_vehicle_location.return_value = replace(NEWER, longitude=None)
+    await client.coordinator.async_refresh()
+    tracker = _entity_state(hass, Platform.DEVICE_TRACKER, "location")
+    assert tracker.attributes["latitude"] == CACHED.latitude
+    assert tracker.attributes["longitude"] == CACHED.longitude
+
+    client.async_wait_for_service_request.return_value = ServiceRequestResult(
+        ServiceRequestStatus.SUCCESS, location=FRESH
+    )
+    await press_location(hass)
+    tracker = _entity_state(hass, Platform.DEVICE_TRACKER, "location")
+    assert tracker.attributes["latitude"] == FRESH.latitude
+    assert tracker.attributes["longitude"] == FRESH.longitude
+
+
+async def test_refresh_location_preserves_failed_status_poll(hass: HomeAssistant) -> None:
+    """A completed locate does not restore unrelated sensors after a poll failure."""
+    client = await setup_location(hass)
+
+    async def complete(_vin: str, _request: ServiceRequest) -> ServiceRequestResult:
+        client.async_get_vehicle_status.side_effect = NissanError()
+        await client.coordinator.async_refresh()
+        assert _entity_state(hass, Platform.SENSOR, "battery_level").state == "unavailable"
+        assert _entity_state(hass, Platform.DEVICE_TRACKER, "location").state == "unavailable"
+        return ServiceRequestResult(ServiceRequestStatus.SUCCESS, location=FRESH)
+
+    client.async_wait_for_service_request.side_effect = complete
+    await press_location(hass)
+
+    assert client.coordinator.data[VEHICLE.vin].location == FRESH
+    assert _entity_state(hass, Platform.SENSOR, "battery_level").state == "unavailable"
+    tracker = _entity_state(hass, Platform.DEVICE_TRACKER, "location")
+    assert tracker.attributes["latitude"] == FRESH.latitude
+    assert tracker.attributes["longitude"] == FRESH.longitude
+
+    client.async_get_vehicle_status.side_effect = None
+    await client.coordinator.async_refresh()
+    assert _entity_state(hass, Platform.SENSOR, "battery_level").state == "73"
+    client.async_get_vehicle_status.side_effect = NissanError()
+    await client.coordinator.async_refresh()
+    assert _entity_state(hass, Platform.DEVICE_TRACKER, "location").state == "unavailable"
+
+
+async def test_refresh_location_keeps_newer_fix_from_poll(hass: HomeAssistant) -> None:
+    """A fix newer than the starting position succeeds without rolling back the tracker."""
+    client = await setup_location(hass)
+
+    async def complete(_vin: str, _request: ServiceRequest) -> ServiceRequestResult:
+        client.async_get_vehicle_location.return_value = NEWER
+        await client.coordinator.async_refresh()
+        return ServiceRequestResult(ServiceRequestStatus.SUCCESS, location=FRESH)
+
+    client.async_wait_for_service_request.side_effect = complete
+    await press_location(hass)
+
+    assert client.coordinator.data[VEHICLE.vin].location == NEWER
+
+
+async def test_refresh_location_preserves_poll_deadline(hass: HomeAssistant) -> None:
+    """Completing a locate leaves the existing account poll scheduled."""
+    client = await setup_location(hass)
+    client.async_wait_for_service_request.return_value = ServiceRequestResult(
+        ServiceRequestStatus.SUCCESS, location=FRESH
+    )
+
+    pending_refresh = client.coordinator._unsub_refresh
+    assert pending_refresh is not None
+    await press_location(hass)
+
+    assert client.coordinator._unsub_refresh is pending_refresh
 
 
 @pytest.mark.parametrize(

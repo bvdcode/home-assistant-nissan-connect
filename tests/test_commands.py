@@ -18,6 +18,7 @@ from pynissan import (
     ServiceRequestResult,
     ServiceRequestStatus,
     TemperatureUnit,
+    VehicleLocation,
 )
 
 from custom_components.mynissan.const import DOMAIN
@@ -40,7 +41,10 @@ ALL_SERVICES = (
 
 
 async def setup_commands(
-    hass: HomeAssistant, services: tuple[ServiceCapability, ...] = ALL_SERVICES
+    hass: HomeAssistant,
+    services: tuple[ServiceCapability, ...] = ALL_SERVICES,
+    *,
+    location: VehicleLocation = VEHICLE_LOCATION,
 ) -> MagicMock:
     """Load command platforms with a fully mocked SDK client."""
     entry = _entry()
@@ -51,7 +55,7 @@ async def setup_commands(
         return_value=replace(VEHICLE_CAPABILITIES, services=services)
     )
     client.async_get_vehicle_status = AsyncMock(return_value=replace(VEHICLE_STATUS, doors=DOORS))
-    client.async_get_vehicle_location = AsyncMock(return_value=VEHICLE_LOCATION)
+    client.async_get_vehicle_location = AsyncMock(return_value=location)
     client.async_get_climate_defaults = AsyncMock(return_value=None)
     client.async_lock_doors = AsyncMock(
         return_value=ServiceRequest("lock", ServiceRequestKind.DOOR)

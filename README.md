@@ -73,10 +73,13 @@ vehicle and use its 12 V battery; scheduled updates only read cached cloud data.
 Refresh location sends Nissan’s Parked Car Finder command on demand. It can wake
 the vehicle and use its 12 V battery. The button is available when Nissan reports
 Parked Car Finder as enabled and subscribed. Home Assistant waits up to 210 seconds
-for Nissan’s command result. The tracker uses the returned coordinates only when
-Nissan supplies a newer location timestamp. A parked vehicle can return the same
-coordinates with a newer timestamp. A rejection, timeout, or missing or stale fix
-fails the action. Scheduled updates continue reading cached data.
+for Nissan’s command result. The tracker needs both coordinates and a valid Nissan
+timestamp. If the tracker already had a complete, timestamped position when the
+button was pressed, the result needs a newer timestamp. Incomplete cloud readings
+leave the last known position on the map. A parked vehicle can return the same
+coordinates with a newer timestamp. A rejection,
+timeout, or missing or stale fix fails the action. Scheduled updates continue
+reading cached data.
 
 Use the Refresh location button’s entity ID in an automation action. For example:
 

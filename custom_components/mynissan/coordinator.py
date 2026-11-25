@@ -34,6 +34,7 @@ class NissanVehicleData:
     status: VehicleStatus
     location: VehicleLocation
     received_at: datetime = field(default_factory=dt_util.utcnow)
+    located_after_poll_failure: bool = False
 
 
 type NissanCoordinatorData = dict[str, NissanVehicleData]
@@ -81,14 +82,36 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
         """Return the Nissan temperature unit selected for Home Assistant."""
         return self._temperature_unit
 
+    def is_location_available(self, vin: str) -> bool:
+        """Return whether a poll or a completed locate supplies this vehicle's position."""
+        data = self.data[vin]
+        return (self.last_update_success or data.located_after_poll_failure) and _has_coordinates(
+            data.location
+        )
+
     @callback
-    def async_set_vehicle_location(self, location: VehicleLocation) -> None:
-        """Publish a location reported by a completed command."""
-        current = self.data[location.vin]
-        if _is_newer_location(location, current.location):
-            self.async_set_updated_data(
-                {**self.data, location.vin: replace(current, location=location)}
-            )
+    def async_publish_vehicle_location(
+        self, previous: VehicleLocation, location: VehicleLocation | None
+    ) -> bool:
+        """Accept a fix newer than the starting position and keep any fresher result."""
+        if (
+            location is None
+            or location.vin != previous.vin
+            or _location_timestamp(location) is None
+            or not _prefer_location(location, previous)
+        ):
+            return False
+
+        vin = location.vin
+        current = self.data[vin]
+        best = location if _prefer_location(location, current.location) else current.location
+        updated = replace(
+            current, location=best, located_after_poll_failure=not self.last_update_success
+        )
+        if updated != current:
+            self.data = {**self.data, vin: updated}
+            self.async_update_listeners()
+        return True
 
     async def _async_update_data(self) -> NissanCoordinatorData:
         """Fetch the latest cached vehicle data without waking the vehicles."""
@@ -109,7 +132,7 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
             if (
                 self.data
                 and (current := self.data.get(vin))
-                and _is_newer_location(current.location, data.location)
+                and _prefer_location(current.location, data.location)
             ):
                 data_by_vin[vin] = replace(data, location=current.location)
         return data_by_vin
@@ -126,15 +149,21 @@ class NissanDataUpdateCoordinator(DataUpdateCoordinator[NissanCoordinatorData]):
         return NissanVehicleData(status, location)
 
 
-def _is_newer_location(location: VehicleLocation, previous: VehicleLocation) -> bool:
+def _has_coordinates(location: VehicleLocation) -> bool:
+    return location.latitude is not None and location.longitude is not None
+
+
+def _location_timestamp(location: VehicleLocation) -> datetime | None:
     timestamp = location.last_updated_at
-    previous_timestamp = previous.last_updated_at
-    return (
-        timestamp is not None
-        and timestamp.utcoffset() is not None
-        and (
-            previous_timestamp is None
-            or previous_timestamp.utcoffset() is None
-            or timestamp > previous_timestamp
-        )
-    )
+    return timestamp if timestamp is not None and timestamp.utcoffset() is not None else None
+
+
+def _prefer_location(candidate: VehicleLocation, other: VehicleLocation) -> bool:
+    if not _has_coordinates(candidate):
+        return False
+    if not _has_coordinates(other):
+        return True
+
+    timestamp = _location_timestamp(candidate)
+    other_timestamp = _location_timestamp(other)
+    return timestamp is not None and (other_timestamp is None or timestamp > other_timestamp)
