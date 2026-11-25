@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.4.2 (2026-11-25)
+
+Add on-demand vehicle location refresh
+
+- Add a Refresh location button for vehicles with Parked Car Finder enabled.
+- Update the map without resetting the status polling interval, and keep the last complete position when Nissan returns older or incomplete coordinates.
+- Show remote controls for enabled services even when Nissan reports no active subscription or omits the subscription flag.
+
+
 ## v0.4.1 (2026-11-10)
 
 Fix remote engine start when climate settings are unsupported
