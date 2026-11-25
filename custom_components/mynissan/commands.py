@@ -51,9 +51,9 @@ class NissanCommandEntity(NissanEntity):
         command: Callable[[], Awaitable[ServiceRequest]],
         services: tuple[str, ...] = (),
         *,
-        after_success: Callable[[], Awaitable[None]] | None = None,
-        publish_result: Callable[[ServiceRequestResult], None] | None = None,
+        handle_result: Callable[[ServiceRequestResult], Awaitable[None]] | None = None,
     ) -> None:
+        """Run the command, then handle its result or request a status refresh."""
         try:
             if services:
                 capabilities = await self._client.async_get_vehicle_capabilities(
@@ -75,11 +75,9 @@ class NissanCommandEntity(NissanEntity):
                         "details": result.status_details or "unknown",
                     },
                 )
-            if publish_result is not None:
-                publish_result(result)
+            if handle_result is not None:
+                await handle_result(result)
                 return
-            if after_success is not None:
-                await after_success()
         except (NissanError, TimeoutError) as error:
             raise HomeAssistantError(
                 translation_domain=DOMAIN, translation_key=self._command_failed_key

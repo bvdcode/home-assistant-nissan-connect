@@ -26,7 +26,7 @@ class NissanLocationRefreshButton(NissanButtonEntity):
         if previous_timestamp is None or previous_timestamp.utcoffset() is None:
             previous_timestamp = dt_util.utcnow().replace(microsecond=0)
 
-        def publish_location(result: ServiceRequestResult) -> None:
+        async def publish_location(result: ServiceRequestResult) -> None:
             location = result.location
             if (
                 location is None
@@ -44,5 +44,5 @@ class NissanLocationRefreshButton(NissanButtonEntity):
         await self._async_run_command(
             lambda: self._client.async_locate_vehicle(self._vehicle.vin),
             LOCATION_SERVICES,
-            publish_result=publish_location,
+            handle_result=publish_location,
         )
