@@ -172,7 +172,7 @@ class NissanClimate(NissanCommandEntity, ClimateEntity):
 def _climate_temperatures(
     capabilities: VehicleCapabilities,
 ) -> HvacTemperatureCapabilities | None:
-    """Return HVAC temperatures when remote climate is enabled and subscribed."""
+    """Return HVAC temperatures when remote climate is enabled."""
     climate_enabled = supports_service(capabilities, (REMOTE_CLIMATE_CONTROL_SERVICE,))
     if not climate_enabled or capabilities.accessories_details is None:
         return None

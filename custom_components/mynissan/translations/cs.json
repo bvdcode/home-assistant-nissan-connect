@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan nevrátil prokazatelně novější polohu vozidla."
+    },
     "command_failed": {
       "message": "Příkaz pro vozidlo se nepodařilo dokončit."
     },
@@ -61,7 +64,7 @@
       "message": "Vozidlo nedokončilo příkaz (stav: {status})."
     },
     "command_not_supported": {
-      "message": "Tento příkaz není pro vozidlo povolen s aktivním předplatným."
+      "message": "Tento příkaz není pro toto vozidlo povolen."
     },
     "api_error": {
       "message": "MyNISSAN vrátil neočekávanou odpověď."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Odemknout dveře"
+      },
+      "refresh_location": {
+        "name": "Obnovit polohu"
       },
       "refresh": {
         "name": "Obnovit"

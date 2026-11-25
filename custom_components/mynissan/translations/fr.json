@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan n’a pas renvoyé de position du véhicule dont la fraîcheur a pu être confirmée."
+    },
     "command_failed": {
       "message": "Impossible de terminer la commande du véhicule."
     },
@@ -61,7 +64,7 @@
       "message": "Le véhicule n'a pas terminé la commande (état : {status})."
     },
     "command_not_supported": {
-      "message": "Cette commande n'est pas activée avec un abonnement en cours pour ce véhicule."
+      "message": "Cette commande n'est pas activée pour ce véhicule."
     },
     "api_error": {
       "message": "MyNISSAN a renvoyé une réponse inattendue."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Déverrouiller les portes"
+      },
+      "refresh_location": {
+        "name": "Actualiser la position"
       },
       "refresh": {
         "name": "Actualiser"

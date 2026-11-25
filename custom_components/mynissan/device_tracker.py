@@ -49,11 +49,7 @@ class NissanVehicleTracker(NissanEntity, TrackerEntity):
     @property
     def available(self) -> bool:
         """Return whether the vehicle has a reported location."""
-        return (
-            super().available
-            and self.vehicle_location.latitude is not None
-            and self.vehicle_location.longitude is not None
-        )
+        return self.coordinator.is_location_available(self._vehicle.vin)
 
     @property
     def latitude(self) -> float | None:

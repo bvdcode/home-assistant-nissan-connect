@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan non ha restituito una posizione del veicolo verificabilmente più recente."
+    },
     "command_failed": {
       "message": "Impossibile completare il comando del veicolo."
     },
@@ -61,7 +64,7 @@
       "message": "Il veicolo non ha completato il comando (stato: {status})."
     },
     "command_not_supported": {
-      "message": "Questo comando non è abilitato con un abbonamento attivo per il veicolo."
+      "message": "Questo comando non è abilitato per il veicolo."
     },
     "api_error": {
       "message": "MyNISSAN ha restituito una risposta imprevista."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Sblocca le portiere"
+      },
+      "refresh_location": {
+        "name": "Aggiorna posizione"
       },
       "refresh": {
         "name": "Aggiorna"

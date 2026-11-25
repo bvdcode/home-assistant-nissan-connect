@@ -1,5 +1,7 @@
 """Tests for the MyNISSAN data update coordinator."""
 
+from dataclasses import replace
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -54,6 +56,23 @@ async def test_coordinator_fetches_every_vehicle(hass: HomeAssistant) -> None:
     }
     assert client.async_get_vehicle_status.await_count == 2
     assert client.async_get_vehicle_location.await_count == 2
+
+
+async def test_locate_restores_only_the_requested_vehicle(hass: HomeAssistant) -> None:
+    """One successful locate restores only that vehicle's position during an outage."""
+    client = MagicMock()
+    client.async_get_vehicle_status = AsyncMock(side_effect=lambda vin, **kwargs: _status(vin))
+    client.async_get_vehicle_location = AsyncMock(side_effect=_location)
+    coordinator = NissanDataUpdateCoordinator(hass, _entry(), client, VEHICLES)
+    await coordinator.async_refresh()
+    coordinator.async_set_update_error(NetworkError())
+
+    previous = coordinator.data["VIN1"].location
+    result = replace(previous, last_updated_at=datetime(2026, 1, 2, tzinfo=UTC))
+    assert coordinator.async_publish_vehicle_location(previous, result)
+    assert coordinator.is_location_available("VIN1")
+    assert not coordinator.is_location_available("VIN2")
+    assert not coordinator.last_update_success
 
 
 async def test_coordinator_requests_reauthentication(hass: HomeAssistant) -> None:

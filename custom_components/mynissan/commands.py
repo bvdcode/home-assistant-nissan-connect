@@ -3,7 +3,14 @@
 from collections.abc import Awaitable, Callable
 
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from pynissan import NissanClient, NissanError, ServiceRequest, Vehicle, VehicleCapabilities
+from pynissan import (
+    NissanClient,
+    NissanError,
+    ServiceRequest,
+    ServiceRequestResult,
+    Vehicle,
+    VehicleCapabilities,
+)
 
 from .const import DOMAIN
 from .coordinator import NissanDataUpdateCoordinator
@@ -15,10 +22,17 @@ HORN_LIGHTS_SERVICES = ("REMOTE_HORN_LIGHTS",)
 ENGINE_SERVICES = ("REMOTE_ENGINE",)
 
 
-def supports_service(capabilities: VehicleCapabilities, services: tuple[str, ...]) -> bool:
-    """Require an explicitly enabled service with a confirmed subscription."""
+def supports_service(
+    capabilities: VehicleCapabilities,
+    services: tuple[str, ...],
+    *,
+    require_subscription: bool = False,
+) -> bool:
+    """Check for an enabled service, optionally requiring a confirmed subscription."""
     return any(
-        service.type in services and service.enabled and service.subscribed is True
+        service.type in services
+        and service.enabled
+        and (not require_subscription or service.subscribed is True)
         for service in capabilities.services
     )
 
@@ -44,8 +58,9 @@ class NissanCommandEntity(NissanEntity):
         command: Callable[[], Awaitable[ServiceRequest]],
         services: tuple[str, ...] = (),
         *,
-        after_success: Callable[[], Awaitable[None]] | None = None,
+        handle_result: Callable[[ServiceRequestResult], Awaitable[None]] | None = None,
     ) -> None:
+        """Run the command, then handle its result or request a status refresh."""
         try:
             if services:
                 capabilities = await self._client.async_get_vehicle_capabilities(
@@ -67,8 +82,9 @@ class NissanCommandEntity(NissanEntity):
                         "details": result.status_details or "unknown",
                     },
                 )
-            if after_success is not None:
-                await after_success()
+            if handle_result is not None:
+                await handle_result(result)
+                return
         except (NissanError, TimeoutError) as error:
             raise HomeAssistantError(
                 translation_domain=DOMAIN, translation_key=self._command_failed_key

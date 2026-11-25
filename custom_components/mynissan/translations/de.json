@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan hat keinen nachweislich neueren Fahrzeugstandort geliefert."
+    },
     "command_failed": {
       "message": "Der Fahrzeugbefehl konnte nicht abgeschlossen werden."
     },
@@ -61,7 +64,7 @@
       "message": "Das Fahrzeug hat den Befehl nicht abgeschlossen (Status: {status})."
     },
     "command_not_supported": {
-      "message": "Dieser Befehl ist für das Fahrzeug nicht mit einem aktiven Abonnement freigeschaltet."
+      "message": "Dieser Befehl ist für dieses Fahrzeug nicht freigeschaltet."
     },
     "api_error": {
       "message": "MyNISSAN hat eine unerwartete Antwort zurückgegeben."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Türen entriegeln"
+      },
+      "refresh_location": {
+        "name": "Standort aktualisieren"
       },
       "refresh": {
         "name": "Aktualisieren"

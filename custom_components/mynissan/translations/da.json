@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan returnerede ingen bekræftet nyere placering for køretøjet."
+    },
     "command_failed": {
       "message": "Kommandoen til køretøjet kunne ikke fuldføres."
     },
@@ -61,7 +64,7 @@
       "message": "Køretøjet fuldførte ikke kommandoen (status: {status})."
     },
     "command_not_supported": {
-      "message": "Denne kommando er ikke aktiveret med et aktivt abonnement for køretøjet."
+      "message": "Denne kommando er ikke aktiveret for køretøjet."
     },
     "api_error": {
       "message": "MyNISSAN returnerede et uventet svar."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Lås dørene op"
+      },
+      "refresh_location": {
+        "name": "Opdater placering"
       },
       "refresh": {
         "name": "Opdater"

@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan returnerade ingen bekräftat nyare fordonsposition."
+    },
     "command_failed": {
       "message": "Det gick inte att slutföra fordonskommandot."
     },
@@ -61,7 +64,7 @@
       "message": "Fordonet slutförde inte kommandot (status: {status})."
     },
     "command_not_supported": {
-      "message": "Det här kommandot är inte aktiverat med ett aktivt abonnemang för fordonet."
+      "message": "Det här kommandot är inte aktiverat för fordonet."
     },
     "api_error": {
       "message": "MyNISSAN returnerade ett oväntat svar."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Lås upp dörrarna"
+      },
+      "refresh_location": {
+        "name": "Uppdatera plats"
       },
       "refresh": {
         "name": "Uppdatera"

@@ -2,6 +2,15 @@
 
 <!-- version list -->
 
+## v0.4.1 (2026-11-10)
+
+Fix remote engine start when climate settings are unsupported
+
+- Send a plain engine start when HVAC_ACCESSORIES is missing or disabled.
+- Hide remote start climate controls when the vehicle does not support them.
+- Skip climate defaults requests for those vehicles.
+
+
 ## v0.4.0 (2026-11-10)
 
 Add command progress and support Home Assistant 2026.11

@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "A Nissan não retornou uma localização do veículo comprovadamente mais recente."
+    },
     "command_failed": {
       "message": "Não foi possível concluir o comando do veículo."
     },
@@ -61,7 +64,7 @@
       "message": "O veículo não concluiu o comando (status: {status})."
     },
     "command_not_supported": {
-      "message": "Este comando não está habilitado com uma assinatura ativa para este veículo."
+      "message": "Este comando não está habilitado para este veículo."
     },
     "api_error": {
       "message": "O MyNISSAN retornou uma resposta inesperada."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Destravar as portas"
+      },
+      "refresh_location": {
+        "name": "Atualizar localização"
       },
       "refresh": {
         "name": "Atualizar"
