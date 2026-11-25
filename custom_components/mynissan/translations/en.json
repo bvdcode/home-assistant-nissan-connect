@@ -64,7 +64,7 @@
       "message": "The vehicle did not complete the command (status: {status})."
     },
     "command_not_supported": {
-      "message": "This command is not enabled with an active subscription for this vehicle."
+      "message": "This command is not enabled for this vehicle."
     },
     "api_error": {
       "message": "MyNISSAN returned an unexpected response."

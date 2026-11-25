@@ -64,7 +64,7 @@
       "message": "Køretøjet fuldførte ikke kommandoen (status: {status})."
     },
     "command_not_supported": {
-      "message": "Denne kommando er ikke aktiveret med et aktivt abonnement for køretøjet."
+      "message": "Denne kommando er ikke aktiveret for køretøjet."
     },
     "api_error": {
       "message": "MyNISSAN returnerede et uventet svar."

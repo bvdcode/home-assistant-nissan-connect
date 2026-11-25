@@ -22,10 +22,17 @@ HORN_LIGHTS_SERVICES = ("REMOTE_HORN_LIGHTS",)
 ENGINE_SERVICES = ("REMOTE_ENGINE",)
 
 
-def supports_service(capabilities: VehicleCapabilities, services: tuple[str, ...]) -> bool:
-    """Require an explicitly enabled service with a confirmed subscription."""
+def supports_service(
+    capabilities: VehicleCapabilities,
+    services: tuple[str, ...],
+    *,
+    require_subscription: bool = False,
+) -> bool:
+    """Check for an enabled service, optionally requiring a confirmed subscription."""
     return any(
-        service.type in services and service.enabled and service.subscribed is True
+        service.type in services
+        and service.enabled
+        and (not require_subscription or service.subscribed is True)
         for service in capabilities.services
     )
 

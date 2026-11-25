@@ -31,9 +31,11 @@ FRESH = replace(CACHED, latitude=0.0, last_updated_at=datetime(2026, 1, 2, tzinf
 NEWER = replace(FRESH, last_updated_at=datetime(2026, 1, 3, tzinfo=UTC))
 
 
-async def setup_location(hass: HomeAssistant) -> MagicMock:
+async def setup_location(hass: HomeAssistant, *, subscribed: bool | None = True) -> MagicMock:
     """Load the location tracker and command button with a dated cached fix."""
-    return await setup_commands(hass, (LOCATION_SERVICE,), location=CACHED)
+    return await setup_commands(
+        hass, (replace(LOCATION_SERVICE, subscribed=subscribed),), location=CACHED
+    )
 
 
 async def press_location(hass: HomeAssistant) -> None:
@@ -41,9 +43,12 @@ async def press_location(hass: HomeAssistant) -> None:
     await call_command(hass, Platform.BUTTON, "refresh_location", "press")
 
 
-async def test_refresh_location_publishes_completed_fix(hass: HomeAssistant) -> None:
+@pytest.mark.parametrize("subscribed", [True, False, None])
+async def test_refresh_location_publishes_completed_fix(
+    hass: HomeAssistant, subscribed: bool | None
+) -> None:
     """Dispatch once, await the location result, and preserve it over stale cloud reads."""
-    client = await setup_location(hass)
+    client = await setup_location(hass, subscribed=subscribed)
 
     async def complete(vin: str, request: ServiceRequest) -> ServiceRequestResult:
         assert vin == VEHICLE.vin
@@ -213,14 +218,12 @@ async def test_location_command_failure(
     [
         (),
         (replace(LOCATION_SERVICE, enabled=False),),
-        (replace(LOCATION_SERVICE, subscribed=False),),
-        (replace(LOCATION_SERVICE, subscribed=None),),
     ],
 )
-async def test_location_button_requires_subscription(
+async def test_location_button_requires_enabled_service(
     hass: HomeAssistant, services: tuple[ServiceCapability, ...]
 ) -> None:
-    """Only vehicles with a confirmed subscription expose the locate button."""
+    """Only vehicles with Parked Car Finder enabled expose the locate button."""
     await setup_commands(hass, services)
     assert (
         er.async_get(hass).async_get_entity_id(
@@ -230,8 +233,8 @@ async def test_location_button_requires_subscription(
     )
 
 
-async def test_revoked_location_subscription_blocks_dispatch(hass: HomeAssistant) -> None:
-    """Recheck the subscription before sending a request that can wake the vehicle."""
+async def test_removed_location_capability_blocks_dispatch(hass: HomeAssistant) -> None:
+    """Recheck the service before sending a request that can wake the vehicle."""
     client = await setup_location(hass)
     caps = client.async_get_vehicle_capabilities.return_value
     client.async_get_vehicle_capabilities.return_value = replace(caps, services=())

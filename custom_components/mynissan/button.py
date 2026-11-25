@@ -27,7 +27,7 @@ from .refresh import NissanRefreshButton
 
 @dataclass(frozen=True, kw_only=True)
 class NissanButtonDescription(ButtonEntityDescription):
-    """Describe a command and the subscription needed to execute it."""
+    """Describe a command and the services that enable it."""
 
     services: tuple[str, ...]
     command: Callable[[NissanClient, str], Awaitable[ServiceRequest]]

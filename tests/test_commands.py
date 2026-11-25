@@ -111,9 +111,11 @@ async def call_command(hass: HomeAssistant, platform: Platform, key: str, action
     await hass.services.async_call(platform, action, {"entity_id": entity_id}, blocking=True)
 
 
-async def test_supported_commands(hass: HomeAssistant) -> None:
+@pytest.mark.parametrize("subscribed", [True, False, None])
+async def test_supported_commands(hass: HomeAssistant, subscribed: bool | None) -> None:
     """Commands await remote completion without inventing a new lock state."""
-    client = await setup_commands(hass)
+    services = tuple(replace(s, subscribed=subscribed) for s in ALL_SERVICES)
+    client = await setup_commands(hass, services)
     assert _entity_state(hass, Platform.LOCK, "door_lock").state == "unlocked"
     await call_command(hass, Platform.LOCK, "door_lock", "lock")
     client.async_lock_doors.assert_awaited_once_with(VEHICLE.vin)
@@ -136,12 +138,9 @@ async def test_supported_commands(hass: HomeAssistant) -> None:
     assert client.async_get_vehicle_capabilities.await_count == 5
 
 
-@pytest.mark.parametrize(("enabled", "subscribed"), [(False, True), (True, False), (True, None)])
-async def test_unavailable_services_are_not_exposed(
-    hass: HomeAssistant, enabled: bool, subscribed: bool | None
-) -> None:
-    """Disabled, unsubscribed and unknown subscriptions expose no command controls."""
-    services = tuple(replace(s, enabled=enabled, subscribed=subscribed) for s in ALL_SERVICES)
+async def test_disabled_services_are_not_exposed(hass: HomeAssistant) -> None:
+    """Disabled services expose no command controls, even with a subscription."""
+    services = tuple(replace(s, enabled=False) for s in ALL_SERVICES)
     await setup_commands(hass, services)
     for platform, key in (
         (Platform.LOCK, "door_lock"),
@@ -166,8 +165,8 @@ async def test_unavailable_services_are_not_exposed(
 async def test_directional_lock_services(
     hass: HomeAssistant, services: tuple[str, ...], lock: bool, unlock: bool, combined: bool
 ) -> None:
-    """One-way subscriptions expose only a supported button, not an unsupported action."""
-    await setup_commands(hass, tuple(ServiceCapability(s, True, True) for s in services))
+    """One-way services expose only the supported action."""
+    await setup_commands(hass, tuple(ServiceCapability(s, True, None) for s in services))
     for platform, key, expected in (
         (Platform.BUTTON, "lock_doors", lock),
         (Platform.BUTTON, "unlock_doors", unlock),
@@ -214,13 +213,12 @@ async def test_remote_engine_commands(hass: HomeAssistant) -> None:
     [
         ALL_SERVICES,
         (ServiceCapability("REMOTE_ENGINE", False, True),),
-        (ServiceCapability("REMOTE_ENGINE", True, None),),
     ],
 )
-async def test_remote_engine_requires_subscription(
+async def test_remote_engine_requires_enabled_service(
     hass: HomeAssistant, services: tuple[ServiceCapability, ...]
 ) -> None:
-    """Vehicles without an enabled, subscribed REMOTE_ENGINE get no engine buttons."""
+    """Vehicles without an enabled REMOTE_ENGINE get no engine buttons."""
     await setup_commands(hass, services)
     for key in ("remote_engine_start", "remote_engine_stop"):
         assert (
@@ -231,7 +229,7 @@ async def test_remote_engine_requires_subscription(
 
 async def test_remote_engine_rejection_explains_cause(hass: HomeAssistant) -> None:
     """A refused start reports Nissan's reason and does not refresh as if it ran."""
-    client = await setup_commands(hass, ENGINE_SERVICES)
+    client = await setup_commands(hass, (replace(ENGINE_SERVICES[0], subscribed=False),))
     client.async_wait_for_service_request.return_value = ServiceRequestResult(
         ServiceRequestStatus.FAILED, "RES_FAILED"
     )
@@ -239,6 +237,7 @@ async def test_remote_engine_rejection_explains_cause(hass: HomeAssistant) -> No
         await call_command(hass, Platform.BUTTON, "remote_engine_start", "press")
     assert error.value.translation_key == "engine_command_rejected"
     assert error.value.translation_placeholders == {"status": "FAILED", "details": "RES_FAILED"}
+    client.async_start_engine.assert_awaited_once_with(VEHICLE.vin, climate=None)
     client.coordinator.async_request_refresh.assert_not_called()
     assert _entity_state(hass, Platform.SENSOR, "last_remote_engine_start").state == "unknown"
     assert (
@@ -247,8 +246,8 @@ async def test_remote_engine_rejection_explains_cause(hass: HomeAssistant) -> No
     )
 
 
-async def test_revoked_engine_subscription_blocks_start(hass: HomeAssistant) -> None:
-    """An engine subscription lost after setup must prevent sending the start."""
+async def test_removed_engine_capability_blocks_start(hass: HomeAssistant) -> None:
+    """An engine service removed after setup prevents sending the start."""
     client = await setup_commands(hass, ENGINE_SERVICES)
     client.async_get_vehicle_capabilities.return_value = replace(VEHICLE_CAPABILITIES, services=())
     with pytest.raises(ServiceValidationError):
@@ -260,8 +259,8 @@ async def test_revoked_engine_subscription_blocks_start(hass: HomeAssistant) -> 
     )
 
 
-async def test_revoked_subscription_blocks_command(hass: HomeAssistant) -> None:
-    """A subscription lost after setup must prevent sending the command."""
+async def test_removed_lock_capability_blocks_command(hass: HomeAssistant) -> None:
+    """A lock service removed after setup prevents sending the command."""
     client = await setup_commands(hass)
     client.async_get_vehicle_capabilities.return_value = replace(VEHICLE_CAPABILITIES, services=())
     with pytest.raises(ServiceValidationError):

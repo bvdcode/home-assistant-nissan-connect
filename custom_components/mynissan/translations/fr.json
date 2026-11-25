@@ -64,7 +64,7 @@
       "message": "Le véhicule n'a pas terminé la commande (état : {status})."
     },
     "command_not_supported": {
-      "message": "Cette commande n'est pas activée avec un abonnement en cours pour ce véhicule."
+      "message": "Cette commande n'est pas activée pour ce véhicule."
     },
     "api_error": {
       "message": "MyNISSAN a renvoyé une réponse inattendue."

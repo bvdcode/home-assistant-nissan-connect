@@ -64,7 +64,7 @@
       "message": "Pojazd nie wykonał polecenia (stan: {status})."
     },
     "command_not_supported": {
-      "message": "To polecenie nie jest włączone z aktywną subskrypcją dla tego pojazdu."
+      "message": "To polecenie nie jest włączone dla tego pojazdu."
     },
     "api_error": {
       "message": "MyNISSAN zwrócił nieoczekiwaną odpowiedź."

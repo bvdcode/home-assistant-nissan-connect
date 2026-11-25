@@ -64,7 +64,7 @@
       "message": "Het voertuig heeft de opdracht niet voltooid (status: {status})."
     },
     "command_not_supported": {
-      "message": "Deze opdracht is voor dit voertuig niet ingeschakeld met een actief abonnement."
+      "message": "Deze opdracht is niet ingeschakeld voor dit voertuig."
     },
     "api_error": {
       "message": "MyNISSAN heeft een onverwacht antwoord teruggestuurd."

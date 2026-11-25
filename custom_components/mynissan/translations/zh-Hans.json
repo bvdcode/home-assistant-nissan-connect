@@ -64,7 +64,7 @@
       "message": "车辆未完成指令（状态：{status}）。"
     },
     "command_not_supported": {
-      "message": "此车辆未通过有效订阅启用该指令。"
+      "message": "此车辆未启用该指令。"
     },
     "api_error": {
       "message": "MyNISSAN 返回了意外响应。"
