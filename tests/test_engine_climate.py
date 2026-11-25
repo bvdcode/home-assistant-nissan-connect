@@ -311,6 +311,25 @@ async def test_absent_defaults_use_vehicle_default(hass: HomeAssistant) -> None:
     )
 
 
+@pytest.mark.parametrize("subscribed", [False, None])
+async def test_engine_start_options_without_loading_app_defaults(
+    hass: HomeAssistant, subscribed: bool | None
+) -> None:
+    """Skip the startup query and allow manual settings for enabled remote start."""
+    engine_service = replace(CLIMATE_START_SERVICES[0], subscribed=subscribed)
+    client = await setup_engine(
+        hass,
+        defaults=NissanError("Saved settings unavailable"),
+        services=(engine_service, CLIMATE_START_SERVICES[1]),
+    )
+    client.async_get_climate_defaults.assert_not_awaited()
+    assert float(_entity_state(hass, Platform.NUMBER, "remote_start_temperature").state) == 75.0
+    await _start(hass, temperature=70.0)
+    client.async_start_engine.assert_awaited_once_with(
+        VEHICLE.vin, climate=_settings(70.0, (OFF, OFF, OFF, OFF), False, False)
+    )
+
+
 @pytest.mark.parametrize(
     ("error", "state", "reauth"),
     [

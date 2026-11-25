@@ -27,6 +27,7 @@ The integration provides:
 - vehicle artwork as an image entity and map picture, with the paint code;
 - last reported vehicle location on the Home Assistant map;
 - a Refresh button to request fresh vehicle, battery, and climate status on demand;
+- a Refresh location button for vehicles with Parked Car Finder enabled;
 - remote climate start, stop, and target-temperature control;
 - remote engine start and stop for vehicles with the remote engine service, with
   cabin temperature, seat heating or cooling, steering wheel heat, and defrost
@@ -36,14 +37,17 @@ The integration provides:
 - setup, entity names, and errors translated into 13 languages.
 
 Available entities depend on the data reported for each vehicle. Remote controls
-require an enabled service and an active subscription. Lock and light/horn commands
-recheck these conditions before sending a request and wait for the reported result.
+are available for enabled services. Nissan decides whether to accept each command,
+and Home Assistant reports rejected commands.
 A vehicle with only locking or only unlocking support gets a button for that action
 instead of a two-way lock control.
 
 Remote engine start sends the temperature, seat, steering wheel, and defrost
-settings shown on the vehicle's configuration controls. They start from the defaults
-saved in the MyNISSAN app and only list the seats and options the vehicle reports.
+settings shown on the vehicle's configuration controls. They only list the seats
+and options the vehicle reports. Home Assistant loads MyNISSAN app defaults at
+startup when Nissan reports an active remote engine subscription. If no saved
+defaults are loaded, the controls start from the vehicle's default temperature
+with the other options off.
 The `mynissan.remote_engine_start` action starts the engine with different settings
 for one start, for example based on the outside temperature:
 
@@ -68,6 +72,25 @@ Refresh requests fresh vehicle status and waits for the request to complete, the
 refreshes battery and climate data when reported by the vehicle and reloads the
 cloud readings. This happens only when the button is pressed. It can wake the
 vehicle and use its 12 V battery; scheduled updates only read cached cloud data.
+
+Refresh location sends Nissan’s Parked Car Finder command on demand. It can wake
+the vehicle and use its 12 V battery. The button is available when Nissan reports
+Parked Car Finder as enabled. Home Assistant waits up to 210 seconds
+for Nissan’s command result. The tracker needs both coordinates and a valid Nissan
+timestamp. If the tracker already had a complete, timestamped position when the
+button was pressed, the result needs a newer timestamp. Incomplete cloud readings
+leave the last known position on the map. A parked vehicle can return the same
+coordinates with a newer timestamp. A rejection,
+timeout, or missing or stale fix fails the action. Scheduled updates continue
+reading cached data.
+
+Use the Refresh location button’s entity ID in an automation action. For example:
+
+```yaml
+- action: button.press
+  target:
+    entity_id: button.ariya_refresh_location
+```
 
 Charging time is reported in minutes, including while unplugged when supplied by
 the vehicle. Estimated completion is available only while charging and calculated

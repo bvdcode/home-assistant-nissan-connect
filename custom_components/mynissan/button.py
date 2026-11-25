@@ -7,7 +7,7 @@ from homeassistant.components.button import ButtonEntity, ButtonEntityDescriptio
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
-from pynissan import NissanClient, SeatClimateOption, ServiceRequest, Vehicle
+from pynissan import NissanClient, SeatClimateOption, ServiceRequest, ServiceRequestResult, Vehicle
 
 from .command_button import NissanButtonEntity
 from .commands import (
@@ -20,13 +20,14 @@ from .commands import (
 from .const import ENGINE_START_EVENT, ENGINE_STOP_EVENT, SIGNAL_ENGINE_COMMAND
 from .coordinator import NissanDataUpdateCoordinator
 from .engine_climate import EngineClimate
+from .location import LOCATION_SERVICES, NissanLocationRefreshButton
 from .models import NissanConfigEntry
 from .refresh import NissanRefreshButton
 
 
 @dataclass(frozen=True, kw_only=True)
 class NissanButtonDescription(ButtonEntityDescription):
-    """Describe a command and the subscription needed to execute it."""
+    """Describe a command and the services that enable it."""
 
     services: tuple[str, ...]
     command: Callable[[NissanClient, str], Awaitable[ServiceRequest]]
@@ -101,8 +102,12 @@ async def async_setup_entry(
         for vehicle in runtime.vehicles
     ]
     for vehicle in runtime.vehicles:
+        capabilities = runtime.capabilities[vehicle.vin]
+        if supports_service(capabilities, LOCATION_SERVICES):
+            entities.append(
+                NissanLocationRefreshButton(runtime.coordinator, runtime.client, vehicle)
+            )
         for description in BUTTON_DESCRIPTIONS:
-            capabilities = runtime.capabilities[vehicle.vin]
             if not supports_service(capabilities, description.services) or supports_service(
                 capabilities, description.excluded_services
             ):
@@ -146,17 +151,18 @@ class NissanCommandButton(NissanButtonEntity):
         await self._async_run_command(
             lambda: self.entity_description.command(self._client, self._vehicle.vin),
             self.entity_description.services,
-            after_success=self._async_announce,
+            handle_result=self._async_finish_command,
         )
 
-    async def _async_announce(self) -> None:
-        """Tell the last start and stop sensors that an engine command completed."""
+    async def _async_finish_command(self, _result: ServiceRequestResult) -> None:
+        """Announce completed engine commands and refresh reported vehicle status."""
         if self.entity_description.engine_event is not None:
             async_dispatcher_send(
                 self.hass,
                 SIGNAL_ENGINE_COMMAND.format(self._vehicle.vin),
                 self.entity_description.engine_event,
             )
+        await self.coordinator.async_request_refresh()
 
 
 class NissanEngineStartButton(NissanCommandButton):
@@ -200,5 +206,5 @@ class NissanEngineStartButton(NissanCommandButton):
         await self._async_run_command(
             lambda: self._client.async_start_engine(self._vehicle.vin, climate=climate),
             self.entity_description.services,
-            after_success=self._async_announce,
+            handle_result=self._async_finish_command,
         )

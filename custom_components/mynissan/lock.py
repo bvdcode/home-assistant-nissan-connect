@@ -1,4 +1,4 @@
-"""Remote door lock control for subscribed vehicles."""
+"""Remote door lock control for supported vehicles."""
 
 import asyncio
 

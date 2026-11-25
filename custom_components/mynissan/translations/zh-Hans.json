@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "日产未返回可确认更新的车辆位置。"
+    },
     "command_failed": {
       "message": "无法完成车辆指令。"
     },
@@ -61,7 +64,7 @@
       "message": "车辆未完成指令（状态：{status}）。"
     },
     "command_not_supported": {
-      "message": "此车辆未通过有效订阅启用该指令。"
+      "message": "此车辆未启用该指令。"
     },
     "api_error": {
       "message": "MyNISSAN 返回了意外响应。"
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "解锁车门"
+      },
+      "refresh_location": {
+        "name": "刷新位置"
       },
       "refresh": {
         "name": "刷新"

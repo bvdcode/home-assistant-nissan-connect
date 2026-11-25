@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan did not return a verifiably newer vehicle location."
+    },
     "command_failed": {
       "message": "Unable to complete the vehicle command."
     },
@@ -61,7 +64,7 @@
       "message": "The vehicle did not complete the command (status: {status})."
     },
     "command_not_supported": {
-      "message": "This command is not enabled with an active subscription for this vehicle."
+      "message": "This command is not enabled for this vehicle."
     },
     "api_error": {
       "message": "MyNISSAN returned an unexpected response."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Unlock doors"
+      },
+      "refresh_location": {
+        "name": "Refresh location"
       },
       "refresh": {
         "name": "Refresh"

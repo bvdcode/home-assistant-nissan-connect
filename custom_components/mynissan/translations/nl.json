@@ -54,6 +54,9 @@
     }
   },
   "exceptions": {
+    "location_not_updated": {
+      "message": "Nissan heeft geen aantoonbaar nieuwere voertuiglocatie teruggegeven."
+    },
     "command_failed": {
       "message": "De voertuigopdracht kon niet worden voltooid."
     },
@@ -61,7 +64,7 @@
       "message": "Het voertuig heeft de opdracht niet voltooid (status: {status})."
     },
     "command_not_supported": {
-      "message": "Deze opdracht is voor dit voertuig niet ingeschakeld met een actief abonnement."
+      "message": "Deze opdracht is niet ingeschakeld voor dit voertuig."
     },
     "api_error": {
       "message": "MyNISSAN heeft een onverwacht antwoord teruggestuurd."
@@ -112,6 +115,9 @@
       },
       "unlock_doors": {
         "name": "Deuren ontgrendelen"
+      },
+      "refresh_location": {
+        "name": "Locatie vernieuwen"
       },
       "refresh": {
         "name": "Vernieuwen"

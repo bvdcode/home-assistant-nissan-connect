@@ -186,9 +186,9 @@ async def _async_engine_climate(
             vehicle_capabilities, ENGINE_SERVICES
         ) or not supports_engine_climate(vehicle_capabilities):
             continue
-        defaults: ClimateDefaults | None = await client.async_get_climate_defaults(
-            vehicle.vin, temperature_unit=unit
-        )
+        defaults: ClimateDefaults | None = None
+        if supports_service(vehicle_capabilities, ENGINE_SERVICES, require_subscription=True):
+            defaults = await client.async_get_climate_defaults(vehicle.vin, temperature_unit=unit)
         climate = engine_climate(vehicle_capabilities, defaults)
         if climate is not None:
             result[vehicle.vin] = climate
